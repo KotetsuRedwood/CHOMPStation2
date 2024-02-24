@@ -73,3 +73,11 @@
 	emote_message_1p_target = "You wawa at TARGET."
 	emote_message_3p_target = "wawas at TARGET."
 	emote_sound = 'modular_chomp/sound/voice/emotes/wawa.ogg'
+
+/decl/emote/audible/funnyscream
+	key = "funnyscream"
+	emote_message_1p = "You scream!"
+	emote_message_3p = "screams!"
+	emote_message_1p_target = "You scream at TARGET!"
+	emote_message_3p_target = "screams at TARGET!"
+	emote_sound = 'modular_chomp/sound/voice/emotes/funnyscream.ogg'
