@@ -86,7 +86,7 @@ var/list/flesh_overlay_cache = list()
 	hard_corner = 1 //They're all HC
 	true_name = "wall"
 
-/turf/simulated/shuttle/wall/flock/Initialize()
+/turf/simulated/shuttle/wall/flock/Initialize(mapload)
 	. = ..()
 	set_light(3,3,"#26c5a9")
 
@@ -235,11 +235,11 @@ var/list/flesh_overlay_cache = list()
 	icon = 'icons/turf/wall_masks_vr.dmi'
 
 /turf/simulated/wall/stonebricks/Initialize(mapload)
-		. = ..(mapload, "concrete")
+		. = ..(mapload, MAT_CONCRETE)
 
 /turf/simulated/wall/stonelogs
 	icon_state = "stonelogs"
 	icon = 'icons/turf/wall_masks_vr.dmi'
 
 /turf/simulated/wall/stonelogs/Initialize(mapload)
-			. = ..(mapload, "concrete",MAT_LOG)
+			. = ..(mapload, MAT_CONCRETE,MAT_LOG)

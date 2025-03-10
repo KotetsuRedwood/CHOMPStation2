@@ -16,9 +16,9 @@
 	var/moved_recently = 0
 	var/mob/pulledby = null
 	var/item_state = null // Used to specify the item state for the on-mob overlays.
-	var/icon_scale_x = 1 // Used to scale icons up or down horizonally in update_transform().
-	var/icon_scale_y = 1 // Used to scale icons up or down vertically in update_transform().
-	var/icon_rotation = 0 // Used to rotate icons in update_transform()
+	var/icon_scale_x = DEFAULT_ICON_SCALE_X // Used to scale icons up or down horizonally in update_transform().
+	var/icon_scale_y = DEFAULT_ICON_SCALE_Y // Used to scale icons up or down vertically in update_transform().
+	var/icon_rotation = DEFAULT_ICON_ROTATION // Used to rotate icons in update_transform()
 	var/icon_expected_height = 32
 	var/icon_expected_width = 32
 	var/old_x = 0
@@ -45,8 +45,11 @@
 			render_target = ref(src)
 			em_block = new(src, render_target)
 			add_overlay(list(em_block), TRUE)
+			RegisterSignal(em_block, COMSIG_PARENT_QDELETING, PROC_REF(emblocker_gc))
 	if(opacity)
 		AddElement(/datum/element/light_blocking)
+	if(icon_scale_x != DEFAULT_ICON_SCALE_X || icon_scale_y != DEFAULT_ICON_SCALE_Y || icon_rotation != DEFAULT_ICON_ROTATION)
+		update_transform()
 	switch(light_system)
 		if(STATIC_LIGHT)
 			update_light()
@@ -56,7 +59,14 @@
 			AddComponent(/datum/component/overlay_lighting, is_directional = TRUE, starts_on = light_on)
 
 /atom/movable/Destroy()
+	if(em_block)
+		cut_overlay(em_block)
+		UnregisterSignal(em_block, COMSIG_PARENT_QDELETING)
+		QDEL_NULL(em_block)
 	. = ..()
+
+	unbuckle_all_mobs()
+
 	for(var/atom/movable/AM in contents)
 		qdel(AM)
 
@@ -218,7 +228,7 @@
 
 	// If we moved, call Moved() on ourselves
 	if(.)
-		Moved(oldloc, direct, FALSE, movetime ? movetime : ( (TICKS2DS(WORLD_ICON_SIZE/glide_size)) * (moving_diagonally ? (ONE_OVER_SQRT_2) : 1) ) ) //CHOMPEDIT - proper diagonal movement
+		Moved(oldloc, direct, FALSE, movetime ? movetime : MOVE_GLIDE_CALC(glide_size, moving_diagonally) )
 
 	// Update timers/cooldown stuff
 	move_speed = world.time - l_move_time
@@ -374,7 +384,7 @@
 		return TRUE
 
 /atom/movable/proc/onTransitZ(old_z,new_z)
-	GLOB.z_moved_event.raise_event(src, old_z, new_z)
+	SEND_SIGNAL(src, COMSIG_OBSERVER_Z_MOVED, old_z, new_z)
 	SEND_SIGNAL(src, COMSIG_MOVABLE_Z_CHANGED, old_z, new_z)
 	for(var/atom/movable/AM as anything in src) // Notify contents of Z-transition. This can be overridden IF we know the items contents do not care.
 		AM.onTransitZ(old_z,new_z)
@@ -391,7 +401,7 @@
 
 //called when src is thrown into hit_atom
 /atom/movable/proc/throw_impact(atom/hit_atom, var/speed)
-	if(istype(hit_atom,/mob/living))
+	if(isliving(hit_atom))
 		var/mob/living/M = hit_atom
 		if(M.buckled == src)
 			return // Don't hit the thing we're buckled to.
@@ -412,9 +422,14 @@
 /atom/movable/proc/hit_check(var/speed)
 	if(src.throwing)
 		for(var/atom/A in get_turf(src))
-			if(A == src) continue
-			if(istype(A,/mob/living))
-				if(A:lying) continue
+			if(A == src)
+				continue
+			if(A.is_incorporeal())
+				continue
+			if(isliving(A))
+				var/mob/living/M = A
+				if(M.lying)
+					continue
 				src.throw_impact(A,speed)
 			if(isobj(A))
 				if(!A.density || A.throwpass)
@@ -453,10 +468,10 @@
 	var/atom/master = null
 	anchored = TRUE
 
-/atom/movable/overlay/New()
+/atom/movable/overlay/Initialize(mapload)
+	. = ..()
 	for(var/x in src.verbs)
 		src.verbs -= x
-	..()
 
 /atom/movable/overlay/attackby(a, b)
 	if (src.master)
@@ -640,3 +655,15 @@
 
 /atom/movable/proc/get_cell()
 	return
+
+/atom/movable/proc/emblocker_gc(var/datum/source)
+	UnregisterSignal(source, COMSIG_PARENT_QDELETING)
+	cut_overlay(source)
+	if(em_block == source)
+		em_block = null
+
+/atom/movable/proc/abstract_move(atom/new_loc)
+	var/atom/old_loc = loc
+	var/direction = get_dir(old_loc, new_loc)
+	loc = new_loc
+	Moved(old_loc, direction, TRUE)

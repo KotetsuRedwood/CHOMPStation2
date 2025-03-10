@@ -41,7 +41,7 @@ SUBSYSTEM_DEF(dbcore)
 	//var/db_daemon_started = FALSE
 
 /datum/controller/subsystem/dbcore/Initialize()
-	return ..()
+	return SS_INIT_SUCCESS
 
 /datum/controller/subsystem/dbcore/stat_entry(msg)
 	msg = "P:[length(all_queries)]|Active:[length(queries_active)]|Standby:[length(queries_standby)]"
@@ -203,18 +203,19 @@ SUBSYSTEM_DEF(dbcore)
 		failed_connection_timeout = world.time + 50
 		return FALSE
 
-	if(!config.sql_enabled)
+	if(!CONFIG_GET(flag/sql_enabled))
 		return FALSE
 
 	//start_db_daemon()
 
-	var/user = sqlfdbklogin
-	var/pass = sqlfdbkpass
-	var/db = sqlfdbkdb
-	var/address = sqladdress
-	var/port = text2num(sqlport)
-	var/timeout = 10
-	var/thread_limit = 50
+	var/user = CONFIG_GET(string/feedback_login)
+	var/pass = CONFIG_GET(string/feedback_password)
+	var/db = CONFIG_GET(string/feedback_database)
+	var/address = CONFIG_GET(string/address)
+	var/port = CONFIG_GET(number/port)
+	var/timeout = max(CONFIG_GET(number/async_query_timeout), CONFIG_GET(number/blocking_query_timeout))
+	var/min_sql_connections = CONFIG_GET(number/pooling_min_sql_connections)
+	var/max_sql_connections = CONFIG_GET(number/pooling_max_sql_connections)
 
 	var/result = json_decode(rustg_sql_connect_pool(json_encode(list(
 		"host" = address,
@@ -224,7 +225,8 @@ SUBSYSTEM_DEF(dbcore)
 		"db_name" = db,
 		"read_timeout" = timeout,
 		"write_timeout" = timeout,
-		"max_threads" = thread_limit,
+		"min_threads" = min_sql_connections,
+		"max_threads" = max_sql_connections,
 	))))
 	. = (result["status"] == "ok")
 	if (.)
@@ -236,7 +238,7 @@ SUBSYSTEM_DEF(dbcore)
 		++failed_connections
 
 /datum/controller/subsystem/dbcore/proc/CheckSchemaVersion()
-	if(config.sql_enabled)
+	if(CONFIG_GET(flag/sql_enabled))
 		if(Connect())
 			log_world("Database connection established.")
 		else
@@ -283,14 +285,14 @@ SUBSYSTEM_DEF(dbcore)
 	connection = null
 
 /datum/controller/subsystem/dbcore/proc/IsConnected()
-	if (!config.sql_enabled)
+	if (!CONFIG_GET(flag/sql_enabled))
 		return FALSE
 	if (!connection)
 		return FALSE
 	return json_decode(rustg_sql_connected(connection))["status"] == "online"
 
 /datum/controller/subsystem/dbcore/proc/ErrorMsg()
-	if(!config.sql_enabled)
+	if(!CONFIG_GET(flag/sql_enabled))
 		return "Database disabled by configuration"
 	return last_error
 
@@ -495,7 +497,6 @@ Ignore_errors instructes mysql to continue inserting rows if some of them have e
 	return ..()
 
 /datum/db_query/CanProcCall(proc_name)
-	//fuck off kevinz
 	return FALSE
 
 /datum/db_query/proc/Activity(activity)
@@ -577,9 +578,8 @@ Ignore_errors instructes mysql to continue inserting rows if some of them have e
 			status = DB_QUERY_BROKEN
 			return
 
-
 /datum/db_query/proc/slow_query_check()
-	message_admins("HEY! A database query timed out. Did the server just hang? <a href='?_src_=holder;[HrefToken()];slowquery=yes'>\[YES\]</a>|<a href='?_src_=holder;[HrefToken()];slowquery=no'>\[NO\]</a>")
+	message_admins("HEY! A database query timed out. Did the server just hang? <a href='byond://?_src_=holder;[HrefToken()];slowquery=yes'>\[YES\]</a>|<a href='byond://?_src_=holder;[HrefToken()];slowquery=no'>\[NO\]</a>")
 
 /datum/db_query/proc/NextRow(async = TRUE)
 	Activity("NextRow")

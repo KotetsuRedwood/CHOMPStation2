@@ -7,10 +7,10 @@
 	language = "Hivemind"
 	maxHealth = 50
 	health = 50
-	faction = "xeno"
+	faction = FACTION_XENO
 	max_grown = 325 //Increase larva growth time due to not needing hosts.
 
-/mob/living/carbon/alien/larva/Initialize()
+/mob/living/carbon/alien/larva/Initialize(mapload)
 	. = ..()
 	add_language("Xenolingua") //Bonus language. CHOMPedit
 	internal_organs |= new /obj/item/organ/internal/xenos/hivenode(src)

@@ -16,7 +16,7 @@
 	matter = list(MAT_STEEL = 20000, MAT_PLASTIC = 30000, MAT_GLASS = 5000)
 
 	var/damage = 0
-	var/obj/item/weapon/rig/holder
+	var/obj/item/rig/holder
 
 	var/module_cooldown = 10
 	var/next_use = 0
@@ -109,8 +109,8 @@
 		return
 	..()
 
-/obj/item/rig_module/New()
-	..()
+/obj/item/rig_module/Initialize(mapload)
+	. = ..()
 	if(suit_overlay_inactive)
 		suit_overlay = suit_overlay_inactive
 
@@ -135,8 +135,15 @@
 	stat_modules +=	new/stat_rig_module/select(src)
 	stat_modules +=	new/stat_rig_module/charge(src)
 
+/obj/item/rig_module/Destroy()
+	holder.installed_modules -= src
+	holder = null
+	QDEL_NULL_LIST(stat_modules)
+	. = ..()
+
+
 // Called when the module is installed into a suit.
-/obj/item/rig_module/proc/installed(var/obj/item/weapon/rig/new_holder)
+/obj/item/rig_module/proc/installed(var/obj/item/rig/new_holder)
 	holder = new_holder
 	return
 
@@ -144,27 +151,27 @@
 /obj/item/rig_module/proc/engage()
 
 	if(damage >= 2)
-		to_chat(usr, "<span class='warning'>The [interface_name] is damaged beyond use!</span>")
+		to_chat(usr, span_warning("The [interface_name] is damaged beyond use!"))
 		return 0
 
 	if(world.time < next_use)
-		to_chat(usr, "<span class='warning'>You cannot use the [interface_name] again so soon.</span>")
+		to_chat(usr, span_warning("You cannot use the [interface_name] again so soon."))
 		return 0
 
 	if(!holder || holder.canremove)
-		to_chat(usr, "<span class='warning'>The suit is not initialized.</span>")
+		to_chat(usr, span_warning("The suit is not initialized."))
 		return 0
 
 	if(usr.lying || usr.stat || usr.stunned || usr.paralysis || usr.weakened)
-		to_chat(usr, "<span class='warning'>You cannot use the suit in this state.</span>")
+		to_chat(usr, span_warning("You cannot use the suit in this state."))
 		return 0
 
 	if(holder.wearer && holder.wearer.lying)
-		to_chat(usr, "<span class='warning'>The suit cannot function while the wearer is prone.</span>")
+		to_chat(usr, span_warning("The suit cannot function while the wearer is prone."))
 		return 0
 
 	if(holder.security_check_enabled && !holder.check_suit_access(usr))
-		to_chat(usr, "<span class='danger'>Access denied.</span>")
+		to_chat(usr, span_danger("Access denied."))
 		return 0
 
 	if(!holder.check_power_cost(usr, use_power_cost, 0, src, (istype(usr,/mob/living/silicon ? 1 : 0) ) ) )
@@ -229,36 +236,20 @@
 /obj/item/rig_module/proc/accepts_item(var/obj/item/input_device)
 	return 0
 
-/mob/living/carbon/human/Stat()
-	. = ..()
-
-	if(. && istype(back,/obj/item/weapon/rig))
-		var/obj/item/weapon/rig/R = back
-		SetupStat(R)
-
-	else if(. && istype(belt,/obj/item/weapon/rig))
-		var/obj/item/weapon/rig/R = belt
-		SetupStat(R)
-
-/mob/proc/SetupStat(var/obj/item/weapon/rig/R)
-	if(R && !R.canremove && R.installed_modules.len && statpanel("Hardsuit Modules"))
-		var/cell_status = R.cell ? "[R.cell.charge]/[R.cell.maxcharge]" : "ERROR"
-		stat("Suit charge", cell_status)
-		for(var/obj/item/rig_module/module in R.installed_modules)
-		{
-			for(var/stat_rig_module/SRM in module.stat_modules)
-				if(SRM.CanUse())
-					stat(SRM.module.interface_name,SRM)
-		}
-
 /stat_rig_module
 	parent_type = /atom/movable
 	var/module_mode = ""
 	var/obj/item/rig_module/module
 
-/stat_rig_module/New(var/obj/item/rig_module/module)
-	..()
-	src.module = module
+/stat_rig_module/Initialize(mapload)
+	. = ..()
+	module = loc
+	if(!istype(module))
+		return INITIALIZE_HINT_QDEL
+
+/stat_rig_module/Destroy()
+	module = null
+	. = ..()
 
 /stat_rig_module/proc/AddHref(var/list/href_list)
 	return
@@ -273,6 +264,10 @@
 				module.holder.selected_module = module
 			if("engage")
 				module.engage()
+			if("activate")
+				module.activate()
+			if("deactivate")
+				module.deactivate()
 			if("toggle")
 				if(module.active)
 					module.deactivate()
@@ -284,8 +279,10 @@
 /stat_rig_module/DblClick()
 	return Click()
 
-/stat_rig_module/activate/New(var/obj/item/rig_module/module)
-	..()
+/stat_rig_module/activate/Initialize(mapload)
+	. = ..()
+	if(!istype(module))
+		return INITIALIZE_HINT_QDEL
 	name = module.activate_string
 	if(module.active_power_cost)
 		name += " ([module.active_power_cost*10]A)"
@@ -294,8 +291,10 @@
 /stat_rig_module/activate/CanUse()
 	return module.toggleable && !module.active
 
-/stat_rig_module/deactivate/New(var/obj/item/rig_module/module)
-	..()
+/stat_rig_module/deactivate/Initialize(mapload)
+	. = ..()
+	if(!istype(module))
+		return INITIALIZE_HINT_QDEL
 	name = module.deactivate_string
 	// Show cost despite being 0, if it means changing from an active cost.
 	if(module.active_power_cost || module.passive_power_cost)
@@ -306,8 +305,10 @@
 /stat_rig_module/deactivate/CanUse()
 	return module.toggleable && module.active
 
-/stat_rig_module/engage/New(var/obj/item/rig_module/module)
-	..()
+/stat_rig_module/engage/Initialize(mapload)
+	. = ..()
+	if(!istype(module))
+		return INITIALIZE_HINT_QDEL
 	name = module.engage_string
 	if(module.use_power_cost)
 		name += " ([module.use_power_cost*10]E)"
@@ -316,8 +317,8 @@
 /stat_rig_module/engage/CanUse()
 	return module.usable
 
-/stat_rig_module/select/New()
-	..()
+/stat_rig_module/select/Initialize(mapload)
+	. = ..()
 	name = "Select"
 	module_mode = "select"
 
@@ -327,8 +328,8 @@
 		return 1
 	return 0
 
-/stat_rig_module/charge/New()
-	..()
+/stat_rig_module/charge/Initialize(mapload)
+	. = ..()
 	name = "Change Charge"
 	module_mode = "select_charge_type"
 

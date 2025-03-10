@@ -18,7 +18,7 @@
 	var/otherarea = null
 	var/image/overlay
 
-/obj/machinery/light_switch/Initialize()
+/obj/machinery/light_switch/Initialize(mapload)
 	. = ..()
 
 	area = get_area(src)
@@ -87,3 +87,12 @@
 		return
 	power_change()
 	..(severity)
+
+//Breakers for event maps
+
+/obj/machinery/light_switch/breaker
+	name = "lights breaker"
+	desc = "A breaker for controlling power to the lights connected to the circuit."
+	icon = 'icons/obj/power_breaker.dmi'
+	icon_state = "light1"
+	on = 0

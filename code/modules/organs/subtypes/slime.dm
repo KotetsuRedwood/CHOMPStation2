@@ -71,7 +71,7 @@
 /obj/item/organ/internal/heart/grey/colormatch/slime/process()
 	..()
 	if(!(QDELETED(src)) && src.loc != owner)
-		visible_message("<b>\The [src]</b> splatters!")
+		visible_message(span_infoplain(span_bold("\The [src]") + " splatters!"))
 		var/turf/T = get_turf(src)
 		var/obj/effect/decal/cleanable/blood/B = new (T)
 
@@ -91,7 +91,7 @@
 	var/last_strain_increase = 0	// World time of the last increase in strain.
 	var/strain_regen_cooldown = 5 MINUTES
 
-/obj/item/organ/internal/regennetwork/Initialize()
+/obj/item/organ/internal/regennetwork/Initialize(mapload)
 	. = ..()
 	var/mob/living/carbon/human/H = null
 	spawn(15)
@@ -120,7 +120,7 @@
 	..()
 
 	if(!(QDELETED(src)) && src.loc != owner)
-		visible_message("<b>\The [src]</b> splatters!")
+		visible_message(span_infoplain(span_bold("\The [src]") + " splatters!"))
 		var/turf/T = get_turf(src)
 		var/obj/effect/decal/cleanable/blood/B = new (T)
 

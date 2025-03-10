@@ -23,7 +23,7 @@
 //-------------------------------------------
 // Standard procs
 //-------------------------------------------
-/obj/vehicle/train/Initialize()
+/obj/vehicle/train/Initialize(mapload)
 	. = ..()
 	for(var/obj/vehicle/train/T in orange(1, src))
 		if(latch_on_start)
@@ -38,6 +38,8 @@
 		unattach()
 
 /obj/vehicle/train/Bump(atom/Obstacle)
+	if(istype(Obstacle,/obj/structure/stairs)) // VOREstation edit - Stair support for towing vehicles
+		return ..()
 	if(!istype(Obstacle, /atom/movable))
 		return
 	var/atom/movable/A = Obstacle
@@ -48,12 +50,12 @@
 			A.Move(T)	//bump things away when hit
 
 	if(emagged)
-		if(istype(A, /mob/living))
+		if(isliving(A))
 			var/mob/living/M = A
 			visible_message(span_red("[src] knocks over [M]!"))
 			M.apply_effects(5, 5)				//knock people down if you hit them
 			M.apply_damages(22 / move_delay)	// and do damage according to how fast the train is going
-			if(istype(load, /mob/living/carbon/human))
+			if(ishuman(load))
 				var/mob/living/D = load
 				to_chat(D, span_red("You hit [M]!"))
 				add_attack_logs(D,M,"Ran over with [src.name]")
@@ -128,10 +130,10 @@
 /obj/vehicle/train/verb/unlatch_v()
 	set name = "Unlatch"
 	set desc = "Unhitches this train from the one in front of it."
-	set category = "Vehicle"
+	set category = "Object.Vehicle" //ChompEDIT - TGPanel
 	set src in view(1)
 
-	if(!istype(usr, /mob/living/carbon/human))
+	if(!ishuman(usr))
 		return
 
 	if(!usr.canmove || usr.stat || usr.restrained() || !Adjacent(usr))

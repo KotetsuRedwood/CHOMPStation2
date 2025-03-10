@@ -29,20 +29,24 @@
 	name = "space carp"
 	desc = "A ferocious, fang-bearing creature that resembles a fish."
 	catalogue_data = list(/datum/category_item/catalogue/fauna/carp)
+	icon = 'icons/mob/carp.dmi'
 	icon_state = "carp"
 	icon_living = "carp"
 	icon_dead = "carp_dead"
 	icon_gib = "carp_gib"
 
-	faction = "carp"
+	faction = FACTION_CARP
 	maxHealth = 25
 	health = 25
 	movement_cooldown = -2
 	hovering = TRUE
+	density = FALSE
 
-	response_help = "pets the"
-	response_disarm = "gently pushes aside the"
-	response_harm = "hits the"
+	vore_active = TRUE
+	vore_icons = SA_ICON_LIVING
+	response_help = "pets"
+	response_disarm = "gently pushes aside"
+	response_harm = "hits"
 
 	melee_damage_lower = 7 // About 14 DPS.
 	melee_damage_upper = 7
@@ -54,20 +58,98 @@
 	organ_names = /decl/mob_organ_names/fish
 
 	meat_amount = 5
-	meat_type = /obj/item/weapon/reagent_containers/food/snacks/carpmeat
+	meat_type = /obj/item/reagent_containers/food/snacks/carpmeat
 
 	ai_holder_type = /datum/ai_holder/simple_mob/melee
 
 	var/knockdown_chance = 15
 
+	var/random_color = FALSE
+	var/rarechance = 1
+
+	var/static/list/carp_colors = list(\
+	"lightpurple" = "#c3b9f1", \
+	"lightpink" = "#da77a8", \
+	"green" = "#70ff25", \
+	"grape" = "#df0afb", \
+	"swamp" = "#e5e75a", \
+	"turquoise" = "#04e1ed", \
+	"brown" = "#ca805a", \
+	"teal" = "#20e28e", \
+	"lightblue" = "#4d88cc", \
+	"rusty" = "#dd5f34", \
+	"beige" = "#bbaeaf", \
+	"yellow" = "#f3ca4a", \
+	"blue" = "#09bae1", \
+	"palegreen" = "#7ef099", \
+	)
+	var/static/list/carp_colors_rare = list(\
+	"silver" = "#fdfbf3", \
+	)
 	can_be_drop_prey = FALSE //CHOMP Add
+
+/mob/living/simple_mob/animal/space/carp/Initialize(mapload)
+	. = ..()
+	carp_randomify(rarechance)
+	update_icons()
+	AddComponent(/datum/component/swarming)
+
+// This is so carps can swarm
+/mob/living/simple_mob/animal/space/carp/CanPass(atom/movable/mover, turf/target)
+	if(isliving(mover) && !istype(mover, /mob/living/simple_mob/animal/space/carp) && mover.density == TRUE)
+		return FALSE
+	return ..()
+
+/mob/living/simple_mob/animal/space/carp/proc/carp_randomify(rarechance)
+	if(random_color)
+		var/our_color
+		if(prob(rarechance))
+			our_color = pick(carp_colors_rare)
+			add_atom_colour(carp_colors_rare[our_color], FIXED_COLOUR_PRIORITY)
+		else
+			our_color = pick(carp_colors)
+			add_atom_colour(carp_colors[our_color], FIXED_COLOUR_PRIORITY)
+		regenerate_icons()
+
+/mob/living/simple_mob/animal/space/carp/proc/add_carp_overlay()
+	if(!random_color)
+		return
+	var/mutable_appearance/base_overlay = mutable_appearance(icon, "base_mouth")
+	base_overlay.appearance_flags = RESET_COLOR
+	add_overlay(base_overlay)
+
+/mob/living/simple_mob/animal/space/carp/proc/add_dead_carp_overlay()
+	if(!random_color)
+		return
+	var/mutable_appearance/base_dead_overlay = mutable_appearance(icon, "base_dead_mouth")
+	base_dead_overlay.appearance_flags = RESET_COLOR
+	add_overlay(base_dead_overlay)
+
+/mob/living/simple_mob/animal/space/carp/death(gibbed)
+	. = ..()
+	if(!random_color || gibbed)
+		return
+	regenerate_icons()
+
+/mob/living/simple_mob/animal/space/carp/revive()
+	..()
+	regenerate_icons()
+
+/mob/living/simple_mob/animal/space/carp/regenerate_icons()
+	..()
+	if(!random_color)
+		return
+	if(stat != DEAD)
+		add_carp_overlay()
+	else
+		add_dead_carp_overlay()
 
 /mob/living/simple_mob/animal/space/carp/apply_melee_effects(var/atom/A)
 	if(isliving(A))
 		var/mob/living/L = A
 		if(prob(knockdown_chance))
 			L.add_modifier(/datum/modifier/entangled, 4 SECONDS) //CHOMPedit, replacing weaken/slowdown with slow down
-			L.visible_message(span("danger", "\The [src] knocks down \the [L]!"))
+			L.visible_message(span_danger("\The [src] knocks down \the [L]!"))
 
 // Subtypes.
 
@@ -83,6 +165,7 @@
 	icon_state = "shark"
 	icon_living = "shark"
 	icon_dead = "shark_dead"
+	vore_icons = FALSE
 
 	maxHealth = 50
 	health = 50
@@ -104,6 +187,7 @@
 	icon_dead = "megacarp_dead"
 	icon_living = "megacarp"
 	icon_state = "megacarp"
+	vore_icons = FALSE
 
 	maxHealth = 230
 	health = 230
@@ -147,14 +231,14 @@
 	ai_holder_type = /datum/ai_holder/simple_mob/vore
 
 /mob/living/simple_mob/animal/space/carp/large/huge/vorny/init_vore()
-	if(!voremob_loaded) //CHOMPAdd
-		return //CHOMPAdd
-	.=..() //CHOMPEdit
+	if(!voremob_loaded)
+		return
+	. = ..()
 	var/obj/belly/B = vore_selected
 	B.name = "stomach"
 	B.desc = "You've been swallowed whole and alive by a massive white carp! The stomach around you is oppressively tight, squeezing and grinding wrinkled walls across your body, making it hard to make any movement at all. The chamber is flooded with fluids that completely overwhelm you."
 	B.mode_flags = DM_FLAG_THICKBELLY
-//	B.belly_fullscreen = "yet_another_tumby" //Chompedit - Belly Fullscreen change
+	//B.belly_fullscreen = "yet_another_tumby" //Chompedit - Belly Fullscreen change
 	B.digest_brute = 2
 	B.digest_burn = 2
 	B.digest_oxy = 1
@@ -176,10 +260,11 @@
 	icon_gib = null
 	meat_amount = 0
 	meat_type = null
+	vore_icons = FALSE
 
 	mob_class = MOB_CLASS_PHOTONIC // Xeno-taser won't work on this as its not a 'real' carp.
 
-/mob/living/simple_mob/animal/space/carp/holographic/Initialize()
+/mob/living/simple_mob/animal/space/carp/holographic/Initialize(mapload)
 	set_light(2) // Hologram lighting.
 	return ..()
 
@@ -192,7 +277,7 @@
 
 // Called on death.
 /mob/living/simple_mob/animal/space/carp/holographic/proc/derez()
-	visible_message(span("notice", "\The [src] fades away!"))
+	visible_message(span_notice("\The [src] fades away!"))
 	qdel(src)
 
 /mob/living/simple_mob/animal/space/carp/holographic/gib()

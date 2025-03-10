@@ -16,8 +16,8 @@ Admin verb is called by code\modules\admin\verbs\event_triggers.dm
 	var/isLoud = FALSE
 	var/isNarrate = FALSE
 
-/obj/effect/landmark/event_trigger/New()
-	..()
+/obj/effect/landmark/event_trigger/Initialize(mapload)
+	. = ..()
 	coordinates = "(X:[loc.x];Y:[loc.y];Z:[loc.z])"
 
 /obj/effect/landmark/event_trigger/proc/set_vars(mob/M)
@@ -70,7 +70,7 @@ Admin verb is called by code\modules\admin\verbs\event_triggers.dm
 	else
 		if(isLoud)
 			creator_reference << 'sound/effects/adminhelp.ogg'
-		to_chat(creator_reference, SPAN_WARNING("Player [L.name] ([L.ckey]) has triggered event \
+		to_chat(creator_reference, span_warning("Player [L.name] ([L.ckey]) has triggered event \
 			narrate landmark [name] of type [isNarrate ? "Narration" : "Notification"]. \n \
 			It [isRepeating ? "will be possible to trigger after [cooldown / (1 SECOND)] seconds" : "has self-deleted"] \n \
 			COORDINATES: [coordinates]"))
@@ -89,9 +89,9 @@ Admin verb is called by code\modules\admin\verbs\event_triggers.dm
 	var/isWarning = FALSE 	//For personal messages
 	isNarrate = TRUE
 
-/obj/effect/landmark/event_trigger/auto_narrate/New()
+/obj/effect/landmark/event_trigger/auto_narrate/Initialize(mapload)
+	. = ..()
 	message_range = world.view
-	..()
 
 /obj/effect/landmark/event_trigger/auto_narrate/set_vars(mob/M)
 	..()
@@ -118,7 +118,7 @@ Admin verb is called by code\modules\admin\verbs\event_triggers.dm
 	switch(isPersonal_orVis_orAud)
 		if(0)
 			if(isWarning)
-				to_chat(L, SPAN_DANGER(message))
+				to_chat(L, span_danger(message))
 			else
 				to_chat(L, message)
 		if(1)

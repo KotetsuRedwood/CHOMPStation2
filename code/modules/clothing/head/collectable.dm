@@ -2,7 +2,7 @@
 //Hat Station 13
 
 /obj/item/clothing/head/collectable
-	name = "collectable hat"
+	name = DEVELOPER_WARNING_NAME
 	desc = "A rare collectable hat."
 
 /obj/item/clothing/head/collectable/petehat
@@ -29,7 +29,7 @@
 
 /obj/item/clothing/head/collectable/chef
 	name = "collectable chef's hat"
-	desc = "A rare Chef's Hat meant for hat collectors!"
+	desc = "A rare " + JOB_CHEF + "'s Hat meant for hat collectors!"
 	icon_state = "chefhat"
 
 /obj/item/clothing/head/collectable/paper

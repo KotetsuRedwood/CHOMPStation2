@@ -31,7 +31,7 @@
 
 /obj/item/instrument/attack_self(mob/user)
 	if(!user.IsAdvancedToolUser())
-		to_chat(user, "<span class='warning'>You don't have the dexterity to do this!</span>")
+		to_chat(user, span_warning("You don't have the dexterity to do this!"))
 		return TRUE
 	interact(user)
 
@@ -79,7 +79,7 @@
 	w_class = ITEMSIZE_SMALL
 	instrument_range = 1
 
-/obj/item/instrument/piano_synth/headphones/Initialize()
+/obj/item/instrument/piano_synth/headphones/Initialize(mapload)
 	. = ..()
 	RegisterSignal(src, COMSIG_SONG_START, PROC_REF(start_playing))
 	RegisterSignal(src, COMSIG_SONG_END, PROC_REF(stop_playing))
@@ -172,7 +172,7 @@
 	attack_verb = list("played", "jazzed", "trumpeted", "mourned", "dooted", "spooked")
 
 /*
-/obj/item/instrument/trumpet/spectral/Initialize()
+/obj/item/instrument/trumpet/spectral/Initialize(mapload)
 	. = ..()
 	AddComponent(/datum/component/spooky)
 */
@@ -194,7 +194,7 @@
 	attack_verb = list("played", "jazzed", "saxed", "mourned", "dooted", "spooked")
 
 /*
-/obj/item/instrument/saxophone/spectral/Initialize()
+/obj/item/instrument/saxophone/spectral/Initialize(mapload)
 	. = ..()
 	AddComponent(/datum/component/spooky)
 */
@@ -217,7 +217,7 @@
 	attack_verb = list("played", "jazzed", "tromboneed", "mourned", "dooted", "spooked")
 
 /*
-/obj/item/instrument/trombone/spectral/Initialize()
+/obj/item/instrument/trombone/spectral/Initialize(mapload)
 	. = ..()
 	AddComponent(/datum/component/spooky)
 */
@@ -247,7 +247,7 @@
 /obj/item/instrument/harmonica/proc/handle_speech(datum/source, list/speech_args)
 	SIGNAL_HANDLER
 	if(song.playing && ismob(loc))
-		to_chat(loc, "<span class='warning'>You stop playing the harmonica to talk...</span>")
+		to_chat(loc, span_warning("You stop playing the harmonica to talk..."))
 		song.playing = FALSE
 
 /obj/item/instrument/harmonica/equipped(mob/M, slot)

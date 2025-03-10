@@ -79,7 +79,7 @@
 	var/radiation = (energy*2)
 	M.apply_effect((radiation*3),IRRADIATE,0)
 	M.updatehealth()
-	//to_chat(M, "<font color='red'>You feel odd.</font>")
+	//to_chat(M, span_warning("You feel odd."))
 
 
 /obj/effect/accelerated_particle/proc/move(var/lag)
@@ -99,6 +99,5 @@
 	if(movement_range <= 0)
 		qdel(src)
 	else
-		//sleep(lag) //ChompEDIT
-		//move(lag) //ChompEDIT
-		addtimer(CALLBACK(src, PROC_REF(move), lag), lag) //ChompEDIT
+		spawn(lag)
+			move(lag)

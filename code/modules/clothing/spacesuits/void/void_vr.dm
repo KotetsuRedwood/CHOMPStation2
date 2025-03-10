@@ -20,7 +20,7 @@
 	icon_override = 'icons/inventory/head/mob_vr.dmi'
 	armor = list(melee = 60, bullet = 35, laser = 35, energy = 15, bomb = 55, bio = 100, rad = 20)
 
-/obj/item/clothing/head/helmet/space/void/heck/Initialize()
+/obj/item/clothing/head/helmet/space/void/heck/Initialize(mapload)
 	. = ..()
 	var/mutable_appearance/glass_overlay = mutable_appearance(icon, "hostile_env_glass")
 	glass_overlay.appearance_flags = RESET_COLOR
@@ -97,26 +97,26 @@
 	sprite_sheets = ALL_VR_SPRITE_SHEETS_SUIT_MOB
 	sprite_sheets_obj = null
 
-/obj/item/clothing/suit/space/void/autolok/Initialize()
+/obj/item/clothing/suit/space/void/autolok/Initialize(mapload)
 	. = ..()
 	helmet = new /obj/item/clothing/head/helmet/space/void/autolok //autoinstall the helmet
 
 //override the attackby screwdriver proc so that people can't remove the helmet
-/obj/item/clothing/suit/space/void/autolok/attackby(obj/item/W as obj, mob/user as mob)
+/obj/item/clothing/suit/space/void/autolok/attackby(obj/item/W, mob/user)
 
 	if(!isliving(user))
 		return
 
-	if(istype(W, /obj/item/clothing/accessory) || istype(W, /obj/item/weapon/hand_labeler))
+	if(istype(W, /obj/item/clothing/accessory) || istype(W, /obj/item/hand_labeler))
 		return ..()
 
 	if(user.get_inventory_slot(src) == slot_wear_suit)
-		to_chat(user, "<span class='warning'>You cannot modify \the [src] while it is being worn.</span>")
+		to_chat(user, span_warning("You cannot modify \the [src] while it is being worn."))
 		return
 
 	if(W.has_tool_quality(TOOL_SCREWDRIVER))
 		if(boots || tank || cooler)
-			var/choice = tgui_input_list(usr, "What component would you like to remove?", "Remove Component", list(boots,tank,cooler))
+			var/choice = tgui_input_list(user, "What component would you like to remove?", "Remove Component", list(boots,tank,cooler))
 			if(!choice) return
 
 			if(choice == tank)	//No, a switch doesn't work here. Sorry. ~Techhead

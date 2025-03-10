@@ -7,7 +7,7 @@
 	desc = "A big stompy mech!"
 	icon = 'icons/mecha/mecha.dmi'
 
-	faction = "syndicate"
+	faction = FACTION_SYNDICATE
 	movement_cooldown = 1.5
 	movement_sound = "mechstep" // This gets fed into playsound(), which can also take strings as a 'group' of sound files.
 	turn_sound = 'sound/mecha/mechturn.ogg'
@@ -42,7 +42,7 @@
 	var/has_repair_droid = FALSE // If true, heals 2 damage every tick and gets a repair droid overlay.
 
 
-/mob/living/simple_mob/mechanical/mecha/Initialize()
+/mob/living/simple_mob/mechanical/mecha/Initialize(mapload)
 	sparks = new (src)
 	sparks.set_up(3, 1, src)
 	sparks.attach(src)
@@ -94,7 +94,7 @@
 
 /mob/living/simple_mob/mechanical/mecha/bullet_act()
 	. = ..()
-	sparks.start()
+	sparks?.start()
 
 /mob/living/simple_mob/mechanical/mecha/speech_bubble_appearance()
 	return pilot_type ? "" : ..()
@@ -115,7 +115,7 @@
 
 /mob/living/simple_mob/mechanical/mecha/bullet_act(obj/item/projectile/P)
 	if(prob(deflect_chance))
-		visible_message(span("warning", "\The [P] is deflected by \the [src]'s armor!"))
+		visible_message(span_warning("\The [P] is deflected by \the [src]'s armor!"))
 		deflect_sprite()
 		return 0
 	return ..()
@@ -130,7 +130,7 @@
 
 /mob/living/simple_mob/mechanical/mecha/attackby(obj/item/I, mob/user)
 	if(prob(deflect_chance))
-		visible_message(span("warning", "\The [user]'s [I] bounces off \the [src]'s armor!"))
+		visible_message(span_warning("\The [user]'s [I] bounces off \the [src]'s armor!"))
 		deflect_sprite()
 		user.setClickCooldown(user.get_attack_speed(I))
 		return

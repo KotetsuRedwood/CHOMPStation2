@@ -1,5 +1,5 @@
 //Advanced Exploration 	Suit
-/obj/item/weapon/rig/robotics
+/obj/item/rig/robotics
 	name = "advanced suit control belt"
 	suit_type = "advanced"
 	desc = "A lightweight suit combining the utility of a RIG with the wearability of a voidsuit."
@@ -21,8 +21,8 @@
 	cell_type =  null
 
 	allowed = list(
-		/obj/item/device/flashlight,
-		/obj/item/weapon/storage/box
+		/obj/item/flashlight,
+		/obj/item/storage/box
 		)
 
 	req_access = list()
@@ -33,6 +33,6 @@
 
 /obj/item/clothing/suit/space/rig/advsuit
 	name = "Hardsuit" //CHOMPEDIT: Replcing Void with Hard to fit the naming convention. Specced down hardsuit for comfort
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|HANDS|FEET
-	heat_protection =	 UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|HANDS|FEET
-	cold_protection =	 UPPER_TORSO|LOWER_TORSO|LEGS|ARMS|HANDS|FEET
+	body_parts_covered = CHEST|LEGS|ARMS|HANDS|FEET
+	heat_protection =	 CHEST|LEGS|ARMS|HANDS|FEET
+	cold_protection =	 CHEST|LEGS|ARMS|HANDS|FEET

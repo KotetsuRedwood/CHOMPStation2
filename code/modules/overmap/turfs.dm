@@ -11,6 +11,7 @@ var/global/list/map_sectors = list()
 	icon = 'icons/turf/space.dmi'
 	icon_state = "map"
 	alpha = 200
+	vis_flags = VIS_INHERIT_ID // disable VIS_INHERIT_PLANE
 
 /turf/unsimulated/map/edge
 	opacity = 1
@@ -19,7 +20,7 @@ var/global/list/map_sectors = list()
 	var/map_is_to_my
 	var/turf/unsimulated/map/edge/wrap_buddy
 
-/turf/unsimulated/map/edge/Initialize()
+/turf/unsimulated/map/edge/Initialize(mapload)
 	..()
 	return INITIALIZE_HINT_LATELOAD
 
@@ -50,7 +51,7 @@ var/global/list/map_sectors = list()
 	else
 		. = ..()
 
-/turf/unsimulated/map/Initialize()
+/turf/unsimulated/map/Initialize(mapload)
 	. = ..()
 	name = "[x]-[y]"
 	var/list/numbers = list()

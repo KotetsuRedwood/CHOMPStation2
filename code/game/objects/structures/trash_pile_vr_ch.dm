@@ -6,32 +6,32 @@
 	//Lists use better weights that add together so in the below example the sum of weight sis 6 so a 3 is 50% and a 1 is 16%
 	var/overridechancealpha = 90 //how likely the piles is to give its unique objects for alpha spawns
 	var/list/alphapicks = list(
-		/obj/item/weapon/storage/pill_bottle/happy = 1,
-		/obj/item/weapon/storage/pill_bottle/zoom = 2,
-		/obj/item/weapon/storage/pill_bottle/paracetamol = 3,
+		/obj/item/storage/pill_bottle/happy = 1,
+		/obj/item/storage/pill_bottle/zoom = 2,
+		/obj/item/storage/pill_bottle/paracetamol = 3,
 	) //override pick list alpha
 
 	var/overridechancebeta = 90 //how likely the piles is to give its unique objects for beta spawns
 	var/list/betapicks = list(
-		/obj/item/weapon/storage/pill_bottle/happy = 3,
-		/obj/item/weapon/storage/pill_bottle/zoom = 2,
-		/obj/item/weapon/storage/pill_bottle/paracetamol = 1,
+		/obj/item/storage/pill_bottle/happy = 3,
+		/obj/item/storage/pill_bottle/zoom = 2,
+		/obj/item/storage/pill_bottle/paracetamol = 1,
 	) //override pick list beta
 
 	var/overridechancegamma = 90 //how likely the piles is to give its unique objects for gamma spawns
 	var/list/gammapicks = list(
-		/obj/item/weapon/storage/pill_bottle/happy = 3,
-		/obj/item/weapon/storage/pill_bottle/zoom = 2,
-		/obj/item/weapon/storage/pill_bottle/paracetamol = 1,
+		/obj/item/storage/pill_bottle/happy = 3,
+		/obj/item/storage/pill_bottle/zoom = 2,
+		/obj/item/storage/pill_bottle/paracetamol = 1,
 	) //override pick list gamma
-	
-	var/gammaunique = 1
-	
 
-/obj/structure/trash_pile/sharkpile/Initialize()
-	..()
+	var/gammaunique = 1
+
+
+/obj/structure/trash_pile/sharkpile/Initialize(mapload)
+	. = ..()
 	if(prob(destroychance))
-		qdel(src)
+		return INITIALIZE_HINT_QDEL
 
 //^X% chance to use our own list, otherwise default pool.
 //Here we could also add a % chance to spawn a mob for trash pandas or such,

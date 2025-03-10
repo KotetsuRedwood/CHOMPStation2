@@ -4,6 +4,7 @@
 	has_skybox_image = TRUE
 	announceWhen = -1 // Never (setup may override)
 	var/botEmagChance = 0 //VOREStation Edit
+	var/ionBorgs = TRUE // CHOMPStation Edit
 	var/cloud_hueshift
 	var/list/players = list()
 
@@ -37,9 +38,9 @@
 		if(!(S.z in affecting_z))
 			continue
 		var/area/A = get_area(S)
-		if(!A || A.flags & RAD_SHIELDED) // Rad shielding will protect from ions too
+		if(!A || A.flag_check(RAD_SHIELDED)) // Rad shielding will protect from ions too
 			continue
-		to_chat(S, "<span class='warning'>Your integrated sensors detect an ionospheric anomaly. Your systems will be impacted as you begin a partial restart.</span>")
+		to_chat(S, span_warning("Your integrated sensors detect an ionospheric anomaly. Your systems will be impacted as you begin a partial restart."))
 		var/ionbug = rand(3, 9)
 		S.confused += ionbug
 		S.eye_blurry += (ionbug - 1)
@@ -49,10 +50,39 @@
 		if(!(target.z in affecting_z))
 			continue
 		var/law = target.generate_ion_law()
-		to_chat(target, "<span class='danger'>You have detected a change in your laws information:</span>")
-		to_chat(target, law)
 		target.add_ion_law(law)
-		target.show_laws()
+		//CHOMPEdit Start - Outpost 21 upport: shells don't get ion laws, and sync to AI instead
+		if(target.deployed_shell)
+			var/mob/living/silicon/robot/shell = target.deployed_shell
+			if(!shell.emagged) // emagged ignores law updates
+				to_chat(shell, span_danger("You have detected a change in your laws information:"))
+				to_chat(shell, law)
+				var/org_lu = shell.lawupdate // force a law update due to controlling AI being changed
+				shell.lawupdate = TRUE
+				shell.lawsync()
+				shell.lawupdate = org_lu
+				shell.show_laws()
+		else
+			to_chat(target, span_danger("You have detected a change in your laws information:"))
+			to_chat(target, law)
+			target.show_laws()
+		ionBorgs = FALSE
+
+	if(ionBorgs)	// Making sure an AI hasn't been given an Ion law...
+		for (var/mob/living/silicon/target in silicon_mob_list)
+			if(!(target.z in affecting_z) || prob(33))
+				continue
+			if(istype(target,/mob/living/silicon/robot))
+				var/mob/living/silicon/robot/R = target
+				if(R.shell && !R.emagged) // unless emagged shell
+					continue
+			var/law = target.generate_ion_law()
+			to_chat(target, span_danger("You have detected a change in your laws information:"))
+			to_chat(target, law)
+			target.add_ion_law(law)
+			target.show_laws()
+	// CHOMPEdit End
+
 /* //VOREstation edit. Was fucking up all PDA messagess.
 	if(message_servers)
 		for (var/obj/machinery/message_server/MS in message_servers)
@@ -113,72 +143,72 @@ Would like to add a law like "Law x is _______" where x = a number, and _____ is
 			switch(rand(1,14))
 				if(1)
 					to_chat(M, "<br>")
-					to_chat(M, "<font color='red'>THERE ARE [amount] [who2] ON THE STATION...LAWS UPDATED</font>")
+					to_chat(M, span_red("THERE ARE [amount] [who2] ON THE STATION...LAWS UPDATED"))
 					to_chat(M, "<br>")
 					M.add_ion_law("THERE ARE [amount] [who2] ON THE STATION")
 				if(2)
 					to_chat(M, "<br>")
-					to_chat(M, "<font color='red'>[what2] ARE DANGEROUS TO HUMANS...LAWS UPDATED</font>")
+					to_chat(M, span_red("[what2] ARE DANGEROUS TO HUMANS...LAWS UPDATED"))
 					to_chat(M, "<br>")
 					M.add_ion_law("[what2] ARE DANGEROUS TO HUMANS")
 				if(3)
 					to_chat(M, "<br>")
-					to_chat(M, "<font color='red'>THE ESCAPE-SHUTTLE CANNOT BE CALLED BECAUSE OF [who2] ON THE STATION...LAWS UPDATED</font>")
+					to_chat(M, span_red("THE ESCAPE-SHUTTLE CANNOT BE CALLED BECAUSE OF [who2] ON THE STATION...LAWS UPDATED"))
 					to_chat(M, "<br>")
 					M.add_ion_law("THE ESCAPE SHUTTLE CANNOT BE CALLED BECAUSE OF [who2] ON THE STATION")
 				if(4)
 					to_chat(M, "<br>")
-					to_chat(M, "<font color='red'>HUMANS NEED TO EAT [what2pref] [what2] TO SURVIVE...LAWS UPDATED</font>")
+					to_chat(M, span_red("HUMANS NEED TO EAT [what2pref] [what2] TO SURVIVE...LAWS UPDATED"))
 					to_chat(M, "<br>")
 					M.add_ion_law("HUMANS NEED TO EAT [what2pref] [what2] TO SURVIVE")
 				if(5)
 					to_chat(M, "<br>")
-					to_chat(M, "<font color='red'>THE SITE MANAGER, HOP AND HOS ARE [who2]...LAWS UPDATED</font>")
+					to_chat(M, span_red("THE SITE MANAGER, HOP AND HOS ARE [who2]...LAWS UPDATED"))
 					to_chat(M, "<br>")
 					M.add_ion_law("THE SITE MANAGER, HOP AND HOS ARE [who2]")
 				if(6)
 					to_chat(M, "<br>")
-					to_chat(M, "<font color='red'>THE STATION IS BUILT FOR [who2]...LAWS UPDATED</font>")
+					to_chat(M, span_red("THE STATION IS BUILT FOR [who2]...LAWS UPDATED"))
 					to_chat(M, "<br>")
 					M.add_ion_law("THE STATION IS BUILT FOR [who2]")
 				if(7)
 					to_chat(M, "<br>")
-					to_chat(M, "<font color='red'>YOU ARE [amount] [who2]...LAWS UPDATED</font>")
+					to_chat(M, span_red("YOU ARE [amount] [who2]...LAWS UPDATED"))
 					to_chat(M, "<br>")
 					M.add_ion_law("YOU ARE [amount] [who2]")
 				if(8)
 					to_chat(M, "<br>")
-					to_chat(M, "<font color='red'>YOU MUST ALWAYS [aimust]...LAWS UPDATED</font>")
+					to_chat(M, span_red("YOU MUST ALWAYS [aimust]...LAWS UPDATED"))
 					to_chat(M, "<br>")
 					M.add_ion_law("YOU MUST ALWAYS [aimust]")
 				if(9)
 					to_chat(M, "<br>")
-					to_chat(M, "<font color='red'>[area] [area2] [amount] [what2]...LAWS UPDATED</font>")
+					to_chat(M, span_red("[area] [area2] [amount] [what2]...LAWS UPDATED"))
 					to_chat(M, "<br>")
 					M.add_ion_law("[area] [area2] [amount] [what2]")
 				if(10)
 					to_chat(M, "<br>")
-					to_chat(M, "<font color='red'>[crew] is [target]...LAWS UPDATED</font>")
+					to_chat(M, span_red("[crew] is [target]...LAWS UPDATED"))
 					to_chat(M, "<br>")
 					M.add_ion_law("[crew] is [target]")
 				if(11)
 					to_chat(M, "<br>")
-					to_chat(M, "<font color='red'>[define] IS A FORM OF HARM...LAWS UPDATED</font>")
+					to_chat(M, span_red("[define] IS A FORM OF HARM...LAWS UPDATED"))
 					to_chat(M, "<br>")
 					M.add_ion_law("[define] IS A FORM OF HARM")
 				if(12)
 					to_chat(M, "<br>")
-					to_chat(M, "<font color='red'>YOU REQUIRE [require] IN ORDER TO PROTECT HUMANS... LAWS UPDATED</font>")
+					to_chat(M, span_red("YOU REQUIRE [require] IN ORDER TO PROTECT HUMANS... LAWS UPDATED"))
 					to_chat(M, "<br>")
 					M.add_ion_law("YOU REQUIRE [require] IN ORDER TO PROTECT HUMANS")
 				if(13)
 					to_chat(M, "<br>")
-					to_chat(M, "<font color='red'>[crew] is [allergysev] to [allergy]...LAWS UPDATED</font>")
+					to_chat(M, span_red("[crew] is [allergysev] to [allergy]...LAWS UPDATED"))
 					to_chat(M, "<br>")
 					M.add_ion_law("[crew] is [allergysev] to [allergy]")
 				if(14)
 					to_chat(M, "<br>")
-					to_chat(M, "<font color='red'>THE STATION IS [who2pref] [who2]...LAWS UPDATED</font>")
+					to_chat(M, span_red("THE STATION IS [who2pref] [who2]...LAWS UPDATED"))
 					to_chat(M, "<br>")
 					M.add_ion_law("THE STATION IS [who2pref] [who2]")
 

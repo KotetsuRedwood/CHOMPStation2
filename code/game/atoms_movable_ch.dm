@@ -1,6 +1,3 @@
-#define NON_LISTENING_ATOM		0
-#define LISTENING_ATOM			1
-#define LISTENING_PLAYER		2
 //gonna be honest this is really just a ripoff of tg's recursive hearing
 /atom/movable
 	var/recursive_listeners
@@ -10,6 +7,10 @@
 	. = ..()
 	if (listening_recursive)
 		set_listening(listening_recursive)
+
+/atom/movable/Destroy()
+	. = ..()
+	set_listening(NON_LISTENING_ATOM)
 
 /atom/movable/proc/set_listening(var/set_to)
 	if (listening_recursive && !set_to)
@@ -55,4 +56,7 @@
 	return
 
 /atom/movable/proc/exit_belly(obj/belly/B)
+	return
+
+/atom/movable/proc/show_message(msg, type, alt, alt_type)//Message, type of message (1 or 2), alternative message, alt message type (1 or 2)
 	return

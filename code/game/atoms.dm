@@ -39,7 +39,7 @@
 	//Detective Work, used for the duplicate data points kept in the scanners
 	var/list/original_atom
 	// Track if we are already had initialize() called to prevent double-initialization.
-	var/initialized = FALSE
+	//var/initialized = FALSE // using the atom flags
 
 	/// Last name used to calculate a color for the chatmessage overlays
 	var/chat_color_name
@@ -49,14 +49,24 @@
 	var/chat_color_darkened
 	/// The chat color var, without alpha.
 	var/chat_color_hover
+	//! Colors
+	/**
+	 * used to store the different colors on an atom
+	 *
+	 * its inherent color, the colored paint applied on it, special color effect etc...
+	 */
+	var/list/atom_colours
+	/// Lazylist of all images to update when we change z levels
+	/// You will need to manage adding/removing from this yourself, but I'll do the updating for you
+	var/list/image/update_on_z
 
 /atom/New(loc, ...)
 	// Don't call ..() unless /datum/New() ever exists
 
 	// During dynamic mapload (reader.dm) this assigns the var overrides from the .dmm file
 	// Native BYOND maploading sets those vars before invoking New(), by doing this FIRST we come as close to that behavior as we can.
-	if(GLOB.use_preloader && (src.type == GLOB._preloader.target_path))//in case the instanciated atom is creating other atoms in New()
-		GLOB._preloader.load(src)
+	if(GLOB.use_preloader && (src.type == GLOB._preloader_path))//in case the instanciated atom is creating other atoms in New()
+		world.preloader_load(src)
 
 	// Pass our arguments to InitAtom so they can be passed to initialize(), but replace 1st with if-we're-during-mapload.
 	var/do_initialize = SSatoms.initialized
@@ -84,9 +94,9 @@
 /atom/proc/Initialize(mapload, ...)
 	if(QDELETED(src))
 		stack_trace("GC: -- [type] had initialize() called after qdel() --")
-	if(initialized)
+	if(flags & ATOM_INITIALIZED)
 		stack_trace("Warning: [src]([type]) initialized multiple times!")
-	initialized = TRUE
+	flags |= ATOM_INITIALIZED
 	return INITIALIZE_HINT_NORMAL
 
 /atom/Destroy()
@@ -118,7 +128,7 @@
 //return flags that should be added to the viewer's sight var.
 //Otherwise return a negative number to indicate that the view should be cancelled.
 /atom/proc/check_eye(user as mob)
-	if (istype(user, /mob/living/silicon/ai)) // WHYYYY
+	if (isAI(user)) // WHYYYY
 		return 0
 	return -1
 
@@ -144,7 +154,8 @@
 
 // Used to be for the PROXMOVE flag, but that was terrible, so instead it's just here as a stub for
 // all the atoms that still have the proc, but get events other ways.
-/atom/proc/HasProximity(turf/T, atom/movable/AM, old_loc)
+/atom/proc/HasProximity(turf/T, datum/weakref/WF, old_loc)
+	SIGNAL_HANDLER
 	return
 
 //Register listeners on turfs in a certain range
@@ -153,7 +164,7 @@
 	ASSERT(isturf(loc))
 	var/list/turfs = trange(range, src)
 	for(var/turf/T as anything in turfs)
-		GLOB.turf_entered_event.register(T, src, callback)
+		RegisterSignal(T, COMSIG_OBSERVER_TURF_ENTERED, callback)
 
 //Unregister from prox listening in a certain range. You should do this BEFORE you move, but if you
 // really can't, then you can set the center where you moved from.
@@ -161,7 +172,7 @@
 	ASSERT(isturf(center) || isturf(loc))
 	var/list/turfs = trange(range, center ? center : src)
 	for(var/turf/T as anything in turfs)
-		GLOB.turf_entered_event.unregister(T, src, callback)
+		UnregisterSignal(T, COMSIG_OBSERVER_TURF_ENTERED)
 
 
 /atom/proc/emp_act(var/severity)
@@ -216,6 +227,7 @@
 
 //All atoms
 /atom/proc/examine(mob/user, var/infix = "", var/suffix = "")
+	SHOULD_CALL_PARENT(TRUE)
 	//This reformat names to get a/an properly working on item descriptions when they are bloody
 	var/f_name = "\a [src][infix]."
 	if(src.blood_DNA && !istype(src, /obj/effect/decal))
@@ -224,11 +236,11 @@
 		else
 			f_name = "a "
 		if(blood_color != SYNTH_BLOOD_COLOUR)
-			f_name += "<span class='danger'>blood-stained</span> [name][infix]!"
+			f_name += "[span_danger("blood-stained")] [name][infix]!"
 		else
 			f_name += "oil-stained [name][infix]."
 
-	var/list/output = list("\icon[src.examine_icon()][bicon(src)] That's [f_name] [suffix]", get_examine_desc())
+	var/list/output = list("[icon2html(src,user.client)] That's [f_name] [suffix]", get_examine_desc())
 
 	if(user.client?.prefs.examine_text_mode == EXAMINE_MODE_INCLUDE_USAGE)
 		output += description_info
@@ -240,7 +252,7 @@
 
 // Don't make these call bicon or anything, these are what bicon uses. They need to return an icon.
 /atom/proc/examine_icon()
-	return icon(icon=src.icon, icon_state=src.icon_state, dir=SOUTH, frame=1, moving=0)
+	return src // 99% of the time just returning src will be sufficient. More complex examine icon things are available where they are needed
 
 // called by mobs when e.g. having the atom as their machine, pulledby, loc (AKA mob being inside the atom) or buckled var set.
 // see code/modules/mob/mob_movement.dm for more.
@@ -280,10 +292,13 @@
 // Returns an assoc list of RCD information.
 // Example would be: list(RCD_VALUE_MODE = RCD_DECONSTRUCT, RCD_VALUE_DELAY = 50, RCD_VALUE_COST = RCD_SHEETS_PER_MATTER_UNIT * 4)
 // This occurs before rcd_act() is called, and it won't be called if it returns FALSE.
-/atom/proc/rcd_values(mob/living/user, obj/item/weapon/rcd/the_rcd, passed_mode)
+/atom/proc/rcd_values(mob/living/user, obj/item/rcd/the_rcd, passed_mode)
 	return FALSE
 
-/atom/proc/rcd_act(mob/living/user, obj/item/weapon/rcd/the_rcd, passed_mode)
+/atom/proc/rcd_act(mob/living/user, obj/item/rcd/the_rcd, passed_mode)
+	return
+
+/atom/proc/occult_act(mob/living/user)
 	return
 
 /atom/proc/melt()
@@ -458,7 +473,7 @@
 
 	was_bloodied = TRUE
 	if(!blood_color)
-		blood_color = "#A10808"
+		blood_color = SYNTH_BLOOD_COLOUR
 	if(istype(M))
 		if (!istype(M.dna, /datum/dna))
 			M.dna = new /datum/dna(null)
@@ -471,7 +486,9 @@
 /atom/proc/add_vomit_floor(mob/living/carbon/M as mob, var/toxvomit = 0)
 	if( istype(src, /turf/simulated) )
 		var/obj/effect/decal/cleanable/vomit/this = new /obj/effect/decal/cleanable/vomit(src)
-		this.virus2 = virus_copylist(M.virus2)
+
+		for(var/datum/disease/D in M.GetViruses())
+			this.viruses |= D.Copy()
 
 		// Make toxins vomit look different
 		if(toxvomit)
@@ -485,8 +502,9 @@
 	if(istype(blood_DNA, /list))
 		blood_DNA = null
 		return TRUE
+	blood_color = null //chompfixy, cleaning objects saved its future blood color no matter what
 
-/atom/proc/on_rag_wipe(var/obj/item/weapon/reagent_containers/glass/rag/R)
+/atom/proc/on_rag_wipe(var/obj/item/reagent_containers/glass/rag/R)
 	clean_blood()
 	R.reagents.splash(src, 1)
 
@@ -514,37 +532,10 @@
 		return 1
 	else
 		return 0
-
-// Show a message to all mobs and objects in sight of this atom
-// Use for objects performing visible actions
-// message is output to anyone who can see, e.g. "The [src] does something!"
-// blind_message (optional) is what blind people will hear e.g. "You hear something!"
+//CHOMPEdit Begin
 /atom/proc/visible_message(var/message, var/blind_message, var/list/exclude_mobs, var/range = world.view, var/runemessage = "<span style='font-size: 1.5em'>👁</span>")
-
-	//VOREStation Edit
-	var/list/see
-	if(isbelly(loc))
-		var/obj/belly/B = loc
-		see = B.get_mobs_and_objs_in_belly()
-	else
-		see = get_mobs_and_objs_in_view_fast(get_turf(src), range, remote_ghosts = FALSE)
-	//VOREStation Edit End
-
-	var/list/seeing_mobs = see["mobs"]
-	var/list/seeing_objs = see["objs"]
-	if(LAZYLEN(exclude_mobs))
-		seeing_mobs -= exclude_mobs
-
-	for(var/obj/O as anything in seeing_objs)
-		O.show_message(message, VISIBLE_MESSAGE, blind_message, AUDIBLE_MESSAGE)
-	for(var/mob/M as anything in seeing_mobs)
-		if(M.see_invisible >= invisibility && MOB_CAN_SEE_PLANE(M, plane))
-			M.show_message(message, VISIBLE_MESSAGE, blind_message, AUDIBLE_MESSAGE)
-			if(runemessage != -1)
-				M.create_chat_message(src, "[runemessage]", FALSE, list("emote"), audible = FALSE)
-		else if(blind_message)
-			M.show_message(blind_message, AUDIBLE_MESSAGE)
-
+	SEND_GLOBAL_SIGNAL(COMSIG_VISIBLE_MESSAGE, src, message, blind_message, exclude_mobs, range, runemessage, isbelly(loc))
+//CHOMPEdit End
 // Show a message to all mobs and objects in earshot of this atom
 // Use for objects performing audible actions
 // message is the message output to anyone who can hear.
@@ -588,13 +579,13 @@
 /atom/proc/InsertedContents()
 	return contents
 
-/atom/proc/has_gravity(turf/T)
+/atom/proc/get_gravity(turf/T)
 	if(!T || !isturf(T))
 		T = get_turf(src)
 	if(istype(T, /turf/space)) // Turf never has gravity
 		return FALSE
 	var/area/A = get_area(T)
-	if(A && A.has_gravity())
+	if(A && A.get_gravity())
 		return TRUE
 	return FALSE
 
@@ -638,17 +629,18 @@
 	. = ..()
 	var/custom_edit_name
 	if(!isliving(src))
-		custom_edit_name = "<a href='?_src_=vars;[HrefToken()];datumedit=\ref[src];varnameedit=name'><b>[src]</b></a>"
+		custom_edit_name = "<a href='byond://?_src_=vars;[HrefToken()];datumedit=\ref[src];varnameedit=name'><b>[src]</b></a>"
 	. += {"
-		[custom_edit_name]
-		<br><font size='1'>
-		<a href='?_src_=vars;[HrefToken()];rotatedatum=\ref[src];rotatedir=left'><<</a>
-		<a href='?_src_=vars;[HrefToken()];datumedit=\ref[src];varnameedit=dir'>[dir2text(dir)]</a>
-		<a href='?_src_=vars;[HrefToken()];rotatedatum=\ref[src];rotatedir=right'>>></a>
-		</font>
+		[custom_edit_name]<br>
 		"}
+	var/content = {"
+		<a href='byond://?_src_=vars;[HrefToken()];rotatedatum=\ref[src];rotatedir=left'><<</a>
+		<a href='byond://?_src_=vars;[HrefToken()];datumedit=\ref[src];varnameedit=dir'>[dir2text(dir)]</a>
+		<a href='byond://?_src_=vars;[HrefToken()];rotatedatum=\ref[src];rotatedir=right'>>></a>
+		"}
+	. += span_small(content)
 	var/turf/T = get_turf(src)
-	. += "<br><font size='1'>[ADMIN_COORDJMP(T)]</font>"
+	. += "<br>" + span_small("[ADMIN_COORDJMP(T)]")
 
 /atom/vv_edit_var(var_name, var_value)
 	switch(var_name)
@@ -691,7 +683,7 @@
 		return
 	var/list/speech_bubble_hearers = list()
 	for(var/mob/M in get_mobs_in_view(7, src))
-		M.show_message("<span class='npcsay'><span class='name'>[src]</span> [atom_say_verb], \"[message]\"</span>", 2, null, 1)
+		M.show_message(span_npc_say(span_name("[src]") + " [atom_say_verb], \"[message]\""), 2, null, 1)
 		if(M.client)
 			speech_bubble_hearers += M.client
 
@@ -705,7 +697,7 @@
 
 /atom/Entered(atom/movable/AM, atom/old_loc)
 	. = ..()
-	GLOB.moved_event.raise_event(AM, old_loc, AM.loc)
+	SEND_SIGNAL(AM, COMSIG_OBSERVER_MOVED, old_loc, AM.loc)
 	SEND_SIGNAL(src, COMSIG_ATOM_ENTERED, AM, old_loc)
 	SEND_SIGNAL(AM, COMSIG_ATOM_ENTERING, src, old_loc)
 
@@ -731,3 +723,107 @@
 // Airflow and ZAS zones now uses CanZASPass() instead of this proc.
 /atom/proc/CanPass(atom/movable/mover, turf/target)
 	return !density
+
+
+//! ## Atom Colour Priority System
+/**
+ * A System that gives finer control over which atom colour to colour the atom with.
+ * The "highest priority" one is always displayed as opposed to the default of
+ * "whichever was set last is displayed"
+ */
+
+/// Adds an instance of colour_type to the atom's atom_colours list
+/atom/proc/add_atom_colour(coloration, colour_priority)
+	if(!atom_colours || !atom_colours.len)
+		atom_colours = list()
+		atom_colours.len = COLOUR_PRIORITY_AMOUNT //four priority levels currently.
+	if(!coloration)
+		return
+	if(colour_priority > atom_colours.len)
+		return
+	atom_colours[colour_priority] = coloration
+	update_atom_colour()
+
+/// Removes an instance of colour_type from the atom's atom_colours list
+/atom/proc/remove_atom_colour(colour_priority, coloration)
+	if(!atom_colours)
+		atom_colours = list()
+		atom_colours.len = COLOUR_PRIORITY_AMOUNT //four priority levels currently.
+	if(colour_priority > atom_colours.len)
+		return
+	if(coloration && atom_colours[colour_priority] != coloration)
+		return //if we don't have the expected color (for a specific priority) to remove, do nothing
+	atom_colours[colour_priority] = null
+	update_atom_colour()
+
+/// Resets the atom's color to null, and then sets it to the highest priority colour available
+/atom/proc/update_atom_colour()
+	if(!atom_colours)
+		atom_colours = list()
+		atom_colours.len = COLOUR_PRIORITY_AMOUNT //four priority levels currently.
+	color = null
+	for(var/C in atom_colours)
+		if(islist(C))
+			var/list/L = C
+			if(L.len)
+				color = L
+				return
+		else if(C)
+			color = C
+			return
+
+///Passes Stat Browser Panel clicks to the game and calls client click on an atom
+/atom/Topic(href, list/href_list)
+	. = ..()
+	if(!usr?.client)
+		return
+	var/client/usr_client = usr.client
+	var/list/paramslist = list()
+
+	if(href_list["statpanel_item_click"])
+		switch(href_list["statpanel_item_click"])
+			if("left")
+				paramslist["left"] = "1"
+			if("right")
+				paramslist["right"] = "1"
+			if("middle")
+				paramslist["middle"] = "1"
+			else
+				return
+
+		if(href_list["statpanel_item_shiftclick"])
+			paramslist["shift"] = "1"
+		if(href_list["statpanel_item_ctrlclick"])
+			paramslist["ctrl"] = "1"
+		if(href_list["statpanel_item_altclick"])
+			paramslist["alt"] = "1"
+
+		var/mouseparams = list2params(paramslist)
+		usr_client.Click(src, loc, null, mouseparams)
+		return TRUE
+
+GLOBAL_LIST_EMPTY(icon_dimensions)
+
+/atom/proc/get_oversized_icon_offsets()
+    if (pixel_x == 0 && pixel_y == 0)
+        return list("x" = 0, "y" = 0)
+    var/list/icon_dimensions = get_icon_dimensions(icon)
+    var/icon_width = icon_dimensions["width"]
+    var/icon_height = icon_dimensions["height"]
+    return list(
+        "x" = icon_width > world.icon_size && pixel_x != 0 ? (icon_width - world.icon_size) * 0.5 : 0,
+        "y" = icon_height > world.icon_size /*&& pixel_y != 0*/ ? (icon_height - world.icon_size) * 0.5 : 0, // we don't have pixel_y in use
+	)
+
+/// Returns a list containing the width and height of an icon file
+/proc/get_icon_dimensions(icon_path)
+	// Icons can be a real file(), a rsc backed file(), a dynamic rsc (dyn.rsc) reference (known as a cache reference in byond docs), or an /icon which is pointing to one of those.
+	// Runtime generated dynamic icons are an unbounded concept cache identity wise, the same icon can exist millions of ways and holding them in a list as a key can lead to unbounded memory usage if called often by consumers.
+	// Check distinctly that this is something that has this unspecified concept, and thus that we should not cache.
+	if (!isfile(icon_path) || !length("[icon_path]"))
+		var/icon/my_icon = icon(icon_path)
+		return list("width" = my_icon.Width(), "height" = my_icon.Height())
+	if (isnull(GLOB.icon_dimensions[icon_path]))
+		var/icon/my_icon = icon(icon_path)
+		GLOB.icon_dimensions[icon_path] = list("width" = my_icon.Width(), "height" = my_icon.Height())
+	return GLOB.icon_dimensions[icon_path]

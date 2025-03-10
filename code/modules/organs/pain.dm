@@ -13,13 +13,13 @@
 /mob/living/carbon/proc/custom_pain(message, power, force)
 	if((!message || stat || !can_feel_pain() || chem_effects[CE_PAINKILLER] > power) && !synth_cosmetic_pain)
 		return 0
-	message = "<span class='danger'>[message]</span>"
+	message = span_danger("[message]")
 	if(power >= 50)
-		message = "<font size=3>[message]</font>"
+		message = span_large("[message]")
 
 	// Anti message spam checks
 	// If multiple limbs are injured, cooldown is ignored to print all injuries until all limbs are iterated over
-	if(src.is_preference_enabled(/datum/client_preference/pain_frequency))
+	if(client?.prefs?.read_preference(/datum/preference/toggle/pain_frequency))
 		switch(power)
 			if(0 to 5)
 				force = 0
@@ -72,7 +72,7 @@
 		if(dam > maxdam && (maxdam == 0 || prob(70)) )
 			damaged_organ = E
 			maxdam = dam
-			if(istype(src, /mob/living/carbon/human)) //VOREStation Edit Start
+			if(ishuman(src)) //VOREStation Edit Start
 				var/mob/living/carbon/human/H = src
 				maxdam *= H.species.trauma_mod //VOREStation edit end
 	if(damaged_organ && chem_effects[CE_PAINKILLER] < maxdam)
@@ -87,10 +87,10 @@
 				msg =  "Your [damaged_organ.name] [burning ? "burns" : "hurts"]."
 			if(11 to 90)
 				flash_weak_pain()
-				msg = "<font size=2>Your [damaged_organ.name] [burning ? "burns" : "hurts"] badly!</font>"
+				msg = span_normal("Your [damaged_organ.name] [burning ? "burns" : "hurts"] badly!")
 			if(91 to 10000)
 				flash_pain()
-				msg = "<font size=3>OH GOD! Your [damaged_organ.name] is [burning ? "on fire" : "hurting terribly"]!</font>"
+				msg = span_large("OH GOD! Your [damaged_organ.name] is [burning ? "on fire" : "hurting terribly"]!")
 		custom_pain(msg, maxdam, prob(10))
 
 	// Damage to internal organs hurts a lot.

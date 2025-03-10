@@ -69,6 +69,24 @@
 	has_vore_belly_sprites = FALSE
 	rest_sprite_options = list("Default", "Bellyup")
 
+/datum/robot_sprite/dogborg/tall/combat_medic/dullahancombatmedic
+	name = "Dullahan Combat Medic"
+	sprite_icon = 'icons/mob/robot/dullahan/v1/dullahan_syndie.dmi'
+	sprite_icon_state = "dullahansyndi"
+	has_eye_light_sprites = TRUE
+	has_vore_belly_sprites = TRUE
+	rest_sprite_options = list("Default", "Sit")
+	pixel_x = 0
+
+/datum/robot_sprite/dogborg/tall/syndie/dullahanv3syndi
+	sprite_icon = 'icons/mob/robot/dullahan/v3/syndi.dmi'
+	sprite_icon_state = "dullahansyndi"
+	name = "Dullahan syndie v3"
+	has_eye_light_sprites = TRUE
+	has_custom_open_sprites = TRUE
+	has_vore_belly_sprites = TRUE
+	sprite_decals = list("decals")
+	rest_sprite_options = list("Default", "Sit")
 
 // Protector
 
@@ -114,17 +132,11 @@
 	sprite_icon = 'icons/mob/robot/syndie_large.dmi'
 	sprite_hud_icon_state = "malf"
 
-	var/has_gun_sprite = FALSE
-
-/datum/robot_sprite/dogborg/tall/protector/handle_extra_icon_updates(var/mob/living/silicon/robot/ourborg)
-	if(has_gun_sprite && istype (ourborg.module_active, /obj/item/weapon/gun/energy/dakkalaser))
-		ourborg.add_overlay("[sprite_icon_state]-gun")
-
 /datum/robot_sprite/dogborg/tall/protector/syndiprotraptor
 	name = "Raptor V-4"
 	sprite_icon_state = "syndiprotraptor"
 	has_eye_light_sprites = TRUE
-	has_gun_sprite = TRUE
+	sprite_flags = ROBOT_HAS_GUN_SPRITE
 	rest_sprite_options = list("Default", "Bellyup")
 
 // Mechanist
@@ -164,6 +176,16 @@
 	sprite_icon = 'icons/mob/robot/syndie_large.dmi'
 	sprite_hud_icon_state = "malf"
 
+/datum/robot_sprite/dogborg/tall/mechanist/dullahanv3mech
+	sprite_icon = 'icons/mob/robot/dullahan/v3/mechanist.dmi'
+	sprite_icon_state = "dullahanmechanist"
+	name = "Dullahan mechanist v3"
+	has_eye_light_sprites = TRUE
+	has_custom_open_sprites = TRUE
+	has_vore_belly_sprites = TRUE
+	sprite_decals = list("decals")
+	rest_sprite_options = list("Default", "Sit")
+
 /datum/robot_sprite/dogborg/tall/mechanist/syndimechraptor
 	name = "Raptor V-4"
 	sprite_icon_state = "syndimechraptor"
@@ -190,13 +212,13 @@
 	sprite_icon = 'icons/mob/robot/combat_medic_wide.dmi'
 	sprite_hud_icon_state = "malf"
 
-/datum/robot_sprite/dogborg/combat_medic/do_equipment_glamour(var/obj/item/weapon/robot_module/module)
+/datum/robot_sprite/dogborg/combat_medic/do_equipment_glamour(var/obj/item/robot_module/module)
 	if(!has_custom_equipment_sprites)
 		return
 
 	..()
 
-	var/obj/item/weapon/shockpaddles/robot/SP = locate() in module.modules
+	var/obj/item/shockpaddles/robot/SP = locate() in module.modules
 	if(SP)
 		SP.name = "paws of life"
 		SP.desc = "Zappy paws. For fixing cardiac arrest."

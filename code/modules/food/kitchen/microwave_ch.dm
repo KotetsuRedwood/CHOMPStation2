@@ -6,10 +6,10 @@
 /obj/machinery/microwave/advanced
 	name = "deluxe microwave"
 	icon = 'icons/obj/machines/machinery_ch.dmi'
-	circuit = /obj/item/weapon/circuitboard/microwave/advanced
+	circuit = /obj/item/circuitboard/microwave/advanced
 	circuit_item_capacity = 100
 	item_level = 1
 
-/obj/machinery/microwave/advanced/Initialize()
-	..()
+/obj/machinery/microwave/advanced/Initialize(mapload)
+	. = ..()
 	reagents.maximum_volume = 1000

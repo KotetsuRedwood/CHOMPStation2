@@ -3,7 +3,7 @@
 	desc = "A strange creature, it's fur shifting, looking like liquid metal."
 	catalogue_data = list(/datum/category_item/catalogue/fauna/xeyakin)
 	meat_amount = 30
-	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat/xeyakin
+	meat_type = /obj/item/reagent_containers/food/snacks/meat/xeyakin
 
 	icon = 'modular_chomp/icons/mob/vore64x32_ch.dmi'
 	icon_state = "xeyakin" //horrid coder sprite, yay
@@ -37,16 +37,16 @@
 	value = CATALOGUER_REWARD_SUPERHARD //Stupidly rare, hopefully anyway
 
 
-/obj/item/weapon/reagent_containers/food/snacks/meat/xeyakin
+/obj/item/reagent_containers/food/snacks/meat/xeyakin
 
-/obj/item/weapon/reagent_containers/food/snacks/meat/xeyakin/Initialize()
+/obj/item/reagent_containers/food/snacks/meat/xeyakin/Initialize(mapload)
 	. = ..()
-	reagents.add_reagent("xeyakinblood", 2)
+	reagents.add_reagent(REAGENT_ID_XEYAKIN_BLOOD, 2)
 
 
 /datum/reagent/xeyakinblood
-	name = "Xeyakin Blood"
-	id = "xeyakinblood"
+	name = REAGENT_XEYAKIN_BLOOD
+	id = REAGENT_ID_XEYAKIN_BLOOD
 	description = "The blood of a legendary beast."
 	taste_description = "divine"
 	taste_mult = 1.5

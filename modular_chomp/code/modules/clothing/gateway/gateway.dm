@@ -23,7 +23,7 @@
 	min_pressure_protection = 0 * ONE_ATMOSPHERE
 	max_pressure_protection = 3 * ONE_ATMOSPHERE
 	max_heat_protection_temperature = SPACE_SUIT_MAX_HEAT_PROTECTION_TEMPERATURE
-	allowed = list(/obj/item/weapon/gun,/obj/item/ammo_magazine,/obj/item/ammo_casing,/obj/item/weapon/melee/baton,/obj/item/weapon/melee/energy/sword,/obj/item/weapon/handcuffs,/obj/item/weapon/tank/emergency/oxygen)
+	allowed = list(/obj/item/gun,/obj/item/ammo_magazine,/obj/item/ammo_casing,/obj/item/melee/baton,/obj/item/melee/energy/sword,/obj/item/handcuffs,/obj/item/tank/emergency/oxygen)
 
 /obj/item/clothing/head/darkvrwizard
 	name = "wizard hat"
@@ -50,7 +50,7 @@
 	min_pressure_protection = 0 * ONE_ATMOSPHERE
 	max_pressure_protection = 3 * ONE_ATMOSPHERE
 	max_heat_protection_temperature = SPACE_SUIT_MAX_HEAT_PROTECTION_TEMPERATURE
-	allowed = list(/obj/item/weapon/gun,/obj/item/ammo_magazine,/obj/item/ammo_casing,/obj/item/weapon/melee/baton,/obj/item/weapon/melee/energy/sword,/obj/item/weapon/handcuffs,/obj/item/weapon/tank/emergency/oxygen)
+	allowed = list(/obj/item/gun,/obj/item/ammo_magazine,/obj/item/ammo_casing,/obj/item/melee/baton,/obj/item/melee/energy/sword,/obj/item/handcuffs,/obj/item/tank/emergency/oxygen)
 
 //Candy section
 /obj/item/clothing/head/psy_crown/candycrown
@@ -75,35 +75,35 @@
 	siemens_coefficient = 0
 	armor = list(melee = 70, bullet = 60, laser = 50, energy = 50, bomb = 0, bio = 0, rad = 0)
 
-/obj/item/clothing/gloves/stamina/equipped(var/mob/living/carbon/human/H)
+/obj/item/clothing/gloves/stamina/equipped(mob/user)
+	..()
+	var/mob/living/carbon/human/H = wearer?.resolve()
 	if(H && H.gloves == src)
-		wearer = H
-		if(wearer.can_feel_pain())
-			to_chat(H, "<span class='danger'>You feel strange as hunger vanishes!</span>")
-			wearer.custom_pain("Your hands feel strange!",1)
-	..()
+		if(H.can_feel_pain())
+			to_chat(H, span_danger("You feel strange as hunger vanishes!"))
+			H.custom_pain("Your hands feel strange!",1)
 
-/obj/item/clothing/gloves/stamina/dropped(var/mob/living/carbon/human/H)
+/obj/item/clothing/gloves/stamina/dropped(mob/user)
+	var/mob/living/carbon/human/H = wearer?.resolve()
+	if(H)
+		if(H.can_feel_pain())
+			to_chat(H, span_danger("You feel hungry!"))
+			H.custom_pain("Your hands feel strange",1)
 	..()
-	if(wearer)
-		if(wearer.can_feel_pain())
-			to_chat(wearer, "<span class='danger'>You feel hungry!</span>")
-			wearer.custom_pain("Your hands feel strange",1)
-		wearer = null
 
 /obj/item/clothing/gloves/stamina/New()
 	START_PROCESSING(SSobj, src)
 	..()
 
 /obj/item/clothing/gloves/stamina/Destroy()
-	wearer = null
 	STOP_PROCESSING(SSobj, src)
 	return ..()
 
 /obj/item/clothing/gloves/stamina/process()
-	if(!wearer || wearer.isSynthetic() || wearer.stat == DEAD)
+	var/mob/living/carbon/human/H = wearer?.resolve()
+	if(!H || H.isSynthetic() || H.stat == DEAD)
 		return // Robots and dead people don't have a metabolism.
-	wearer.nutrition = max(wearer.nutrition + 8, 0)
+	H.nutrition = max(H.nutrition + 8, 0)
 
 /obj/item/clothing/suit/armor/buffvest
 	name = "candy armor"
@@ -123,7 +123,7 @@
 /obj/item/clothing/suit/armor/buffvest/proc/activate_ability(var/mob/living/wearer)
 	cooldown = world.time + cooldown_duration
 	to_chat(wearer, flavor_activate)
-	to_chat(wearer, "<span class='danger'>The inside of your head hurts...</span>")
+	to_chat(wearer, span_danger("The inside of your head hurts..."))
 	wearer.adjustBrainLoss(brainloss_cost)
 	wearer.add_modifier(/datum/modifier/aura/candy_blue, 30 SECONDS)
 
@@ -131,16 +131,19 @@
 	..()
 	if(istype(H) && H.head == src && H.is_sentient())
 		START_PROCESSING(SSobj, src)
-		to_chat(H, flavor_equip)
+		if(flavor_equip)
+			to_chat(H, span_info(flavor_equip))
 
 /obj/item/clothing/suit/armor/buffvest/dropped(var/mob/living/carbon/human/H)
 	..()
 	STOP_PROCESSING(SSobj, src)
 	if(H.is_sentient())
 		if(loc == H) // Still inhand.
-			to_chat(H, flavor_unequip)
+			if(flavor_unequip)
+				to_chat(H, span_info(flavor_unequip))
 		else
-			to_chat(H, flavor_drop)
+			if(flavor_drop)
+				to_chat(H, span_info(flavor_drop))
 
 /obj/item/clothing/suit/armor/buffvest/Destroy()
 	STOP_PROCESSING(SSobj, src)

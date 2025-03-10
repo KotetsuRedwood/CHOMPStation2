@@ -1,20 +1,23 @@
 /// Multiz support override for CanZPass
-/turf/proc/CanZPass(atom/A, direction)
+/turf/proc/CanZPass(atom/A, direction, recursive = FALSE)
+	if(recursive)
+		return FALSE
 	if(z == A.z) //moving FROM this turf
 		return direction == UP //can't go below
 	else
 		if(direction == UP) //on a turf below, trying to enter
-			return 0
+			return FALSE
 		if(direction == DOWN) //on a turf above, trying to enter
-			return !density && isopenspace(GetAbove(src)) // VOREStation Edit
+			var/turf/above = GetAbove(src)
+			return !density && above?.CanZPass(A, direction, TRUE) // do not call the function again, only accept overrides that return TRUE for a direction
 
 /// Multiz support override for CanZPass
 /turf/simulated/open/CanZPass(atom, direction)
-	return 1
+	return TRUE
 
 /// Multiz support override for CanZPass
 /turf/space/CanZPass(atom, direction)
-	return 1
+	return TRUE
 
 /// WARNING WARNING
 /// Turfs DO NOT lose their signals when they get replaced, REMEMBER THIS
@@ -55,13 +58,14 @@ GLOBAL_DATUM_INIT(openspace_backdrop_one_for_all, /atom/movable/openspace_backdr
 	can_build_into_floor = TRUE
 	can_dirty = FALSE // It's open space
 	can_start_dirty = FALSE
+	turf_path_danger = TURF_PATH_DANGER_FALL //CHOMPEdit
 
 /turf/simulated/open/vacuum
 	oxygen = 0
 	nitrogen = 0
 	temperature = TCMB
 
-/turf/simulated/open/Initialize()
+/turf/simulated/open/Initialize(mapload)
 	. = ..()
 	ASSERT(HasBelow(z))
 	add_overlay(GLOB.openspace_backdrop_one_for_all, TRUE) //Special grey square for projecting backdrop darkness filter on it.
@@ -96,6 +100,7 @@ GLOBAL_DATUM_INIT(openspace_backdrop_one_for_all, /atom/movable/openspace_backdr
 /turf/simulated/open/update_icon()
 	cut_overlays()
 	update_icon_edge()
+	add_overlay(GLOB.openspace_backdrop_one_for_all, TRUE) //Special grey square for projecting backdrop darkness filter on it. //ChompEDIT - add this on icon update.
 
 // Straight copy from space.
 /turf/simulated/open/attackby(obj/item/C as obj, mob/user as mob)
@@ -105,7 +110,7 @@ GLOBAL_DATUM_INIT(openspace_backdrop_one_for_all, /atom/movable/openspace_backdr
 			return
 		var/obj/item/stack/rods/R = C
 		if (R.use(1))
-			to_chat(user, "<span class='notice'>Constructing support lattice ...</span>")
+			to_chat(user, span_notice("Constructing support lattice ..."))
 			playsound(src, 'sound/weapons/Genhit.ogg', 50, 1)
 			ReplaceWithLattice()
 		return
@@ -122,7 +127,7 @@ GLOBAL_DATUM_INIT(openspace_backdrop_one_for_all, /atom/movable/openspace_backdr
 			ChangeTurf(/turf/simulated/floor/airless)
 			return
 		else
-			to_chat(user, "<span class='warning'>The plating is going to need some support.</span>")
+			to_chat(user, span_warning("The plating is going to need some support."))
 
 	//To lay cable.
 	if(istype(C, /obj/item/stack/cable_coil))
@@ -171,7 +176,7 @@ GLOBAL_DATUM_INIT(openspace_backdrop_one_for_all, /atom/movable/openspace_backdr
 // /turf/simulated/floor/glass/setup_broken_states()
 //	return list("glass-damaged1", "glass-damaged2", "glass-damaged3")
 
-/turf/simulated/floor/glass/Initialize()
+/turf/simulated/floor/glass/Initialize(mapload)
 	icon_state = "" //Prevent the normal icon from appearing behind the smooth overlays
 	..()
 	return INITIALIZE_HINT_LATELOAD

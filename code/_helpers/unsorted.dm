@@ -315,16 +315,16 @@ Turf and target are seperate in case you want to teleport some distance from a t
 		var/search_pda = 1
 
 		for(var/A in searching)
-			if( search_id && istype(A,/obj/item/weapon/card/id) )
-				var/obj/item/weapon/card/id/ID = A
+			if( search_id && istype(A,/obj/item/card/id) )
+				var/obj/item/card/id/ID = A
 				if(ID.registered_name == oldname)
 					ID.registered_name = newname
 					ID.name = "[newname]'s ID Card ([ID.assignment])"
 					if(!search_pda)	break
 					search_id = 0
 
-			else if( search_pda && istype(A,/obj/item/device/pda) )
-				var/obj/item/device/pda/PDA = A
+			else if( search_pda && istype(A,/obj/item/pda) )
+				var/obj/item/pda/PDA = A
 				if(PDA.owner == oldname)
 					PDA.owner = newname
 					PDA.name = "PDA-[newname] ([PDA.ownjob])"
@@ -345,7 +345,7 @@ Turf and target are seperate in case you want to teleport some distance from a t
 
 		for(var/i=1,i<=3,i++)	//we get 3 attempts to pick a suitable name.
 			//newname = tgui_input_text(src,"You are \a [role]. Would you like to change your name to something else?", "Name change",oldname)
-			newname = input(src,"You are \a [role]. Would you like to change your name to something else?", "Name change",oldname)
+			newname = tgui_input_text(src,"You are \a [role]. Would you like to change your name to something else?", "Name change",oldname, MAX_NAME_LEN)
 			if((world.time-time_passed)>3000)
 				return	//took too long
 			newname = sanitizeName(newname, ,allow_numbers)	//returns null if the name doesn't meet some basic requirements. Tidies up a few other things like bad-characters.
@@ -367,7 +367,7 @@ Turf and target are seperate in case you want to teleport some distance from a t
 			if(isAI(src))
 				var/mob/living/silicon/ai/A = src
 				oldname = null//don't bother with the records update crap
-				//to_world("<b>[newname] is the AI!</b>")
+				//to_world(span_world("[newname] is the AI!"))
 				//world << sound('sound/AI/newAI.ogg')
 				// Set eyeobj name
 				A.SetName(newname)
@@ -420,7 +420,7 @@ Turf and target are seperate in case you want to teleport some distance from a t
 /proc/select_active_ai(var/mob/user)
 	var/list/ais = active_ais()
 	if(ais.len)
-		if(user)	. = tgui_input_list(usr, "AI signals detected:", "AI selection", ais)
+		if(user)	. = tgui_input_list(user, "AI signals detected:", "AI selection", ais)
 		else		. = pick(ais)
 	return .
 
@@ -832,7 +832,7 @@ Turf and target are seperate in case you want to teleport some distance from a t
 
 					//Move the mobs unless it's an AI eye or other eye type.
 					for(var/mob/M in T)
-						if(istype(M, /mob/observer/eye)) continue // If we need to check for more mobs, I'll add a variable
+						if(isEye(M)) continue // If we need to check for more mobs, I'll add a variable
 						M.loc = X
 
 						if(z_level_change) // Same goes for mobs.
@@ -871,7 +871,11 @@ Turf and target are seperate in case you want to teleport some distance from a t
 		"parent_type",
 		"verbs",
 		"ckey",
-		"key"
+		"key",
+		"_active_timers", // ChompEDIT - blacklist timers
+		"_datum_components", // ChompEDIT - blacklist DCS
+		"_listen_lookup",  // ChompEDIT - blacklist signal listeners
+		"_signal_procs" // ChompEDIT - blacklist signal procs
 	)
 	if(perfectcopy)
 		if((O) && (original))
@@ -975,7 +979,7 @@ Turf and target are seperate in case you want to teleport some distance from a t
 
 					for(var/mob/M in T)
 
-						if(!istype(M,/mob) || istype(M, /mob/observer/eye)) continue // If we need to check for more mobs, I'll add a variable
+						if(!ismob(M) || isEye(M)) continue // If we need to check for more mobs, I'll add a variable
 						mobs += M
 
 					for(var/mob/M in mobs)
@@ -1004,7 +1008,7 @@ Turf and target are seperate in case you want to teleport some distance from a t
 
 	if(toupdate.len)
 		for(var/turf/simulated/T1 in toupdate)
-			air_master.mark_for_update(T1)
+			SSair.mark_for_update(T1)
 
 	return copiedobjs
 
@@ -1060,13 +1064,13 @@ Turf and target are seperate in case you want to teleport some distance from a t
 //Quick type checks for some tools
 var/global/list/common_tools = list(
 /obj/item/stack/cable_coil,
-/obj/item/weapon/tool/wrench,
-/obj/item/weapon/weldingtool,
-/obj/item/weapon/tool/screwdriver,
-/obj/item/weapon/tool/wirecutters,
-/obj/item/device/multitool,
-/obj/item/weapon/tool/crowbar,
-/obj/item/weapon/tool/transforming)
+/obj/item/tool/wrench,
+/obj/item/weldingtool,
+/obj/item/tool/screwdriver,
+/obj/item/tool/wirecutters,
+/obj/item/multitool,
+/obj/item/tool/crowbar,
+/obj/item/tool/transforming)
 
 /proc/istool(O)
 	if(O && is_type_in_list(O, common_tools))
@@ -1075,32 +1079,32 @@ var/global/list/common_tools = list(
 
 
 /proc/is_wire_tool(obj/item/I)
-	if(istype(I, /obj/item/device/multitool) || I.has_tool_quality(TOOL_WIRECUTTER))
+	if(istype(I, /obj/item/multitool) || I.has_tool_quality(TOOL_WIRECUTTER))
 		return TRUE
-	if(istype(I, /obj/item/device/assembly/signaler))
+	if(istype(I, /obj/item/assembly/signaler))
 		return TRUE
 	return
 
 /proc/is_hot(obj/item/W as obj)
 	switch(W.type)
-		if(/obj/item/weapon/weldingtool)
-			var/obj/item/weapon/weldingtool/WT = W
+		if(/obj/item/weldingtool)
+			var/obj/item/weldingtool/WT = W
 			if(WT.isOn())
 				return 3800
 			else
 				return 0
-		if(/obj/item/weapon/tool/transforming)
-			var/obj/item/weapon/tool/transforming/TT = W
+		if(/obj/item/tool/transforming)
+			var/obj/item/tool/transforming/TT = W
 			if(TT.possible_tooltypes[TT.current_tooltype] == TOOL_WELDER)
 				return 3800
 			else
 				return 0
-		if(/obj/item/weapon/flame/lighter)
+		if(/obj/item/flame/lighter)
 			if(W:lit)
 				return 1500
 			else
 				return 0
-		if(/obj/item/weapon/flame/match)
+		if(/obj/item/flame/match)
 			if(W:lit)
 				return 1000
 			else
@@ -1110,9 +1114,9 @@ var/global/list/common_tools = list(
 				return 1000
 			else
 				return 0
-		if(/obj/item/weapon/pickaxe/plasmacutter)
+		if(/obj/item/pickaxe/plasmacutter)
 			return 3800
-		if(/obj/item/weapon/melee/energy)
+		if(/obj/item/melee/energy)
 			return 3500
 		else
 			return 0
@@ -1143,18 +1147,25 @@ var/global/list/common_tools = list(
 		return TRUE
 	return ( \
 		W.has_tool_quality(TOOL_SCREWDRIVER)		     				              || \
-		istype(W, /obj/item/weapon/pen)                           || \
-		istype(W, /obj/item/weapon/weldingtool)					  || \
-		istype(W, /obj/item/weapon/flame/lighter/zippo)			  || \
-		istype(W, /obj/item/weapon/flame/match)            		  || \
+		istype(W, /obj/item/pen)                           || \
+		istype(W, /obj/item/weldingtool)					  || \
+		istype(W, /obj/item/flame/lighter/zippo)			  || \
+		istype(W, /obj/item/flame/match)            		  || \
 		istype(W, /obj/item/clothing/mask/smokable/cigarette) 		      || \
-		istype(W, /obj/item/weapon/shovel) \
+		istype(W, /obj/item/shovel) \
 	)
 
 // check if mob is lying down on something we can operate him on.
 // The RNG with table/rollerbeds comes into play in do_surgery() so that fail_step() can be used instead.
-/proc/can_operate(mob/living/carbon/M)
-	return M.lying
+/proc/can_operate(mob/living/carbon/M, mob/living/user)
+	. = M.lying
+
+	if(user && M == user && user.allow_self_surgery && user.a_intent == I_HELP)	// You can, technically, always operate on yourself after standing still. Inadvised, but you can.
+
+		if(!M.isSynthetic())
+			. = TRUE
+
+	return .
 
 // Returns an instance of a valid surgery surface.
 /mob/living/proc/get_surgery_surface()
@@ -1176,15 +1187,15 @@ Checks if that loc and dir has a item on the wall
 TODO - Fix this ancient list of wall items. Preferably make it dynamically populated. ~Leshana
 */
 var/list/WALLITEMS = list(
-	/obj/machinery/power/apc, /obj/machinery/alarm, /obj/item/device/radio/intercom, /obj/structure/frame,
+	/obj/machinery/power/apc, /obj/machinery/alarm, /obj/item/radio/intercom, /obj/structure/frame,
 	/obj/structure/extinguisher_cabinet, /obj/structure/reagent_dispensers/peppertank,
 	/obj/machinery/status_display, /obj/machinery/requests_console, /obj/machinery/light_switch, /obj/structure/sign,
 	/obj/machinery/newscaster, /obj/machinery/firealarm, /obj/structure/noticeboard, /obj/machinery/button/remote,
 	/obj/machinery/computer/security/telescreen, /obj/machinery/embedded_controller/radio,
-	/obj/item/weapon/storage/secure/safe, /obj/machinery/door_timer, /obj/machinery/flasher, /obj/machinery/keycard_auth,
+	/obj/item/storage/secure/safe, /obj/machinery/door_timer, /obj/machinery/flasher, /obj/machinery/keycard_auth,
 	/obj/structure/mirror, /obj/structure/fireaxecabinet, /obj/machinery/computer/security/telescreen/entertainment,
 	/obj/machinery/doorbell_chime, /obj/machinery/button/doorbell, /obj/machinery/atm, /obj/machinery/recharger/wallcharger,	//CHOMPEdit
-	/obj/machinery/computer/guestpass, /obj/item/device/geiger/wall, /obj/machinery/button/windowtint, /obj/machinery/computer/id_restorer,	//CHOMPEdit
+	/obj/machinery/computer/guestpass, /obj/item/geiger/wall, /obj/machinery/button/windowtint, /obj/machinery/computer/id_restorer,	//CHOMPEdit
 	/obj/machinery/computer/timeclock, /obj/machinery/station_map, /obj/machinery/ai_status_display	//CHOMPEdit
 	)
 /proc/gotwallitem(loc, dir)
@@ -1225,7 +1236,7 @@ var/list/WALLITEMS = list(
 /proc/topic_link(var/datum/D, var/arglist, var/content)
 	if(istype(arglist,/list))
 		arglist = list2params(arglist)
-	return "<a href='?src=\ref[D];[arglist]'>[content]</a>"
+	return "<a href='byond://?src=\ref[D];[arglist]'>[content]</a>"
 
 /proc/get_random_colour(var/simple, var/lower=0, var/upper=255)
 	var/colour
@@ -1274,8 +1285,8 @@ var/mob/dview/dview_mob = new
 		color = origin.color
 		set_light(origin.light_range, origin.light_power, origin.light_color)
 
-/mob/dview/New()
-	..()
+/mob/dview/Initialize(mapload)
+	. = ..()
 	// We don't want to be in any mob lists; we're a dummy not a mob.
 	mob_list -= src
 	if(stat == DEAD)
@@ -1354,39 +1365,36 @@ var/mob/dview/dview_mob = new
 
 	if (NOT_FLAG(USE_ALLOW_NON_ADJACENT) && !Adjacent(user))
 		if (show_messages)
-			to_chat(user, span("notice","You're too far away from [src] to do that."))
+			to_chat(user, span_notice("You're too far away from [src] to do that."))
 		return USE_FAIL_NON_ADJACENT
 
 	if (NOT_FLAG(USE_ALLOW_DEAD) && user.stat == DEAD)
 		if (show_messages)
-			to_chat(user, span("notice","You can't do that when you're dead."))
+			to_chat(user, span_notice("You can't do that when you're dead."))
 		return USE_FAIL_DEAD
 
 	if (NOT_FLAG(USE_ALLOW_INCAPACITATED) && (user.incapacitated()))
 		if (show_messages)
-			to_chat(user, span("notice","You cannot do that in your current state."))
+			to_chat(user, span_notice("You cannot do that in your current state."))
 		return USE_FAIL_INCAPACITATED
 
 	if (NOT_FLAG(USE_ALLOW_NON_ADV_TOOL_USR) && !user.IsAdvancedToolUser())
 		if (show_messages)
-			to_chat(user, span("notice","You don't know how to operate [src]."))
+			to_chat(user, span_notice("You don't know how to operate [src]."))
 		return USE_FAIL_NON_ADV_TOOL_USR
 
 	if (HAS_FLAG(USE_DISALLOW_SILICONS) && issilicon(user))
 		if (show_messages)
-			to_chat(user, span("notice","You need hands for that."))
+			to_chat(user, span_notice("You need hands for that."))
 		return USE_FAIL_IS_SILICON
 
 	if (HAS_FLAG(USE_FORCE_SRC_IN_USER) && !(src in user))
 		if (show_messages)
-			to_chat(user, span("notice","You need to be holding [src] to do that."))
+			to_chat(user, span_notice("You need to be holding [src] to do that."))
 		return USE_FAIL_NOT_IN_USER
 
 #undef NOT_FLAG
 #undef HAS_FLAG
-
-//datum may be null, but it does need to be a typed var
-#define NAMEOF(datum, X) (#X || ##datum.##X)
 
 #define VARSET_LIST_CALLBACK(target, var_name, var_value) CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(___callbackvarset), ##target, ##var_name, ##var_value)
 //dupe code because dm can't handle 3 level deep macros
@@ -1489,12 +1497,12 @@ var/mob/dview/dview_mob = new
 		var/typename = "[type]"
 		var/static/list/TYPES_SHORTCUTS = list(
 			/obj/effect/decal/cleanable = "CLEANABLE",
-			/obj/item/device/radio/headset = "HEADSET",
+			/obj/item/radio/headset = "HEADSET",
 			/obj/item/clothing/head/helmet/space = "SPESSHELMET",
-			/obj/item/weapon/book/manual = "MANUAL",
-			/obj/item/weapon/reagent_containers/food/drinks = "DRINK",
-			/obj/item/weapon/reagent_containers/food = "FOOD",
-			/obj/item/weapon/reagent_containers = "REAGENT_CONTAINERS",
+			/obj/item/book/manual = "MANUAL",
+			/obj/item/reagent_containers/food/drinks = "DRINK",
+			/obj/item/reagent_containers/food = "FOOD",
+			/obj/item/reagent_containers = "REAGENT_CONTAINERS",
 			/obj/machinery/atmospherics = "ATMOS_MECH",
 			/obj/machinery/portable_atmospherics = "PORT_ATMOS",
 			/obj/item/mecha_parts/mecha_equipment/weapon/ballistic/missile_rack = "MECHA_MISSILE_RACK",
@@ -1527,6 +1535,10 @@ var/mob/dview/dview_mob = new
 	if(istype(D))
 		return !QDELETED(D)
 	return FALSE
+
+/// No op
+/proc/pass(...)
+	return
 
 //gives us the stack trace from CRASH() without ending the current proc.
 /proc/stack_trace(msg)
@@ -1563,7 +1575,7 @@ GLOBAL_REAL_VAR(list/stack_trace_storage)
 // Note that object refs will be converted to text, as if \ref[thing] was done. To get the ref back on Topic() side, you will need to use locate().
 // Third one is the text that will be clickable.
 /proc/href(href_src, list/href_params, href_text)
-	return "<a href='?src=\ref[href_src];[list2params(href_params)]'>[href_text]</a>"
+	return "<a href='byond://?src=\ref[href_src];[list2params(href_params)]'>[href_text]</a>"
 
 // This is a helper for anything that wants to render the map in TGUI
 /proc/get_tgui_plane_masters()
@@ -1594,6 +1606,7 @@ GLOBAL_REAL_VAR(list/stack_trace_storage)
 
 	. += new /obj/screen/plane_master{plane = PLANE_MESONS} 			//Meson-specific things like open ceilings.
 	. += new /obj/screen/plane_master{plane = PLANE_BUILDMODE}			//Things that only show up while in build mode
+	. += new /obj/screen/plane_master{plane = PLANE_JANHUD}
 
 	// Real tangible stuff planes
 	. += new /obj/screen/plane_master/main{plane = TURF_PLANE}
@@ -1606,6 +1619,7 @@ GLOBAL_REAL_VAR(list/stack_trace_storage)
 	. += new /obj/screen/plane_master{plane = PLANE_CH_HEALTH_VR}			//Health bar but transparent at 100
 	. += new /obj/screen/plane_master{plane = PLANE_CH_BACKUP}				//Backup implant status
 	. += new /obj/screen/plane_master{plane = PLANE_CH_VANTAG}				//Vore Antags
+	. += new /obj/screen/plane_master{plane = PLANE_CH_STOMACH}				//Stomachs
 	. += new /obj/screen/plane_master{plane = PLANE_AUGMENTED}				//Augmented reality
 	//VOREStation Add End
 /proc/CallAsync(datum/source, proctype, list/arguments)

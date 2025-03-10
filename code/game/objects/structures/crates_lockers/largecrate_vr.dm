@@ -2,7 +2,7 @@
 	name = "Bird crate"
 	desc = "You hear chirping and cawing inside the crate. It sounds like there are a lot of birds in there..."
 
-/obj/structure/largecrate/birds/attackby(obj/item/weapon/W as obj, mob/user as mob)
+/obj/structure/largecrate/birds/attackby(obj/item/W as obj, mob/user as mob)
 	if(W.has_tool_quality(TOOL_CROWBAR))
 		new /obj/item/stack/material/wood(src)
 		new /mob/living/simple_mob/animal/passive/bird(src)
@@ -29,9 +29,9 @@
 		var/turf/T = get_turf(src)
 		for(var/atom/movable/AM in contents)
 			if(AM.simulated) AM.forceMove(T)
-		user.visible_message("<span class='notice'>[user] pries \the [src] open.</span>", \
-							 "<span class='notice'>You pry open \the [src].</span>", \
-							 "<span class='notice'>You hear splitting wood.</span>")
+		user.visible_message(span_notice("[user] pries \the [src] open."), \
+							 span_notice("You pry open \the [src]."), \
+							 span_notice("You hear splitting wood."))
 		qdel(src)
 	else
 		return attack_hand(user)
@@ -40,7 +40,7 @@
 	name = "Predator carrier"
 	starts_with = list(/mob/living/simple_mob/vore/catgirl)
 
-/obj/structure/largecrate/animal/pred/Initialize() //This is nessesary to get a random one each time.
+/obj/structure/largecrate/animal/pred/Initialize(mapload) //This is nessesary to get a random one each time.
 	starts_with = list(pick(/mob/living/simple_mob/vore/bee,
 						/mob/living/simple_mob/vore/catgirl;3,
 						/mob/living/simple_mob/vore/aggressive/frog,
@@ -54,7 +54,7 @@
 						/mob/living/simple_mob/vore/aggressive/rat,
 						/mob/living/simple_mob/vore/aggressive/rat/tame,
 						/mob/living/simple_mob/vore/aggressive/rat/labrat, //CHOMPEdit
-						/mob/living/simple_mob/vore/otie/zorgoia, //CHOMPstation edit
+						/mob/living/simple_mob/vore/zorgoia, //CHOMPstation edit
 						/mob/living/simple_mob/vore/rabbit,
 						/mob/living/simple_mob/vore/weretiger;0.5,
 //						/mob/living/simple_mob/vore/otie;0.5
@@ -65,7 +65,7 @@
 	name = "Dangerous Predator carrier"
 	starts_with = list(/mob/living/simple_mob/animal/space/alien)
 
-/obj/structure/largecrate/animal/dangerous/Initialize()
+/obj/structure/largecrate/animal/dangerous/Initialize(mapload)
 	starts_with = list(pick(/mob/living/simple_mob/animal/space/carp/large,
 						/mob/living/simple_mob/vore/aggressive/deathclaw,
 						/mob/living/simple_mob/vore/aggressive/dino,
@@ -86,7 +86,7 @@
 	icon_state = "sotiecrate"
 	starts_with = list(/mob/living/simple_mob/vore/otie/security)
 
-/obj/structure/largecrate/animal/otie/guardbeast/Initialize()
+/obj/structure/largecrate/animal/otie/guardbeast/Initialize(mapload)
 	starts_with = list(pick(/mob/living/simple_mob/vore/otie/security,
 						/mob/living/simple_mob/vore/otie/security/chubby))
 	return ..()
@@ -98,7 +98,7 @@
 	icon_state = "sotiecrate"
 	starts_with = list(/mob/living/simple_mob/vore/otie/security/phoron)
 
-/obj/structure/largecrate/animal/otie/guardmutant/Initialize()
+/obj/structure/largecrate/animal/otie/guardmutant/Initialize(mapload)
 	starts_with = list(pick(/mob/living/simple_mob/vore/otie/security/phoron;2,
 						/mob/living/simple_mob/vore/otie/security/phoron/red;0.5,
 						/mob/living/simple_mob/vore/otie/security/phoron/red/chubby;0.5))
@@ -112,7 +112,7 @@
 	starts_with = list(/mob/living/simple_mob/vore/otie/cotie)
 	var/taped = 1
 
-/obj/structure/largecrate/animal/otie/Initialize()
+/obj/structure/largecrate/animal/otie/Initialize(mapload)
 	starts_with = list(pick(/mob/living/simple_mob/vore/otie/cotie,
 						/mob/living/simple_mob/vore/otie/cotie/chubby))
 	return ..()
@@ -122,7 +122,7 @@
 	desc = "VARMAcorp experimental hostile environment adaptive breeding development kit. WARNING, DO NOT RELEASE IN WILD!"
 	starts_with = list(/mob/living/simple_mob/vore/otie/cotie/phoron)
 
-/obj/structure/largecrate/animal/otie/phoron/Initialize()
+/obj/structure/largecrate/animal/otie/phoron/Initialize(mapload)
 	starts_with = list(pick(/mob/living/simple_mob/vore/otie/cotie/phoron;2,
 						/mob/living/simple_mob/vore/otie/red/friendly;0.5,
 						/mob/living/simple_mob/vore/otie/red/chubby;0.5)) //ChompEDIT add
@@ -150,7 +150,7 @@
 	desc = "Bounces around a lot. Looks messily packaged, were they in a hurry?"
 	starts_with = list(/mob/living/simple_mob/vore/fennec)
 
-/obj/structure/largecrate/animal/fennec/Initialize()
+/obj/structure/largecrate/animal/fennec/Initialize(mapload)
 	starts_with = list(pick(/mob/living/simple_mob/vore/fennec,
 						/mob/living/simple_mob/vore/fennix;0.5))
 	return ..()

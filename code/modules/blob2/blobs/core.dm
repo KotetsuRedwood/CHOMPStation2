@@ -95,8 +95,8 @@ var/list/blob_cores = list()
 /obj/structure/blob/core/classic
 	desired_blob_type = /datum/blob_type/classic
 
-/obj/structure/blob/core/Initialize(newloc, client/new_overmind = null, new_rate = 2, placed = 0)
-	. = ..(newloc)
+/obj/structure/blob/core/Initialize(mapload, client/new_overmind = null, new_rate = 2, placed = 0)
+	. = ..()
 	blob_cores += src
 	START_PROCESSING(SSobj, src)
 	update_icon() //so it atleast appears
@@ -108,7 +108,7 @@ var/list/blob_cores = list()
 
 /obj/structure/blob/core/Destroy()
 	var/turf/T = get_turf(src)
-	new /obj/item/weapon/blobcore_chunk(T, overmind.blob_type)
+	new /obj/item/blobcore_chunk(T, overmind.blob_type)
 
 	blob_cores -= src
 	if(overmind)

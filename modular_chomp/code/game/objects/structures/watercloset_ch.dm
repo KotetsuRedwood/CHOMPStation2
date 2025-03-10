@@ -12,7 +12,7 @@
 	var/total_w = 0
 	var/panic_mult = 1
 
-/obj/structure/toilet/Initialize()
+/obj/structure/toilet/Initialize(mapload)
 	if(z in global.using_map.map_levels)
 		teleplumbed = TRUE
 		exit_landmark = locate(/obj/effect/landmark/teleplumb_exit)
@@ -37,7 +37,7 @@
 			if((L.resting || L.lying) && !L.buckled)
 				bowl_contents += L
 		if(bowl_contents.len)
-			user.visible_message("<span class='notice'>[user] flushes the [lowertext(name)].</span>", "<span class='notice'>You flush the [lowertext(name)].</span>")
+			user.visible_message(span_notice("[user] flushes the [lowertext(name)]."), span_notice("You flush the [lowertext(name)]."))
 			playsound(src, 'sound/vore/death7.ogg', 50, 1) //Got lazy about getting new sound files. Have a sick remix lmao.
 			playsound(src, 'sound/effects/bubbles.ogg', 50, 1)
 			playsound(src, 'sound/mecha/powerup.ogg', 30, 1)
@@ -78,7 +78,7 @@
 			panic_mult = 1
 	if(refilling)
 		playsound(src, 'sound/machines/door_locked.ogg', 30, 1)
-		to_chat(user, "<span class='notice'>The [lowertext(name)] is still refilling its tank.</span>")
+		to_chat(user, span_notice("The [lowertext(name)] is still refilling its tank."))
 	return ..()
 
 /obj/structure/toilet/attackby(obj/item/I as obj, mob/living/user as mob)
@@ -133,7 +133,7 @@
 	var/mob/living/simple_mob/vore/aggressive/corrupthound/muffinmonster
 	var/obj/machinery/recycling/crusher/crusher //Bluespace connection for recyclables
 
-/obj/structure/biowaste_tank/Initialize()
+/obj/structure/biowaste_tank/Initialize(mapload)
 	muffinmonster = new /mob/living/simple_mob/vore/aggressive/corrupthound/muffinmonster(src)
 	muffinmonster.name = "Activate Muffin Monster"
 	muffinmonster.voremob_loaded = TRUE
@@ -146,13 +146,13 @@
 
 /obj/structure/biowaste_tank/Entered(atom/movable/thing, atom/OldLoc)
 	. = ..()
-	if(istype(thing, /obj/item/weapon/reagent_containers/food))
+	if(istype(thing, /obj/item/reagent_containers/food))
 		qdel(thing)
 		return
 	if(istype(thing, /obj/item/organ))
 		qdel(thing)
 		return
-	if(istype(thing, /obj/item/weapon/storage/vore_egg))
+	if(istype(thing, /obj/item/storage/vore_egg))
 		if(thing.contents.len)
 			for(var/atom/movable/C in thing.contents)
 				C.forceMove(src)

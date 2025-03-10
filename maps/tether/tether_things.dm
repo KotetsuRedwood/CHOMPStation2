@@ -27,32 +27,32 @@
 	external_pressure_bound = ONE_ATMOSPHERE * 1.1
 
 
-/obj/effect/step_trigger/teleporter/to_mining/New()
-	..()
+/obj/effect/step_trigger/teleporter/to_mining/Initialize(mapload)
+	. = ..()
 	teleport_x = src.x
 	teleport_y = 2
 	teleport_z = Z_LEVEL_SURFACE_MINE
 
-/obj/effect/step_trigger/teleporter/from_mining/New()
-	..()
+/obj/effect/step_trigger/teleporter/from_mining/Initialize(mapload)
+	. = ..()
 	teleport_x = src.x
 	teleport_y = world.maxy - 1
 	teleport_z = Z_LEVEL_SURFACE_LOW
 
-/obj/effect/step_trigger/teleporter/to_solars/New()
-	..()
+/obj/effect/step_trigger/teleporter/to_solars/Initialize(mapload)
+	. = ..()
 	teleport_x = world.maxx - 1
 	teleport_y = src.y
 	teleport_z = Z_LEVEL_SOLARS
 
-/obj/effect/step_trigger/teleporter/from_solars/New()
-	..()
+/obj/effect/step_trigger/teleporter/from_solars/Initialize(mapload)
+	. = ..()
 	teleport_x = 2
 	teleport_y = src.y
 	teleport_z = Z_LEVEL_SURFACE_LOW
 
-/obj/effect/step_trigger/teleporter/wild/New()
-	..()
+/obj/effect/step_trigger/teleporter/wild/Initialize(mapload)
+	. = ..()
 
 	//If starting on east/west edges.
 	if (src.x == 1)
@@ -73,7 +73,8 @@
 	icon = 'icons/obj/structures/stairs_64x64.dmi'
 	icon_state = ""
 	invisibility = 0
-/obj/effect/step_trigger/teleporter/to_underdark/Initialize()
+
+/obj/effect/step_trigger/teleporter/to_underdark/Initialize(mapload)
 	. = ..()
 	teleport_x = x
 	teleport_y = y
@@ -86,7 +87,8 @@
 	icon = 'icons/obj/structures/stairs_64x64.dmi'
 	icon_state = ""
 	invisibility = 0
-/obj/effect/step_trigger/teleporter/from_underdark/Initialize()
+
+/obj/effect/step_trigger/teleporter/from_underdark/Initialize(mapload)
 	. = ..()
 	teleport_x = x
 	teleport_y = y
@@ -95,14 +97,14 @@
 		if(Z.name == "Mining Outpost")
 			teleport_z = Z.z
 
-/obj/effect/step_trigger/teleporter/to_plains/New()
-	..()
+/obj/effect/step_trigger/teleporter/to_plains/Initialize(mapload)
+	. = ..()
 	teleport_x = src.x
 	teleport_y = world.maxy - 1
 	teleport_z = Z_LEVEL_PLAINS
 
-/obj/effect/step_trigger/teleporter/from_plains/New()
-	..()
+/obj/effect/step_trigger/teleporter/from_plains/Initialize(mapload)
+	. = ..()
 	teleport_x = src.x
 	teleport_y = 2
 	teleport_z = Z_LEVEL_SURFACE_LOW
@@ -115,7 +117,7 @@
 
 /obj/effect/step_trigger/lost_in_space/Trigger(var/atom/movable/A) //replacement for shuttle dump zones because there's no empty space levels to dump to
 	if(ismob(A))
-		to_chat(A, "<span class='danger'>[deathmessage]</span>")
+		to_chat(A, span_danger("[deathmessage]"))
 	qdel(A)
 
 /obj/effect/step_trigger/lost_in_space/bluespace
@@ -149,7 +151,7 @@
 
 	var/area/shock_area = /area/tether/surfacebase/tram
 
-/turf/simulated/floor/maglev/Initialize()
+/turf/simulated/floor/maglev/Initialize(mapload)
 	. = ..()
 	shock_area = locate(shock_area)
 
@@ -212,7 +214,7 @@
 
 	var/mob/living/carbon/human/user = AM
 
-	var/choice = tgui_alert(usr, "Do you want to depart via the tram? Your character will leave the round.","Departure",list("Yes","No"))
+	var/choice = tgui_alert(user, "Do you want to depart via the tram? Your character will leave the round.","Departure",list("Yes","No"))
 	if(user && Adjacent(user) && choice == "Yes")
 		var/mob/observer/dead/newghost = user.ghostize()
 		newghost.timeofdeath = world.time
@@ -257,10 +259,6 @@
 	name = "dorm seven holodeck control"
 	projection_area = /area/crew_quarters/sleep/Dorm_7/holo
 
-/obj/machinery/computer/HolodeckControl/holodorm/warship
-	name = "warship holodeck control"
-	projection_area = /area/mothership/holodeck/holo
-
 // Our map is small, if the supermatter is ejected lets not have it just blow up somewhere else
 /obj/machinery/power/supermatter/touch_map_edge()
 	qdel(src)
@@ -292,9 +290,9 @@
 // ### Wall Machines On Full Windows ###
 // To make sure wall-mounted machines placed on full-tile windows are clickable they must be above the window
 //
-/obj/item/device/radio/intercom
+/obj/item/radio/intercom
 	layer = ABOVE_WINDOW_LAYER
-/obj/item/weapon/storage/secure/safe
+/obj/item/storage/secure/safe
 	layer = ABOVE_WINDOW_LAYER
 /obj/machinery/airlock_sensor
 	layer = ABOVE_WINDOW_LAYER

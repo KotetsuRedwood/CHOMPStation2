@@ -1,6 +1,7 @@
 /obj/item/organ/external/get_icon(var/skeletal, var/can_apply_transparency = TRUE)
 	var/digitigrade = 0
 
+	cut_overlays()
 	// preferentially take digitigrade value from owner if available, THEN DNA.
 	// this allows limbs to be set properly when being printed in the bioprinter without an owner
 	// this also allows the preview mannequin to update properly because customisation topic calls don't call a DNA check
@@ -76,11 +77,12 @@
 			icon_cache_key += "[M][markings[M]["color"]]"
 	if(body_hair && islist(h_col) && h_col.len >= 3)
 		var/cache_key = "[body_hair]-[icon_name]-[h_col[1]][h_col[2]][h_col[3]]"
-		if(!limb_icon_cache[cache_key])
-			var/icon/I = icon(species.get_icobase(owner), "[icon_name]_[body_hair]")
-			I.Blend(rgb(h_col[1],h_col[2],h_col[3]), ICON_MULTIPLY) //VOREStation edit
-			limb_icon_cache[cache_key] = I
-		mob_icon.Blend(limb_icon_cache[cache_key], ICON_OVERLAY)
+		//if(!GLOB.limb_icon_cache[cache_key]) //icon cache tweak start
+		var/icon/I = icon(species.get_icobase(owner), "[icon_name]_[body_hair]")
+		I.Blend(rgb(h_col[1],h_col[2],h_col[3]), ICON_MULTIPLY) //VOREStation edit
+		mob_icon.Blend(I, ICON_OVERLAY)
+		GLOB.limb_icon_cache[cache_key] = I
+		//icon cache tweak end
 
 	// VOREStation edit start
 	if(nail_polish && !(force_icon && !skip_forced_icon))

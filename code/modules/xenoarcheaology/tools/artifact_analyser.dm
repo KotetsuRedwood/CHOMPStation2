@@ -5,6 +5,7 @@
 	icon_state = "isolator"
 	anchored = TRUE
 	density = TRUE
+	bubble_icon = "science"
 	var/scan_in_progress = 0
 	var/scan_num = 0
 	var/obj/scanned_obj
@@ -22,7 +23,7 @@
 									 /obj/machinery/replicator,
 									 /obj/structure/crystal)
 
-/obj/machinery/artifact_analyser/Initialize()
+/obj/machinery/artifact_analyser/Initialize(mapload)
 	. = ..()
 	reconnect_scanner()
 
@@ -58,7 +59,7 @@
 	if(..())
 		return TRUE
 
-	add_fingerprint(usr)
+	add_fingerprint(ui.user)
 
 	switch(action)
 		if("scan")
@@ -121,12 +122,12 @@
 			results = get_scan_info(scanned_object)
 
 		atom_say("Scanning complete.")
-		var/obj/item/weapon/paper/P = new(src.loc)
+		var/obj/item/paper/P = new(src.loc)
 		P.name = "[src] report #[++report_num]"
-		P.info = "<b>[src] analysis report #[report_num]</b><br>"
+		P.info = span_bold("[src] analysis report #[report_num]") + "<br>"
 		P.info += "<br>"
-		P.info += "\icon[scanned_object][bicon(scanned_object)] [results]"
-		P.stamped = list(/obj/item/weapon/stamp)
+		P.info += "[bicon(scanned_object)] [results]"
+		P.stamped = list(/obj/item/stamp)
 		P.add_overlay("paper_stamped")
 
 		if(scanned_object && istype(scanned_object, /obj/machinery/artifact))

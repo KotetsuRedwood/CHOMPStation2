@@ -2,12 +2,13 @@
 
 //Hoods for winter coats and chaplain hoodie etc
 
-/obj/item/clothing/suit/storage/hooded
+/obj/item/clothing/suit/
+	name = DEVELOPER_WARNING_NAME
 	var/obj/item/clothing/head/hood
 	var/hoodtype = null //so the chaplain hoodie or other hoodies can override this
 	var/hood_up = FALSE
 	var/toggleicon
-	action_button_name = "Toggle Hood"
+	actions_types = list(/datum/action/item_action/toggle_hood)
 
 /obj/item/clothing/suit/storage/hooded/New()
 	toggleicon = "[initial(icon_state)]"
@@ -15,15 +16,15 @@
 	..()
 
 /obj/item/clothing/suit/storage/hooded/Destroy()
-	qdel(hood)
+	QDEL_NULL(hood)
 	return ..()
 
 /obj/item/clothing/suit/storage/hooded/proc/MakeHood()
-	if(!hood)
+	if(!hood && hoodtype)
 		var/obj/item/clothing/head/hood/H = new hoodtype(src)
 		hood = H
 
-/obj/item/clothing/suit/storage/hooded/ui_action_click()
+/obj/item/clothing/suit/storage/hooded/ui_action_click(mob/user, actiontype)
 	ToggleHood()
 
 /obj/item/clothing/suit/storage/hooded/equipped(mob/user, slot)
@@ -34,25 +35,27 @@
 /obj/item/clothing/suit/storage/hooded/proc/RemoveHood()
 	hood_up = FALSE
 	update_icon()
-	hood.canremove = TRUE // This shouldn't matter anyways but just incase.
-	if(ishuman(hood.loc))
-		var/mob/living/carbon/H = hood.loc
-		H.unEquip(hood, 1)
-		H.update_inv_wear_suit()
-	hood.forceMove(src)
+	if(hood)
+		hood.canremove = TRUE // This shouldn't matter anyways but just incase.
+		if(ishuman(hood.loc))
+			var/mob/living/carbon/H = hood.loc
+			H.unEquip(hood, 1)
+			H.update_inv_wear_suit()
+		hood.forceMove(src)
 
-/obj/item/clothing/suit/storage/hooded/dropped()
+/obj/item/clothing/suit/storage/hooded/dropped(mob/user)
 	RemoveHood()
+	..()
 
 /obj/item/clothing/suit/storage/hooded/proc/ToggleHood()
 	if(!hood_up)
 		if(ishuman(loc))
 			var/mob/living/carbon/human/H = src.loc
 			if(H.wear_suit != src)
-				to_chat(H, "<span class='warning'>You must be wearing [src] to put up the hood!</span>")
+				to_chat(H, span_warning("You must be wearing [src] to put up the hood!"))
 				return
 			if(H.head)
-				to_chat(H, "<span class='warning'>You're already wearing something on your head!</span>")
+				to_chat(H, span_warning("You're already wearing something on your head!"))
 				return
 			else
 				if(color != hood.color)
@@ -70,10 +73,11 @@
 	icon_state = "[toggleicon][hood_up ? "_t" : ""]"
 
 /obj/item/clothing/suit/storage/hooded/costume
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+	name = DEVELOPER_WARNING_NAME
+	body_parts_covered = CHEST|ARMS
 	flags_inv = HIDEJUMPSUIT|HIDETIE|HIDEHOLSTER
-	cold_protection = UPPER_TORSO|LOWER_TORSO|ARMS
-	action_button_name = "Toggle Hood"
+	cold_protection = CHEST|ARMS
+	actions_types = list(/datum/action/item_action/toggle_hood)
 
 /obj/item/clothing/suit/storage/hooded/costume/siffet
 	name = "siffet costume"
@@ -104,13 +108,13 @@
 	desc = "A heavy jacket made from 'synthetic' animal furs."
 	icon_state = "coatwinter"
 	item_state_slots = list(slot_r_hand_str = "coatwinter", slot_l_hand_str = "coatwinter")
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
+	body_parts_covered = CHEST|ARMS|LEGS
 	flags_inv = HIDEHOLSTER
-	cold_protection = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
+	cold_protection = CHEST|ARMS|LEGS
 	min_cold_protection_temperature = SPACE_SUIT_MIN_COLD_PROTECTION_TEMPERATURE
 	hoodtype = /obj/item/clothing/head/hood/winter
-	allowed = list(/obj/item/weapon/pen, /obj/item/weapon/paper, /obj/item/device/flashlight, /obj/item/weapon/tank/emergency/oxygen, /obj/item/weapon/storage/fancy/cigarettes,
-	/obj/item/weapon/storage/box/matches, /obj/item/weapon/reagent_containers/food/drinks/flask, /obj/item/device/suit_cooling_unit)
+	allowed = list(/obj/item/pen, /obj/item/paper, /obj/item/flashlight, /obj/item/tank/emergency/oxygen, /obj/item/storage/fancy/cigarettes,
+	/obj/item/storage/box/matches, /obj/item/reagent_containers/food/drinks/flask, /obj/item/suit_cooling_unit)
 
 /obj/item/clothing/suit/storage/hooded/wintercoat/captain
 	name = "site manager's winter coat"
@@ -119,10 +123,10 @@
 	item_state_slots = list(slot_r_hand_str = "coatcaptain", slot_l_hand_str = "coatcaptain")
 	armor = list(melee = 20, bullet = 15, laser = 20, energy = 10, bomb = 15, bio = 0, rad = 0)
 	hoodtype = /obj/item/clothing/head/hood/winter/captain
-	allowed =  list (/obj/item/weapon/pen, /obj/item/weapon/paper, /obj/item/device/flashlight, /obj/item/weapon/tank/emergency/oxygen, /obj/item/weapon/storage/fancy/cigarettes,
-	/obj/item/weapon/storage/box/matches, /obj/item/weapon/reagent_containers/food/drinks/flask, /obj/item/device/suit_cooling_unit, /obj/item/weapon/gun/energy,
-	/obj/item/weapon/reagent_containers/spray/pepper, /obj/item/weapon/gun/projectile, /obj/item/ammo_magazine, /obj/item/ammo_casing, /obj/item/weapon/melee/baton,
-	/obj/item/weapon/handcuffs, /obj/item/clothing/head/helmet)
+	allowed =  list (/obj/item/pen, /obj/item/paper, /obj/item/flashlight, /obj/item/tank/emergency/oxygen, /obj/item/storage/fancy/cigarettes,
+	/obj/item/storage/box/matches, /obj/item/reagent_containers/food/drinks/flask, /obj/item/suit_cooling_unit, /obj/item/gun/energy,
+	/obj/item/reagent_containers/spray/pepper, /obj/item/gun/projectile, /obj/item/ammo_magazine, /obj/item/ammo_casing, /obj/item/melee/baton,
+	/obj/item/handcuffs, /obj/item/clothing/head/helmet)
 
 /obj/item/clothing/suit/storage/hooded/wintercoat/hop
 	name = "head of personnel's winter coat"
@@ -130,10 +134,10 @@
 	icon_state = "coathop"
 	armor = list(melee = 5, bullet = 0, laser = 0, energy = 0, bomb = 5, bio = 5, rad = 0)
 	hoodtype = /obj/item/clothing/head/hood/winter/hop
-	allowed =  list (/obj/item/weapon/pen, /obj/item/weapon/paper, /obj/item/device/flashlight, /obj/item/weapon/tank/emergency/oxygen, /obj/item/weapon/storage/fancy/cigarettes,
-	/obj/item/weapon/storage/box/matches, /obj/item/weapon/reagent_containers/food/drinks/flask, /obj/item/device/suit_cooling_unit, /obj/item/weapon/gun/energy,
-	/obj/item/weapon/reagent_containers/spray/pepper, /obj/item/weapon/gun/projectile, /obj/item/ammo_magazine, /obj/item/ammo_casing, /obj/item/weapon/melee/baton,
-	/obj/item/weapon/handcuffs, /obj/item/clothing/head/helmet)
+	allowed =  list (/obj/item/pen, /obj/item/paper, /obj/item/flashlight, /obj/item/tank/emergency/oxygen, /obj/item/storage/fancy/cigarettes,
+	/obj/item/storage/box/matches, /obj/item/reagent_containers/food/drinks/flask, /obj/item/suit_cooling_unit, /obj/item/gun/energy,
+	/obj/item/reagent_containers/spray/pepper, /obj/item/gun/projectile, /obj/item/ammo_magazine, /obj/item/ammo_casing, /obj/item/melee/baton,
+	/obj/item/handcuffs, /obj/item/clothing/head/helmet)
 
 /obj/item/clothing/suit/storage/hooded/wintercoat/security
 	name = "security winter coat"
@@ -142,10 +146,10 @@
 	item_state_slots = list(slot_r_hand_str = "coatsecurity", slot_l_hand_str = "coatsecurity")
 	armor = list(melee = 25, bullet = 20, laser = 20, energy = 15, bomb = 20, bio = 0, rad = 0)
 	hoodtype = /obj/item/clothing/head/hood/winter/security
-	allowed = list(/obj/item/weapon/pen, /obj/item/weapon/paper, /obj/item/device/flashlight, /obj/item/weapon/tank/emergency/oxygen, /obj/item/weapon/storage/fancy/cigarettes,
-	/obj/item/weapon/storage/box/matches, /obj/item/weapon/reagent_containers/food/drinks/flask, /obj/item/device/suit_cooling_unit, /obj/item/weapon/gun/energy,
-	/obj/item/weapon/reagent_containers/spray/pepper, /obj/item/weapon/gun/projectile, /obj/item/ammo_magazine, /obj/item/ammo_casing, /obj/item/weapon/melee/baton,
-	/obj/item/weapon/handcuffs, /obj/item/clothing/head/helmet, /obj/item/clothing/mask/gas)
+	allowed = list(/obj/item/pen, /obj/item/paper, /obj/item/flashlight, /obj/item/tank/emergency/oxygen, /obj/item/storage/fancy/cigarettes,
+	/obj/item/storage/box/matches, /obj/item/reagent_containers/food/drinks/flask, /obj/item/suit_cooling_unit, /obj/item/gun/energy,
+	/obj/item/reagent_containers/spray/pepper, /obj/item/gun/projectile, /obj/item/ammo_magazine, /obj/item/ammo_casing, /obj/item/melee/baton,
+	/obj/item/handcuffs, /obj/item/clothing/head/helmet, /obj/item/clothing/mask/gas)
 
 /obj/item/clothing/suit/storage/hooded/wintercoat/security/hos
 	name = "head of security's winter coat"
@@ -153,10 +157,10 @@
 	icon_state = "coathos"
 	armor = list(melee = 30, bullet = 20, laser = 20, energy = 20, bomb = 20, bio = 0, rad = 0)
 	hoodtype = /obj/item/clothing/head/hood/winter/security/hos
-	allowed = list(/obj/item/weapon/pen, /obj/item/weapon/paper, /obj/item/device/flashlight, /obj/item/weapon/tank/emergency/oxygen, /obj/item/weapon/storage/fancy/cigarettes,
-	/obj/item/weapon/storage/box/matches, /obj/item/weapon/reagent_containers/food/drinks/flask, /obj/item/device/suit_cooling_unit, /obj/item/weapon/gun/energy,
-	/obj/item/weapon/reagent_containers/spray/pepper, /obj/item/weapon/gun/projectile, /obj/item/ammo_magazine, /obj/item/ammo_casing, /obj/item/weapon/melee/baton,
-	/obj/item/weapon/handcuffs, /obj/item/clothing/head/helmet, /obj/item/clothing/mask/gas)
+	allowed = list(/obj/item/pen, /obj/item/paper, /obj/item/flashlight, /obj/item/tank/emergency/oxygen, /obj/item/storage/fancy/cigarettes,
+	/obj/item/storage/box/matches, /obj/item/reagent_containers/food/drinks/flask, /obj/item/suit_cooling_unit, /obj/item/gun/energy,
+	/obj/item/reagent_containers/spray/pepper, /obj/item/gun/projectile, /obj/item/ammo_magazine, /obj/item/ammo_casing, /obj/item/melee/baton,
+	/obj/item/handcuffs, /obj/item/clothing/head/helmet, /obj/item/clothing/mask/gas)
 
 /obj/item/clothing/suit/storage/hooded/wintercoat/medical
 	name = "medical winter coat"
@@ -165,11 +169,11 @@
 	item_state_slots = list(slot_r_hand_str = "coatmedical", slot_l_hand_str = "coatmedical")
 	armor = list(melee = 0, bullet = 0, laser = 0,energy = 0, bomb = 0, bio = 50, rad = 0)
 	hoodtype = /obj/item/clothing/head/hood/winter/medical
-	allowed = list(/obj/item/weapon/pen, /obj/item/weapon/paper, /obj/item/device/flashlight, /obj/item/weapon/tank/emergency/oxygen, /obj/item/weapon/storage/fancy/cigarettes,
-	/obj/item/weapon/storage/box/matches, /obj/item/weapon/reagent_containers/food/drinks/flask, /obj/item/device/suit_cooling_unit, /obj/item/device/analyzer, /obj/item/stack/medical,
-	/obj/item/weapon/dnainjector, /obj/item/weapon/reagent_containers/dropper, /obj/item/weapon/reagent_containers/syringe, /obj/item/weapon/reagent_containers/hypospray,
-	/obj/item/device/healthanalyzer, /obj/item/weapon/reagent_containers/glass/bottle, /obj/item/weapon/reagent_containers/glass/beaker,
-	/obj/item/weapon/reagent_containers/pill, /obj/item/weapon/storage/pill_bottle, /obj/item/clothing/mask/gas)
+	allowed = list(/obj/item/pen, /obj/item/paper, /obj/item/flashlight, /obj/item/tank/emergency/oxygen, /obj/item/storage/fancy/cigarettes,
+	/obj/item/storage/box/matches, /obj/item/reagent_containers/food/drinks/flask, /obj/item/suit_cooling_unit, /obj/item/analyzer, /obj/item/stack/medical,
+	/obj/item/dnainjector, /obj/item/reagent_containers/dropper, /obj/item/reagent_containers/syringe, /obj/item/reagent_containers/hypospray,
+	/obj/item/healthanalyzer, /obj/item/reagent_containers/glass/bottle, /obj/item/reagent_containers/glass/beaker,
+	/obj/item/reagent_containers/pill, /obj/item/storage/pill_bottle, /obj/item/clothing/mask/gas)
 
 /obj/item/clothing/suit/storage/hooded/wintercoat/medical/alt
 	name = "medical winter coat, alt"
@@ -212,11 +216,11 @@
 	icon_state = "coatsar"
 	armor = list(melee = 15, bullet = 0, laser = 0,energy = 0, bomb = 0, bio = 50, rad = 5)
 	hoodtype = /obj/item/clothing/head/hood/winter/medical/sar //VOREStation edit: sar winter hood
-	allowed = list (/obj/item/weapon/gun, /obj/item/weapon/pen, /obj/item/weapon/paper, /obj/item/device/flashlight, /obj/item/weapon/tank/emergency/oxygen, /obj/item/weapon/storage/fancy/cigarettes,
-	/obj/item/weapon/storage/box/matches, /obj/item/weapon/reagent_containers/food/drinks/flask, /obj/item/device/suit_cooling_unit, /obj/item/device/analyzer, /obj/item/stack/medical,
-	/obj/item/weapon/dnainjector, /obj/item/weapon/reagent_containers/dropper, /obj/item/weapon/reagent_containers/syringe, /obj/item/weapon/reagent_containers/hypospray,
-	/obj/item/device/healthanalyzer, /obj/item/weapon/reagent_containers/glass/bottle, /obj/item/weapon/reagent_containers/glass/beaker,
-	/obj/item/weapon/reagent_containers/pill, /obj/item/weapon/storage/pill_bottle, /obj/item/clothing/mask/gas)
+	allowed = list (/obj/item/gun, /obj/item/pen, /obj/item/paper, /obj/item/flashlight, /obj/item/tank/emergency/oxygen, /obj/item/storage/fancy/cigarettes,
+	/obj/item/storage/box/matches, /obj/item/reagent_containers/food/drinks/flask, /obj/item/suit_cooling_unit, /obj/item/analyzer, /obj/item/stack/medical,
+	/obj/item/dnainjector, /obj/item/reagent_containers/dropper, /obj/item/reagent_containers/syringe, /obj/item/reagent_containers/hypospray,
+	/obj/item/healthanalyzer, /obj/item/reagent_containers/glass/bottle, /obj/item/reagent_containers/glass/beaker,
+	/obj/item/reagent_containers/pill, /obj/item/storage/pill_bottle, /obj/item/clothing/mask/gas)
 
 /obj/item/clothing/suit/storage/hooded/wintercoat/science
 	name = "science winter coat"
@@ -225,11 +229,11 @@
 	item_state_slots = list(slot_r_hand_str = "coatscience", slot_l_hand_str = "coatscience")
 	armor = list(melee = 0, bullet = 0, laser = 0,energy = 0, bomb = 10, bio = 0, rad = 0)
 	hoodtype = /obj/item/clothing/head/hood/winter/science
-	allowed = list(/obj/item/weapon/pen, /obj/item/weapon/paper, /obj/item/device/flashlight, /obj/item/weapon/tank/emergency/oxygen, /obj/item/weapon/storage/fancy/cigarettes,
-	/obj/item/weapon/storage/box/matches, /obj/item/weapon/reagent_containers/food/drinks/flask, /obj/item/device/suit_cooling_unit, /obj/item/device/analyzer,/obj/item/stack/medical,
-	/obj/item/weapon/dnainjector, /obj/item/weapon/reagent_containers/dropper, /obj/item/weapon/reagent_containers/syringe, /obj/item/weapon/reagent_containers/hypospray,
-	/obj/item/device/healthanalyzer, /obj/item/weapon/reagent_containers/glass/bottle, /obj/item/weapon/reagent_containers/glass/beaker,
-	/obj/item/weapon/reagent_containers/pill, /obj/item/weapon/storage/pill_bottle)
+	allowed = list(/obj/item/pen, /obj/item/paper, /obj/item/flashlight, /obj/item/tank/emergency/oxygen, /obj/item/storage/fancy/cigarettes,
+	/obj/item/storage/box/matches, /obj/item/reagent_containers/food/drinks/flask, /obj/item/suit_cooling_unit, /obj/item/analyzer,/obj/item/stack/medical,
+	/obj/item/dnainjector, /obj/item/reagent_containers/dropper, /obj/item/reagent_containers/syringe, /obj/item/reagent_containers/hypospray,
+	/obj/item/healthanalyzer, /obj/item/reagent_containers/glass/bottle, /obj/item/reagent_containers/glass/beaker,
+	/obj/item/reagent_containers/pill, /obj/item/storage/pill_bottle)
 
 /obj/item/clothing/suit/storage/hooded/wintercoat/science/robotics
 	name = "robotics winter coat"
@@ -252,10 +256,10 @@
 	item_state_slots = list(slot_r_hand_str = "coatengineer", slot_l_hand_str = "coatengineer")
 	armor = list(melee = 0, bullet = 0, laser = 0, energy = 0, bomb = 0, bio = 0, rad = 20)
 	hoodtype = /obj/item/clothing/head/hood/winter/engineering
-	allowed = list(/obj/item/weapon/pen, /obj/item/weapon/paper, /obj/item/device/flashlight, /obj/item/weapon/tank/emergency/oxygen, /obj/item/weapon/storage/fancy/cigarettes,
-	/obj/item/weapon/storage/box/matches, /obj/item/weapon/reagent_containers/food/drinks/flask, /obj/item/device/suit_cooling_unit, /obj/item/device/analyzer, /obj/item/device/flashlight,
-	/obj/item/device/multitool, /obj/item/device/pipe_painter, /obj/item/device/radio, /obj/item/device/t_scanner, /obj/item/weapon/tool/crowbar, /obj/item/weapon/tool/screwdriver,
-	/obj/item/weapon/weldingtool, /obj/item/weapon/tool/wirecutters, /obj/item/weapon/tool/wrench, /obj/item/weapon/tank/emergency/oxygen, /obj/item/clothing/mask/gas, /obj/item/taperoll/engineering, /obj/item/clothing/head/hardhat) //please engineers take your hardhat with you I beg of you
+	allowed = list(/obj/item/pen, /obj/item/paper, /obj/item/flashlight, /obj/item/tank/emergency/oxygen, /obj/item/storage/fancy/cigarettes,
+	/obj/item/storage/box/matches, /obj/item/reagent_containers/food/drinks/flask, /obj/item/suit_cooling_unit, /obj/item/analyzer, /obj/item/flashlight,
+	/obj/item/multitool, /obj/item/pipe_painter, /obj/item/radio, /obj/item/t_scanner, /obj/item/tool/crowbar, /obj/item/tool/screwdriver,
+	/obj/item/weldingtool, /obj/item/tool/wirecutters, /obj/item/tool/wrench, /obj/item/tank/emergency/oxygen, /obj/item/clothing/mask/gas, /obj/item/taperoll/engineering, /obj/item/clothing/head/hardhat) //please engineers take your hardhat with you I beg of you
 
 /obj/item/clothing/suit/storage/hooded/wintercoat/engineering/atmos
 	name = "atmospherics winter coat"
@@ -278,10 +282,10 @@
 	icon_state = "coathydro"
 	item_state_slots = list(slot_r_hand_str = "coathydro", slot_l_hand_str = "coathydro")
 	hoodtype = /obj/item/clothing/head/hood/winter/hydro
-	allowed = list(/obj/item/weapon/pen, /obj/item/weapon/paper, /obj/item/device/flashlight, /obj/item/weapon/tank/emergency/oxygen,
-	/obj/item/weapon/storage/fancy/cigarettes, /obj/item/weapon/storage/box/matches, /obj/item/weapon/reagent_containers/food/drinks/flask,
-	/obj/item/device/suit_cooling_unit, /obj/item/weapon/reagent_containers/spray/plantbgone, /obj/item/device/analyzer/plant_analyzer, /obj/item/seeds,
-	/obj/item/weapon/reagent_containers/glass/bottle, /obj/item/weapon/material/minihoe)
+	allowed = list(/obj/item/pen, /obj/item/paper, /obj/item/flashlight, /obj/item/tank/emergency/oxygen,
+	/obj/item/storage/fancy/cigarettes, /obj/item/storage/box/matches, /obj/item/reagent_containers/food/drinks/flask,
+	/obj/item/suit_cooling_unit, /obj/item/reagent_containers/spray/plantbgone, /obj/item/analyzer/plant_analyzer, /obj/item/seeds,
+	/obj/item/reagent_containers/glass/bottle, /obj/item/material/minihoe)
 
 /obj/item/clothing/suit/storage/hooded/wintercoat/cargo
 	name = "cargo winter coat"
@@ -304,9 +308,9 @@
 	item_state_slots = list(slot_r_hand_str = "coatminer", slot_l_hand_str = "coatminer")
 	armor = list(melee = 10, bullet = 0, laser = 0, energy = 0, bomb = 0, bio = 0, rad = 0)
 	hoodtype = /obj/item/clothing/head/hood/winter/cargo/miner
-	allowed = list(/obj/item/weapon/pen, /obj/item/weapon/paper, /obj/item/device/flashlight, /obj/item/weapon/storage/fancy/cigarettes,
-	/obj/item/weapon/storage/box/matches, /obj/item/weapon/reagent_containers/food/drinks/flask, /obj/item/device/suit_cooling_unit,
-	/obj/item/weapon/tank, /obj/item/device/radio, /obj/item/weapon/pickaxe, /obj/item/weapon/storage/bag/ore, /obj/item/clothing/mask/gas)
+	allowed = list(/obj/item/pen, /obj/item/paper, /obj/item/flashlight, /obj/item/storage/fancy/cigarettes,
+	/obj/item/storage/box/matches, /obj/item/reagent_containers/food/drinks/flask, /obj/item/suit_cooling_unit,
+	/obj/item/tank, /obj/item/radio, /obj/item/pickaxe, /obj/item/storage/bag/ore, /obj/item/clothing/mask/gas)
 
 /obj/item/clothing/suit/storage/hooded/wintercoat/bar
 	name = "bartender winter coat"
@@ -350,7 +354,7 @@
 	light_power = 1.8
 	light_range = 1.2
 	light_on = TRUE
-	
+
 /obj/item/clothing/suit/storage/hooded/wintercoat/christmasred
 	name = "red christmas winter coat"
 	desc = "A festive red Christmas coat! Smells like Candy Cane!"
@@ -371,21 +375,21 @@
 	icon_state = "explorer"
 	item_state = "explorer"
 	flags = THICKMATERIAL
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	body_parts_covered = CHEST|LEGS|ARMS
 	min_cold_protection_temperature = SPACE_SUIT_MIN_COLD_PROTECTION_TEMPERATURE
-	cold_protection = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	cold_protection = CHEST|LEGS|ARMS
 	hoodtype = /obj/item/clothing/head/hood/explorer
 	siemens_coefficient = 0.9
 	armor = list(melee = 30, bullet = 20, laser = 20, energy = 20, bomb = 35, bio = 75, rad = 35) // Inferior to sec vests in bullet/laser but better for environmental protection.
 	allowed = list(
-		/obj/item/device/flashlight,
-		/obj/item/weapon/gun,
+		/obj/item/flashlight,
+		/obj/item/gun,
 		/obj/item/ammo_magazine,
-		/obj/item/weapon/melee,
-		/obj/item/weapon/material/knife,
-		/obj/item/weapon/tank,
-		/obj/item/device/radio,
-		/obj/item/weapon/pickaxe
+		/obj/item/melee,
+		/obj/item/material/knife,
+		/obj/item/tank,
+		/obj/item/radio,
+		/obj/item/pickaxe
 		)
 
 /obj/item/clothing/suit/storage/hooded/techpriest
@@ -398,11 +402,11 @@
     name = "raincoat"
     desc = "A thin, opaque coat meant to protect you from all sorts of rain. Preferred by outdoorsmen and janitors alike across the rift. Of course, the only type of fluids you'd like to protect yourself from around this place don't rain down from the sky. Usually. Comes with a hood!"
     icon_state = "raincoat"
-    body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS|LEGS
+    body_parts_covered = CHEST|ARMS|LEGS
     flags_inv = HIDEHOLSTER
     hoodtype = /obj/item/clothing/head/hood/raincoat
-    allowed = list(/obj/item/weapon/pen, /obj/item/weapon/paper, /obj/item/device/flashlight, /obj/item/weapon/tank/emergency/oxygen, /obj/item/weapon/storage/fancy/cigarettes,
-	/obj/item/weapon/storage/box/matches, /obj/item/weapon/reagent_containers/food/drinks/flask, /obj/item/device/suit_cooling_unit)
+    allowed = list(/obj/item/pen, /obj/item/paper, /obj/item/flashlight, /obj/item/tank/emergency/oxygen, /obj/item/storage/fancy/cigarettes,
+	/obj/item/storage/box/matches, /obj/item/reagent_containers/food/drinks/flask, /obj/item/suit_cooling_unit)
 
 
 //hooded cloaks
@@ -410,7 +414,7 @@
     name = "hooded maroon cloak"
     desc = "A simple maroon colored cloak."
     icon_state = "maroon_cloak"
-    body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+    body_parts_covered = CHEST|ARMS
     hoodtype = /obj/item/clothing/head/hood/cloak
 
 /obj/item/clothing/suit/storage/hooded/cloak/winter

@@ -70,7 +70,7 @@
 		"JOINING THE NAVY? HERE'S 15 EXPERT TIPS FOR AVOIDING BRAIN PARASITES"
 	)
 
-/obj/item/tabloid/Initialize()
+/obj/item/tabloid/Initialize(mapload)
 	. = ..()
 
 	pixel_x = 5-rand(10)
@@ -86,7 +86,7 @@
 		to_chat(user, "The headline screams, \"[headline]\"")
 
 /obj/item/tabloid/attack_self(mob/user)
-	user.visible_message(SPAN_NOTICE("\The [user] leafs idly through \the [src]."))
+	user.visible_message(span_notice("\The [user] leafs idly through \the [src]."))
 	if(headline)
 		to_chat(user, "Most of it is the usual tabloid garbage, but the headline story, \"[headline]\", holds your attention for awhile.")
 		if(tabloid_headlines[headline])

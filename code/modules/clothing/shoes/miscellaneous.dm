@@ -48,6 +48,11 @@
 
 	wizard_garb = 1
 
+/obj/item/clothing/shoes/sandals
+	desc = "A pair of simple sandals."
+	name = "sandals"
+	icon_state = "sandals_recolor"
+
 /obj/item/clothing/shoes/flipflop
 	name = "flip flops"
 	desc = "A pair of foam flip flops. For those not afraid to show a little ankle."
@@ -115,9 +120,7 @@
 	force = 2
 	siemens_coefficient = 0.7
 
-	cold_protection = FEET
 	min_cold_protection_temperature = SHOE_MIN_COLD_PROTECTION_TEMPERATURE
-	heat_protection = FEET
 	max_heat_protection_temperature = SHOE_MAX_HEAT_PROTECTION_TEMPERATURE
 	species_restricted = null
 
@@ -205,7 +208,7 @@
 	icon = 'icons/obj/clothing/ranger.dmi'
 	icon_state = "ranger_boots"
 
-/obj/item/clothing/shoes/boots/ranger/Initialize()
+/obj/item/clothing/shoes/boots/ranger/Initialize(mapload)
 	. = ..()
 	if(icon_state == "ranger_boots")
 		name = "[bootcolor] ranger boots"

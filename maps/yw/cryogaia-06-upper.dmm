@@ -25,16 +25,12 @@
 "ae" = (
 /obj/structure/disposalpipe/segment,
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/tiled,
 /area/cryogaia/station/hallway/primary/upper/south)
 "af" = (
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/plating,
@@ -53,8 +49,6 @@
 	icon_state = "2-8"
 	},
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/tiled,
@@ -92,8 +86,6 @@
 /area/chapel/monastery/upper)
 "am" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
@@ -182,7 +174,7 @@
 /turf/simulated/floor/tiled/techfloor/grid,
 /area/shuttle/excursion)
 "ay" = (
-/obj/item/device/geiger/wall{
+/obj/item/geiger/wall{
 	dir = 4;
 	pixel_x = -30
 	},
@@ -234,10 +226,10 @@
 	name = "plastic table frame"
 	},
 /obj/machinery/atmospherics/unary/vent_scrubber/on,
-/obj/item/weapon/reagent_containers/food/condiment/small/peppermill{
+/obj/item/reagent_containers/food/condiment/small/peppermill{
 	pixel_x = 5
 	},
-/obj/item/weapon/reagent_containers/food/condiment/small/saltshaker{
+/obj/item/reagent_containers/food/condiment/small/saltshaker{
 	pixel_x = -5
 	},
 /turf/simulated/floor/tiled/techmaint,
@@ -298,11 +290,11 @@
 /area/shuttle/excursion)
 "aQ" = (
 /obj/structure/table/rack,
-/obj/item/weapon/storage/belt/utility/full,
+/obj/item/storage/belt/utility/full,
 /obj/item/clothing/head/pilot,
 /obj/item/clothing/head/pilot,
-/obj/item/weapon/storage/box/survival/space,
-/obj/item/weapon/storage/toolbox/emergency,
+/obj/item/storage/box/survival/space,
+/obj/item/storage/toolbox/emergency,
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
 	dir = 10
 	},
@@ -340,7 +332,7 @@
 	pixel_x = 28;
 	pixel_y = 28
 	},
-/obj/item/device/radio/intercom{
+/obj/item/radio/intercom{
 	dir = 4;
 	name = "Common Channel";
 	pixel_x = 21
@@ -488,13 +480,11 @@
 /obj/effect/floor_decal/corner/paleblue{
 	dir = 6
 	},
-/obj/item/device/radio/intercom/department/medbay{
+/obj/item/radio/intercom/department/medbay{
 	dir = 4;
 	pixel_x = 32
 	},
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/tiled/white,
@@ -513,8 +503,6 @@
 	dir = 4
 	},
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/tiled,
@@ -564,8 +552,6 @@
 	dir = 2
 	},
 /obj/structure/cable/yellow{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/plating/snow/plating,
@@ -661,8 +647,6 @@
 /area/shuttle/excursion)
 "bF" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
@@ -703,8 +687,6 @@
 /area/shuttle/excursion)
 "bJ" = (
 /obj/structure/cable{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled,
@@ -764,8 +746,8 @@
 /area/borealis2/outdoors/grounds/tower/west)
 "bT" = (
 /obj/structure/closet/crate/freezer/rations,
-/obj/item/weapon/storage/mre/menu11,
-/obj/item/weapon/storage/mre/menu10,
+/obj/item/storage/mre/menu11,
+/obj/item/storage/mre/menu10,
 /turf/simulated/floor/tiled/techmaint,
 /area/shuttle/excursion)
 "bU" = (
@@ -820,8 +802,6 @@
 /area/borealis2/outdoors/grounds/checkpoint)
 "cc" = (
 /obj/structure/cable/green{
-	d1 = 2;
-	d2 = 4;
 	icon_state = "2-4"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
@@ -841,8 +821,6 @@
 	pixel_x = 28
 	},
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/tiled/white,
@@ -875,8 +853,6 @@
 /area/shuttle/excursion)
 "ch" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
@@ -904,8 +880,6 @@
 	dir = 4
 	},
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/tiled/white,
@@ -922,7 +896,7 @@
 /obj/structure/bed,
 /obj/structure/medical_stand,
 /obj/structure/curtain/open/privacy,
-/obj/item/device/geiger/wall{
+/obj/item/geiger/wall{
 	pixel_y = 30
 	},
 /turf/simulated/floor/tiled/techmaint,
@@ -957,15 +931,11 @@
 /area/shuttle/excursion)
 "ct" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /obj/machinery/atmospherics/pipe/manifold/hidden/scrubbers,
 /obj/machinery/atmospherics/pipe/manifold/hidden/supply,
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled/white,
@@ -1031,8 +1001,6 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/tiled,
@@ -1061,8 +1029,6 @@
 /area/medical/medbayskybridge)
 "cE" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 4;
 	icon_state = "1-4"
 	},
 /obj/structure/disposalpipe/segment{
@@ -1078,10 +1044,10 @@
 	req_access = list();
 	req_one_access = list()
 	},
-/obj/item/weapon/reagent_containers/blood/OMinus,
-/obj/item/weapon/reagent_containers/blood/OMinus,
-/obj/item/weapon/reagent_containers/blood/OMinus,
-/obj/item/weapon/reagent_containers/blood/OMinus,
+/obj/item/reagent_containers/blood/OMinus,
+/obj/item/reagent_containers/blood/OMinus,
+/obj/item/reagent_containers/blood/OMinus,
+/obj/item/reagent_containers/blood/OMinus,
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
 	dir = 9
 	},
@@ -1100,7 +1066,7 @@
 /obj/structure/table/standard{
 	name = "plastic table frame"
 	},
-/obj/item/weapon/material/ashtray/plastic,
+/obj/item/material/ashtray/plastic,
 /turf/simulated/floor/tiled/white,
 /area/medical/medbayskybridge)
 "cH" = (
@@ -1176,15 +1142,15 @@
 	req_access = list();
 	req_one_access = list()
 	},
-/obj/item/weapon/reagent_containers/hypospray/autoinjector/biginjector/clotting,
-/obj/item/weapon/reagent_containers/hypospray/autoinjector/biginjector/brute,
-/obj/item/weapon/reagent_containers/hypospray/autoinjector/biginjector/brute,
-/obj/item/weapon/reagent_containers/hypospray/autoinjector/biginjector/burn,
-/obj/item/weapon/reagent_containers/hypospray/autoinjector/biginjector/burn,
-/obj/item/weapon/reagent_containers/syringe/antiviral,
-/obj/item/weapon/reagent_containers/syringe/antiviral,
-/obj/item/weapon/reagent_containers/syringe/inaprovaline,
-/obj/item/weapon/storage/firstaid/regular,
+/obj/item/reagent_containers/hypospray/autoinjector/biginjector/clotting,
+/obj/item/reagent_containers/hypospray/autoinjector/biginjector/brute,
+/obj/item/reagent_containers/hypospray/autoinjector/biginjector/brute,
+/obj/item/reagent_containers/hypospray/autoinjector/biginjector/burn,
+/obj/item/reagent_containers/hypospray/autoinjector/biginjector/burn,
+/obj/item/reagent_containers/syringe/antiviral,
+/obj/item/reagent_containers/syringe/antiviral,
+/obj/item/reagent_containers/syringe/inaprovaline,
+/obj/item/storage/firstaid/regular,
 /turf/simulated/floor/tiled/techmaint,
 /area/shuttle/excursion)
 "cQ" = (
@@ -1192,8 +1158,6 @@
 	dir = 4
 	},
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled/white,
@@ -1321,7 +1285,6 @@
 /obj/machinery/door/firedoor/glass,
 /obj/effect/wingrille_spawn/reinforced,
 /obj/structure/cable/green{
-	d2 = 4;
 	icon_state = "0-4"
 	},
 /turf/simulated/floor/plating,
@@ -1354,12 +1317,10 @@
 	name = "Port Solar Array"
 	},
 /obj/structure/cable/yellow{
-	d2 = 4;
 	dir = 8;
 	icon_state = "0-4"
 	},
 /obj/structure/cable/yellow{
-	d2 = 2;
 	icon_state = "0-2"
 	},
 /turf/simulated/floor/plating/snow/plating/cryogaia,
@@ -1406,14 +1367,14 @@
 /obj/effect/floor_decal/corner/paleblue/diagonal{
 	dir = 4
 	},
-/obj/item/device/geiger/wall{
+/obj/item/geiger/wall{
 	dir = 4;
 	pixel_x = -30
 	},
 /turf/simulated/floor/tiled/white,
 /area/crew_quarters/medbreak)
 "dq" = (
-/obj/item/device/geiger/wall{
+/obj/item/geiger/wall{
 	dir = 1;
 	pixel_y = -30
 	},
@@ -1479,16 +1440,12 @@
 	dir = 6
 	},
 /obj/structure/cable/yellow{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled/techfloor/grid,
 /area/shuttle/excursion)
 "dx" = (
 /obj/structure/cable/yellow{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/atmospherics/pipe/manifold/hidden{
@@ -1500,16 +1457,12 @@
 /area/shuttle/excursion)
 "dy" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/reinforced,
 /area/cryogaia/station/excursion_dock)
 "dA" = (
 /obj/structure/cable/yellow{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/atmospherics/pipe/manifold/hidden{
@@ -1519,8 +1472,6 @@
 /area/shuttle/excursion)
 "dB" = (
 /obj/structure/cable/yellow{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/atmospherics/pipe/manifold4w/hidden,
@@ -1543,8 +1494,6 @@
 	dir = 4
 	},
 /obj/structure/cable/yellow{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled/techfloor/grid,
@@ -1559,8 +1508,6 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
 /obj/structure/cable/yellow{
-	d1 = 2;
-	d2 = 8;
 	icon_state = "2-8"
 	},
 /obj/machinery/atmospherics/pipe/manifold/hidden{
@@ -1620,8 +1567,6 @@
 /area/borealis2/outdoors/grounds/upper)
 "dK" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
@@ -1663,7 +1608,6 @@
 /area/chapel/monastery/upper)
 "dO" = (
 /obj/structure/cable{
-	d2 = 2;
 	icon_state = "0-2"
 	},
 /obj/machinery/power/apc{
@@ -1675,10 +1619,8 @@
 /area/constructionsite/cryogaia/upper)
 "dP" = (
 /obj/effect/decal/cleanable/dirt,
-/obj/item/weapon/stool,
+/obj/item/stool,
 /obj/structure/cable/yellow{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/plating/snow/plating,
@@ -1721,7 +1663,7 @@
 /turf/simulated/floor/tiled,
 /area/civilian/atrium/upper)
 "dV" = (
-/obj/item/device/geiger/wall{
+/obj/item/geiger/wall{
 	dir = 4;
 	pixel_x = -30
 	},
@@ -1748,8 +1690,6 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
 /obj/structure/cable/yellow{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden,
@@ -1807,8 +1747,6 @@
 /obj/item/stack/cable_coil/lime,
 /obj/structure/table/standard,
 /obj/structure/cable/yellow{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/plating/snow/plating,
@@ -1828,7 +1766,7 @@
 /obj/structure/table/standard{
 	name = "plastic table frame"
 	},
-/obj/item/weapon/storage/box/cups,
+/obj/item/storage/box/cups,
 /obj/machinery/holoposter{
 	dir = 8;
 	pixel_x = 30
@@ -1847,8 +1785,6 @@
 /area/cryogaia/station/excursion_dock)
 "ek" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
@@ -1869,8 +1805,6 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
 /obj/machinery/door/firedoor/glass,
 /obj/structure/cable/yellow{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/machinery/door/airlock/voidcraft/vertical,
@@ -1913,8 +1847,6 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
 /obj/structure/cable/yellow{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden,
@@ -1924,7 +1856,7 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/yellow,
 /obj/effect/floor_decal/industrial/outline/red,
 /obj/structure/closet/secure_closet/guncabinet/excursion,
-/obj/item/weapon/pickaxe,
+/obj/item/pickaxe,
 /obj/structure/window/reinforced{
 	dir = 8
 	},
@@ -2041,8 +1973,6 @@
 	dir = 4
 	},
 /obj/structure/cable/yellow{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled/techfloor/grid,
@@ -2055,8 +1985,6 @@
 	dir = 4
 	},
 /obj/structure/cable/yellow{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/yellow,
@@ -2066,8 +1994,6 @@
 /obj/machinery/atmospherics/pipe/manifold/hidden/supply,
 /obj/machinery/atmospherics/pipe/manifold/hidden/scrubbers,
 /obj/structure/cable/yellow{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden{
@@ -2172,8 +2098,6 @@
 /area/borealis2/outdoors/grounds/tower/southeast)
 "eV" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/wood,
@@ -2245,8 +2169,6 @@
 	},
 /obj/structure/plasticflaps,
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/yellow{
@@ -2259,8 +2181,6 @@
 	id = "shuttle_outbound"
 	},
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/atmospherics/pipe/manifold/hidden/yellow,
@@ -2269,8 +2189,6 @@
 "fi" = (
 /obj/effect/floor_decal/industrial/outline/yellow,
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/yellow{
@@ -2284,8 +2202,6 @@
 	dir = 1
 	},
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled/techfloor/grid,
@@ -2308,8 +2224,6 @@
 	dir = 1
 	},
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled/techfloor/grid,
@@ -2330,8 +2244,6 @@
 /area/chapel/monastery/upper)
 "fo" = (
 /obj/structure/cable/green{
-	d1 = 2;
-	d2 = 8;
 	icon_state = "2-8"
 	},
 /turf/simulated/floor/tiled/techfloor,
@@ -2352,7 +2264,7 @@
 /obj/structure/fuel_port{
 	pixel_y = 32
 	},
-/obj/item/weapon/tank/phoron,
+/obj/item/tank/phoron,
 /turf/simulated/floor/tiled/techfloor/grid,
 /area/shuttle/excursion)
 "ft" = (
@@ -2394,7 +2306,7 @@
 /obj/structure/table/steel,
 /obj/random/maintenance/engineering,
 /obj/item/clothing/glasses/welding,
-/obj/item/weapon/weldingtool,
+/obj/item/weldingtool,
 /turf/simulated/floor/tiled/techmaint,
 /area/cryogaia/station/excursion_dock)
 "fy" = (
@@ -2514,8 +2426,6 @@
 /area/shuttle/excursion)
 "fM" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/yellow{
@@ -2596,8 +2506,6 @@
 	specialfunctions = 4
 	},
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/tiled/techfloor/grid,
@@ -2642,7 +2550,7 @@
 /obj/effect/floor_decal/corner/red{
 	dir = 6
 	},
-/obj/item/device/radio/intercom/department/security{
+/obj/item/radio/intercom/department/security{
 	dir = 4;
 	pixel_x = 24
 	},
@@ -2682,8 +2590,6 @@
 /area/borealis2/elevator/uppermining)
 "gj" = (
 /obj/structure/cable/yellow{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/plating/snow/plating/cryogaia,
@@ -2691,8 +2597,8 @@
 "gk" = (
 /obj/structure/table/rack/shelf,
 /obj/item/clothing/shoes/magboots,
-/obj/item/device/suit_cooling_unit,
-/obj/item/weapon/tank/oxygen,
+/obj/item/suit_cooling_unit,
+/obj/item/tank/oxygen,
 /obj/item/clothing/suit/space/void/medical,
 /obj/item/clothing/head/helmet/space/void/medical,
 /obj/machinery/light{
@@ -2707,14 +2613,14 @@
 "gm" = (
 /obj/structure/table/rack/shelf,
 /obj/item/clothing/shoes/magboots,
-/obj/item/device/suit_cooling_unit,
-/obj/item/weapon/tank/oxygen,
+/obj/item/suit_cooling_unit,
+/obj/item/tank/oxygen,
 /obj/item/clothing/suit/space/void/medical,
 /obj/item/clothing/head/helmet/space/void/medical,
 /turf/simulated/floor/tiled/steel_grid,
 /area/cryogaia/station/explorer_prep)
 "gn" = (
-/obj/item/device/bluespaceradio/cryogaia_prelinked,
+/obj/item/bluespaceradio/cryogaia_prelinked,
 /obj/structure/table/rack/shelf,
 /obj/machinery/light{
 	dir = 1
@@ -2733,16 +2639,14 @@
 	dir = 1
 	},
 /obj/structure/cable/green{
-	d1 = 2;
-	d2 = 4;
 	icon_state = "2-4"
 	},
 /turf/simulated/floor/tiled/white,
 /area/medical/medbayupper)
 "gr" = (
 /obj/structure/table/rack/shelf,
-/obj/item/weapon/tank/oxygen,
-/obj/item/device/suit_cooling_unit,
+/obj/item/tank/oxygen,
+/obj/item/suit_cooling_unit,
 /obj/item/clothing/shoes/magboots,
 /obj/item/clothing/suit/space/void/pilot,
 /obj/item/clothing/head/helmet/space/void/pilot,
@@ -2766,8 +2670,8 @@
 /area/quartermaster/miningdock)
 "gu" = (
 /obj/structure/table/rack/shelf,
-/obj/item/weapon/tank/oxygen,
-/obj/item/device/suit_cooling_unit,
+/obj/item/tank/oxygen,
+/obj/item/suit_cooling_unit,
 /obj/item/clothing/shoes/magboots,
 /obj/item/clothing/suit/space/void/pilot/alt,
 /obj/item/clothing/head/helmet/space/void/pilot/alt,
@@ -2803,7 +2707,7 @@
 /obj/structure/handrail{
 	dir = 1
 	},
-/obj/item/device/geiger/wall{
+/obj/item/geiger/wall{
 	dir = 4;
 	pixel_x = -30
 	},
@@ -2819,8 +2723,6 @@
 /area/borealis2/outdoors/grounds/tower/northeast)
 "gA" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/machinery/door/airlock/maintenance/cargo,
@@ -3004,8 +2906,6 @@
 "gX" = (
 /obj/effect/wingrille_spawn/reinforced,
 /obj/structure/cable/yellow{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/plating/snow/plating,
@@ -3018,8 +2918,6 @@
 	dir = 1
 	},
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/tiled,
@@ -3068,8 +2966,8 @@
 /obj/structure/table/standard{
 	name = "plastic table frame"
 	},
-/obj/item/weapon/reagent_containers/food/drinks/britcup,
-/obj/item/weapon/reagent_containers/food/drinks/britcup,
+/obj/item/reagent_containers/food/drinks/britcup,
+/obj/item/reagent_containers/food/drinks/britcup,
 /obj/effect/floor_decal/corner/paleblue/diagonal{
 	dir = 4
 	},
@@ -3084,8 +2982,6 @@
 /area/cryogaia/station/explorer_prep)
 "hh" = (
 /obj/structure/cable/green{
-	d1 = 2;
-	d2 = 4;
 	icon_state = "2-4"
 	},
 /obj/machinery/atmospherics/pipe/manifold/hidden/scrubbers{
@@ -3101,8 +2997,6 @@
 /area/cryogaia/station/excursion_dock)
 "hi" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
@@ -3123,8 +3017,6 @@
 	dir = 4
 	},
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/effect/floor_decal/corner_oldtile/gray,
@@ -3159,8 +3051,6 @@
 	dir = 4
 	},
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/camera/network/exploration{
@@ -3181,8 +3071,6 @@
 /area/medical/medbayskybridge)
 "ho" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 4;
 	icon_state = "1-4"
 	},
 /turf/simulated/wall/r_wall,
@@ -3195,8 +3083,6 @@
 	dir = 4
 	},
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/power/apc{
@@ -3205,7 +3091,6 @@
 	req_access = list(67)
 	},
 /obj/structure/cable/green{
-	d2 = 8;
 	icon_state = "0-8"
 	},
 /obj/effect/floor_decal/corner_oldtile/gray,
@@ -3222,8 +3107,6 @@
 	dir = 4
 	},
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/effect/floor_decal/corner_oldtile/gray,
@@ -3237,7 +3120,7 @@
 	dir = 6
 	},
 /obj/structure/table/steel,
-/obj/item/device/radio,
+/obj/item/radio,
 /turf/simulated/floor/tiled,
 /area/security/watchtower)
 "hs" = (
@@ -3249,8 +3132,6 @@
 	dir = 4
 	},
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/effect/floor_decal/corner_oldtile/gray,
@@ -3281,11 +3162,9 @@
 /area/cryogaia/station/excursion_dock)
 "hy" = (
 /obj/structure/cable/green{
-	d1 = 2;
-	d2 = 4;
 	icon_state = "2-4"
 	},
-/obj/item/device/radio/intercom/department/security{
+/obj/item/radio/intercom/department/security{
 	dir = 8;
 	pixel_x = -24
 	},
@@ -3328,19 +3207,19 @@
 /area/cryogaia/station/explorer_prep)
 "hC" = (
 /obj/structure/table/rack/shelf,
-/obj/item/device/radio{
+/obj/item/radio{
 	pixel_x = -4;
 	pixel_y = -4
 	},
-/obj/item/device/radio{
+/obj/item/radio{
 	pixel_x = 5;
 	pixel_y = -4
 	},
-/obj/item/device/radio{
+/obj/item/radio{
 	pixel_x = -4;
 	pixel_y = 4
 	},
-/obj/item/device/radio{
+/obj/item/radio{
 	pixel_x = 5;
 	pixel_y = 4
 	},
@@ -3389,8 +3268,6 @@
 /area/security/watchtower)
 "hG" = (
 /obj/structure/cable/yellow{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/plating/snow/plating/cryogaia,
@@ -3430,7 +3307,6 @@
 	pixel_x = 24
 	},
 /obj/structure/cable{
-	d2 = 2;
 	icon_state = "0-2"
 	},
 /turf/simulated/floor/tiled,
@@ -3441,8 +3317,6 @@
 	req_one_access = list()
 	},
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
@@ -3462,11 +3336,9 @@
 	},
 /obj/machinery/door/firedoor/glass,
 /obj/structure/cable/green{
-	d2 = 4;
 	icon_state = "0-4"
 	},
 /obj/structure/cable/green{
-	d2 = 2;
 	icon_state = "0-2"
 	},
 /obj/structure/window/reinforced/polarized/full{
@@ -3482,11 +3354,9 @@
 	},
 /obj/machinery/door/firedoor/glass,
 /obj/structure/cable/green{
-	d2 = 4;
 	icon_state = "0-4"
 	},
 /obj/structure/cable/green{
-	d2 = 8;
 	icon_state = "0-8"
 	},
 /obj/structure/window/reinforced/polarized/full{
@@ -3502,7 +3372,6 @@
 	},
 /obj/machinery/door/firedoor/glass,
 /obj/structure/cable/green{
-	d2 = 8;
 	icon_state = "0-8"
 	},
 /obj/structure/window/reinforced/polarized/full{
@@ -3546,8 +3415,6 @@
 /area/cryogaia/station/explorer_prep)
 "hX" = (
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/tiled,
@@ -3557,8 +3424,6 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
 /obj/structure/disposalpipe/segment,
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/effect/floor_decal/borderfloorblack{
@@ -3589,7 +3454,7 @@
 /area/cryogaia/station/explorer_prep)
 "ib" = (
 /obj/structure/filingcabinet/filingcabinet,
-/obj/item/device/radio/intercom{
+/obj/item/radio/intercom{
 	dir = 8;
 	pixel_x = -24
 	},
@@ -3624,7 +3489,6 @@
 	pixel_x = 24
 	},
 /obj/structure/cable/green{
-	d2 = 8;
 	icon_state = "0-8"
 	},
 /turf/simulated/floor/plating,
@@ -3660,8 +3524,6 @@
 /area/maintenance/medical_upper)
 "ij" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/effect/floor_decal/corner_oldtile/gray{
@@ -3705,11 +3567,11 @@
 /area/cryogaia/station/pathfinder_office)
 "im" = (
 /obj/structure/table/rack/shelf,
-/obj/item/device/gps/explorer{
+/obj/item/gps/explorer{
 	pixel_x = -6;
 	pixel_y = -4
 	},
-/obj/item/device/gps/explorer{
+/obj/item/gps/explorer{
 	pixel_x = 5;
 	pixel_y = -4
 	},
@@ -3744,7 +3606,6 @@
 	dir = 6
 	},
 /obj/structure/closet,
-/obj/item/clothing/suit/storage/explorer/engineering,
 /obj/item/clothing/under/explorer/utility/engineering,
 /obj/item/clothing/under/explorer/utility/engineering,
 /obj/item/clothing/shoes/boots/winter/explorer,
@@ -3783,8 +3644,6 @@
 	dir = 4
 	},
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/effect/floor_decal/corner_oldtile/gray,
@@ -3798,8 +3657,6 @@
 	dir = 4
 	},
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/camera/network/exploration{
@@ -3820,8 +3677,6 @@
 	dir = 4
 	},
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 4;
 	icon_state = "1-4"
 	},
 /turf/simulated/floor/tiled,
@@ -3842,8 +3697,6 @@
 	dir = 2
 	},
 /obj/structure/cable{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled,
@@ -3874,16 +3727,12 @@
 	icon_state = "pipe-j2"
 	},
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/structure/cable{
 	icon_state = "2-8"
 	},
 /obj/structure/cable{
-	d1 = 2;
-	d2 = 4;
 	icon_state = "2-4"
 	},
 /turf/simulated/floor/tiled,
@@ -3899,8 +3748,6 @@
 	dir = 4
 	},
 /obj/structure/cable{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled,
@@ -3923,8 +3770,6 @@
 	},
 /obj/machinery/door/firedoor/glass,
 /obj/structure/cable{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled,
@@ -3947,13 +3792,9 @@
 	dir = 4
 	},
 /obj/structure/cable/green{
-	d1 = 2;
-	d2 = 8;
 	icon_state = "2-8"
 	},
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/structure/disposalpipe/segment{
@@ -3987,8 +3828,6 @@
 	dir = 4
 	},
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/structure/disposalpipe/segment{
@@ -4001,13 +3840,9 @@
 	dir = 4
 	},
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /obj/structure/cable/green{
-	d1 = 2;
-	d2 = 8;
 	icon_state = "2-8"
 	},
 /obj/structure/disposalpipe/segment{
@@ -4054,19 +3889,19 @@
 /area/cryogaia/station/pathfinder_office)
 "iO" = (
 /obj/structure/table/rack/shelf,
-/obj/item/device/radio{
+/obj/item/radio{
 	pixel_x = -4;
 	pixel_y = -4
 	},
-/obj/item/device/radio{
+/obj/item/radio{
 	pixel_x = 5;
 	pixel_y = -4
 	},
-/obj/item/device/radio{
+/obj/item/radio{
 	pixel_x = -4;
 	pixel_y = 4
 	},
-/obj/item/device/radio{
+/obj/item/radio{
 	pixel_x = 5;
 	pixel_y = 4
 	},
@@ -4077,8 +3912,6 @@
 /area/cryogaia/station/explorer_prep)
 "iQ" = (
 /obj/structure/closet,
-/obj/item/clothing/suit/storage/explorer/security,
-/obj/item/clothing/suit/storage/explorer/security,
 /obj/item/clothing/under/explorer/utility/security,
 /obj/item/clothing/under/explorer/utility/security,
 /obj/item/clothing/shoes/boots/winter/explorer,
@@ -4087,8 +3920,6 @@
 /area/cryogaia/station/explorer_prep)
 "iR" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/structure/disposalpipe/segment,
@@ -4153,8 +3984,6 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
 /obj/structure/disposalpipe/segment,
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/effect/floor_decal/corner_oldtile/gray{
@@ -4167,7 +3996,7 @@
 /area/cryogaia/station/explorer_prep)
 "jb" = (
 /obj/machinery/power/apc{
-	cell_type = /obj/item/weapon/cell/super;
+	cell_type = /obj/item/cell/super;
 	dir = 8;
 	name = "west bump";
 	pixel_x = -28
@@ -4217,8 +4046,6 @@
 /area/cryogaia/station/pathfinder_office)
 "jf" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/machinery/disposal,
@@ -4233,11 +4060,11 @@
 /area/cryogaia/station/pathfinder_office)
 "jg" = (
 /obj/structure/table/woodentable,
-/obj/item/weapon/paper_bin{
+/obj/item/paper_bin{
 	pixel_x = 1;
 	pixel_y = 9
 	},
-/obj/item/weapon/pen,
+/obj/item/pen,
 /obj/machinery/atmospherics/unary/vent_scrubber/on{
 	dir = 1
 	},
@@ -4254,7 +4081,7 @@
 	pixel_x = 26;
 	pixel_y = -26
 	},
-/obj/item/device/binoculars,
+/obj/item/binoculars,
 /obj/effect/floor_decal/corner_oldtile/gray,
 /obj/effect/floor_decal/corner_oldtile/gray{
 	dir = 8
@@ -4282,8 +4109,8 @@
 /area/constructionsite/medical/upper)
 "jl" = (
 /obj/structure/table/rack/shelf,
-/obj/item/weapon/tank/oxygen,
-/obj/item/device/suit_cooling_unit,
+/obj/item/tank/oxygen,
+/obj/item/suit_cooling_unit,
 /obj/effect/floor_decal/steeldecal/steel_decals9,
 /obj/effect/floor_decal/steeldecal/steel_decals9{
 	dir = 4
@@ -4316,7 +4143,6 @@
 	dir = 4
 	},
 /obj/structure/cable/green{
-	d2 = 4;
 	icon_state = "0-4"
 	},
 /turf/simulated/floor/tiled/white,
@@ -4402,7 +4228,6 @@
 /obj/structure/grille,
 /obj/machinery/door/firedoor/glass,
 /obj/structure/cable/green{
-	d2 = 4;
 	icon_state = "0-4"
 	},
 /obj/structure/cable/green,
@@ -4414,8 +4239,6 @@
 /area/cryogaia/station/pathfinder_office)
 "jz" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /turf/simulated/wall,
@@ -4425,11 +4248,9 @@
 /obj/structure/window/reinforced/polarized,
 /obj/machinery/door/firedoor/glass,
 /obj/structure/cable/green{
-	d2 = 4;
 	icon_state = "0-4"
 	},
 /obj/structure/cable/green{
-	d2 = 8;
 	icon_state = "0-8"
 	},
 /obj/structure/window/reinforced/polarized/full{
@@ -4442,7 +4263,6 @@
 /obj/structure/window/reinforced/polarized,
 /obj/machinery/door/firedoor/glass,
 /obj/structure/cable/green{
-	d2 = 8;
 	icon_state = "0-8"
 	},
 /obj/structure/window/reinforced/polarized/full{
@@ -4452,19 +4272,19 @@
 /area/cryogaia/station/pathfinder_office)
 "jC" = (
 /obj/structure/table/rack/shelf,
-/obj/item/weapon/storage/backpack/parachute{
+/obj/item/storage/backpack/parachute{
 	pixel_x = -4;
 	pixel_y = 4
 	},
-/obj/item/weapon/storage/backpack/parachute{
+/obj/item/storage/backpack/parachute{
 	pixel_x = 5;
 	pixel_y = 4
 	},
-/obj/item/weapon/storage/backpack/parachute{
+/obj/item/storage/backpack/parachute{
 	pixel_x = -4;
 	pixel_y = -6
 	},
-/obj/item/weapon/storage/backpack/parachute{
+/obj/item/storage/backpack/parachute{
 	pixel_x = 5;
 	pixel_y = -6
 	},
@@ -4487,8 +4307,6 @@
 /area/cryogaia/station/explorer_prep)
 "jF" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
@@ -4585,7 +4403,7 @@
 /obj/machinery/light{
 	dir = 4
 	},
-/obj/item/device/radio/intercom{
+/obj/item/radio/intercom{
 	dir = 4;
 	pixel_x = 24
 	},
@@ -4607,12 +4425,9 @@
 /obj/machinery/door/firedoor/glass,
 /obj/effect/wingrille_spawn/reinforced,
 /obj/structure/cable/green{
-	d1 = 2;
-	d2 = 4;
 	icon_state = "2-4"
 	},
 /obj/structure/cable/green{
-	d2 = 2;
 	icon_state = "0-2"
 	},
 /turf/simulated/floor/plating,
@@ -4688,8 +4503,6 @@
 	dir = 5
 	},
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 4;
 	icon_state = "1-4"
 	},
 /turf/simulated/floor/tiled,
@@ -4711,7 +4524,7 @@
 "kd" = (
 /obj/structure/table/woodentable,
 /obj/machinery/atmospherics/unary/vent_scrubber/on,
-/obj/item/device/instrument/harmonica,
+/obj/item/instrument/harmonica,
 /turf/simulated/floor/wood,
 /area/chapel/monastery/music)
 "ke" = (
@@ -4757,8 +4570,8 @@
 /area/quartermaster/miningdock)
 "kk" = (
 /obj/structure/table/rack/shelf,
-/obj/item/weapon/tank/oxygen,
-/obj/item/device/suit_cooling_unit,
+/obj/item/tank/oxygen,
+/obj/item/suit_cooling_unit,
 /obj/effect/floor_decal/steeldecal/steel_decals9{
 	dir = 8
 	},
@@ -4782,7 +4595,7 @@
 /turf/simulated/floor/tiled/cryogaia/cryogaia,
 /area/borealis2/outdoors/grounds/upper)
 "km" = (
-/obj/item/device/geiger/wall{
+/obj/item/geiger/wall{
 	dir = 8;
 	pixel_x = 30
 	},
@@ -4790,7 +4603,7 @@
 /area/chapel/monastery/upper)
 "kn" = (
 /obj/structure/table/rack/shelf,
-/obj/item/weapon/tank/oxygen,
+/obj/item/tank/oxygen,
 /obj/effect/floor_decal/steeldecal/steel_decals9{
 	dir = 8
 	},
@@ -4801,7 +4614,7 @@
 /obj/effect/floor_decal/steeldecal/steel_decals9{
 	dir = 4
 	},
-/obj/item/device/suit_cooling_unit,
+/obj/item/suit_cooling_unit,
 /obj/item/clothing/shoes/magboots,
 /obj/item/clothing/suit/space/void/exploration,
 /obj/item/clothing/head/helmet/space/void/exploration,
@@ -4863,8 +4676,6 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/effect/floor_decal/corner_oldtile/gray{
@@ -4925,7 +4736,6 @@
 	health = 1e+006
 	},
 /obj/structure/cable{
-	d2 = 4;
 	icon_state = "0-4"
 	},
 /turf/simulated/floor/plating/snow/plating/cryogaia,
@@ -5115,8 +4925,6 @@
 /area/borealis2/outdoors/grounds/tower/northeast)
 "kY" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
@@ -5205,8 +5013,6 @@
 /obj/structure/disposalpipe/segment,
 /obj/machinery/door/firedoor/multi_tile,
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/tiled,
@@ -5230,7 +5036,7 @@
 /obj/machinery/light{
 	dir = 1
 	},
-/obj/item/device/radio/intercom{
+/obj/item/radio/intercom{
 	dir = 1;
 	name = "Common Channel";
 	pixel_y = 21
@@ -5239,8 +5045,6 @@
 /area/civilian/atrium/upper)
 "ll" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/effect/wingrille_spawn/reinforced,
@@ -5250,7 +5054,7 @@
 /obj/machinery/light{
 	dir = 4
 	},
-/obj/item/device/geiger/wall{
+/obj/item/geiger/wall{
 	dir = 8;
 	pixel_x = 30
 	},
@@ -5293,8 +5097,6 @@
 /area/cryogaia/station/explorer_meeting)
 "lr" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/machinery/power/apc{
@@ -5339,8 +5141,6 @@
 	dir = 5
 	},
 /obj/structure/cable{
-	d1 = 2;
-	d2 = 4;
 	icon_state = "2-4"
 	},
 /turf/simulated/floor/tiled,
@@ -5356,8 +5156,6 @@
 	dir = 4
 	},
 /obj/structure/cable{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled,
@@ -5371,32 +5169,24 @@
 	},
 /obj/structure/disposalpipe/junction,
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/structure/cable{
 	icon_state = "2-8"
 	},
 /obj/structure/cable{
-	d1 = 2;
-	d2 = 4;
 	icon_state = "2-4"
 	},
 /turf/simulated/floor/tiled,
 /area/cryogaia/station/explorer_entrance)
 "lz" = (
 /obj/structure/cable{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled,
 /area/cryogaia/station/explorer_entrance)
 "lA" = (
 /obj/structure/cable{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/effect/floor_decal/corner_oldtile/gray{
@@ -5412,8 +5202,6 @@
 /area/borealis2/outdoors/grounds/tower/west)
 "lC" = (
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
@@ -5429,7 +5217,6 @@
 /area/constructionsite/cryogaia/upper)
 "lD" = (
 /obj/structure/cable{
-	d2 = 8;
 	icon_state = "0-8"
 	},
 /obj/machinery/power/apc{
@@ -5459,8 +5246,6 @@
 /area/cryogaia/station/explorer_entrance)
 "lF" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/structure/filingcabinet,
@@ -5498,7 +5283,7 @@
 /area/cryogaia/station/explorer_meeting)
 "lJ" = (
 /obj/structure/table/woodentable,
-/obj/item/weapon/paper_bin{
+/obj/item/paper_bin{
 	pixel_x = 1;
 	pixel_y = 9
 	},
@@ -5506,12 +5291,12 @@
 /area/cryogaia/station/explorer_meeting)
 "lK" = (
 /obj/structure/table/woodentable,
-/obj/item/weapon/pen,
+/obj/item/pen,
 /turf/simulated/floor/tiled,
 /area/cryogaia/station/explorer_meeting)
 "lM" = (
 /obj/structure/table/woodentable,
-/obj/item/weapon/folder/blue,
+/obj/item/folder/blue,
 /turf/simulated/floor/tiled,
 /area/cryogaia/station/explorer_meeting)
 "lN" = (
@@ -5521,8 +5306,6 @@
 "lO" = (
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/tiled,
@@ -5547,8 +5330,6 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
 /obj/structure/disposalpipe/segment,
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/tiled,
@@ -5590,8 +5371,6 @@
 	icon_state = "4-8"
 	},
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /obj/machinery/light/small,
@@ -5605,8 +5384,6 @@
 /area/constructionsite/cryogaia/upper)
 "lY" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
@@ -5640,12 +5417,12 @@
 /area/borealis2/outdoors/grounds/tower/northwest)
 "mc" = (
 /obj/structure/table/woodentable,
-/obj/item/weapon/folder/yellow,
+/obj/item/folder/yellow,
 /turf/simulated/floor/tiled,
 /area/cryogaia/station/explorer_meeting)
 "md" = (
 /obj/structure/table/woodentable,
-/obj/item/device/universal_translator,
+/obj/item/universal_translator,
 /turf/simulated/floor/tiled,
 /area/cryogaia/station/explorer_meeting)
 "me" = (
@@ -5669,8 +5446,6 @@
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/effect/floor_decal/corner_oldtile/gray{
@@ -5683,13 +5458,13 @@
 /area/cryogaia/station/explorer_entrance)
 "mg" = (
 /obj/structure/table/woodentable,
-/obj/item/weapon/folder/yellow,
+/obj/item/folder/yellow,
 /turf/simulated/floor/tiled,
 /area/cryogaia/station/explorer_entrance)
 "mh" = (
 /obj/structure/table/woodentable,
-/obj/item/weapon/paper_bin,
-/obj/item/weapon/pen,
+/obj/item/paper_bin,
+/obj/item/pen,
 /turf/simulated/floor/tiled,
 /area/cryogaia/station/explorer_entrance)
 "mi" = (
@@ -5713,14 +5488,14 @@
 /obj/structure/closet/crate/centauri{
 	name = "Liquid Rations"
 	},
-/obj/item/weapon/reagent_containers/food/snacks/liquidfood,
-/obj/item/weapon/reagent_containers/food/snacks/liquidfood,
-/obj/item/weapon/reagent_containers/food/snacks/liquidfood,
-/obj/item/weapon/reagent_containers/food/snacks/liquidfood,
-/obj/item/weapon/reagent_containers/food/snacks/liquidprotein,
-/obj/item/weapon/reagent_containers/food/snacks/liquidprotein,
-/obj/item/weapon/reagent_containers/food/snacks/liquidprotein,
-/obj/item/weapon/reagent_containers/food/snacks/liquidprotein,
+/obj/item/reagent_containers/food/snacks/liquidfood,
+/obj/item/reagent_containers/food/snacks/liquidfood,
+/obj/item/reagent_containers/food/snacks/liquidfood,
+/obj/item/reagent_containers/food/snacks/liquidfood,
+/obj/item/reagent_containers/food/snacks/liquidprotein,
+/obj/item/reagent_containers/food/snacks/liquidprotein,
+/obj/item/reagent_containers/food/snacks/liquidprotein,
+/obj/item/reagent_containers/food/snacks/liquidprotein,
 /turf/simulated/floor/tiled,
 /area/quartermaster/miningdock)
 "ml" = (
@@ -5797,7 +5572,7 @@
 /obj/structure/bed/chair{
 	dir = 8
 	},
-/obj/item/device/radio/intercom{
+/obj/item/radio/intercom{
 	name = "Common Channel";
 	pixel_y = -21
 	},
@@ -5843,8 +5618,6 @@
 	dir = 5
 	},
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 4;
 	icon_state = "1-4"
 	},
 /obj/machinery/light{
@@ -5869,8 +5642,6 @@
 	dir = 4
 	},
 /obj/structure/cable{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled,
@@ -5886,8 +5657,6 @@
 	dir = 4
 	},
 /obj/structure/cable{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled,
@@ -5927,11 +5696,11 @@
 	},
 /obj/effect/floor_decal/corner_oldtile/gray,
 /obj/structure/table/standard,
-/obj/item/weapon/storage/box/cups,
+/obj/item/storage/box/cups,
 /turf/simulated/floor/tiled,
 /area/cryogaia/station/explorer_entrance)
 "mG" = (
-/obj/item/device/radio/intercom{
+/obj/item/radio/intercom{
 	dir = 4;
 	pixel_x = 24
 	},
@@ -5980,8 +5749,6 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/tiled,
@@ -6051,15 +5818,13 @@
 /area/cryogaia/station/explorer_meeting)
 "mU" = (
 /obj/structure/cable{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/plating,
 /area/borealis2/elevator/medupper)
 "mV" = (
 /obj/structure/table/woodentable,
-/obj/item/device/camera,
+/obj/item/camera,
 /obj/effect/floor_decal/corner_oldtile/gray,
 /obj/effect/floor_decal/corner_oldtile/gray{
 	dir = 8
@@ -6083,7 +5848,7 @@
 /area/cryogaia/station/explorer_meeting)
 "mX" = (
 /obj/structure/table/woodentable,
-/obj/item/device/taperecorder,
+/obj/item/taperecorder,
 /obj/effect/floor_decal/corner_oldtile/gray,
 /obj/effect/floor_decal/corner_oldtile/gray{
 	dir = 8
@@ -6124,12 +5889,12 @@
 /turf/simulated/floor/tiled,
 /area/cryogaia/station/explorer_meeting)
 "nb" = (
-/obj/item/device/radio/intercom{
+/obj/item/radio/intercom{
 	dir = 8;
 	pixel_x = -24
 	},
 /obj/structure/table/glass,
-/obj/item/weapon/material/ashtray/plastic,
+/obj/item/material/ashtray/plastic,
 /obj/effect/floor_decal/corner_oldtile/gray{
 	dir = 8
 	},
@@ -6158,7 +5923,7 @@
 /obj/item/clothing/suit/space/void/mining,
 /obj/item/clothing/mask/breath,
 /obj/item/clothing/head/helmet/space/void/mining,
-/obj/item/weapon/mining_scanner,
+/obj/item/mining_scanner,
 /turf/simulated/floor/tiled,
 /area/quartermaster/miningdock)
 "ne" = (
@@ -6192,8 +5957,6 @@
 	name = "Exploration lobby"
 	},
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/tiled,
@@ -6206,7 +5969,7 @@
 /area/borealis2/outdoors/grounds/tower/southeast)
 "ni" = (
 /obj/structure/bookcase/manuals/medical,
-/obj/item/weapon/book/manual/stasis,
+/obj/item/book/manual/stasis,
 /obj/effect/floor_decal/corner/paleblue/diagonal{
 	dir = 4
 	},
@@ -6231,7 +5994,6 @@
 	dir = 8
 	},
 /obj/structure/cable{
-	d2 = 2;
 	icon_state = "0-2"
 	},
 /turf/simulated/floor/tiled/techmaint,
@@ -6245,8 +6007,6 @@
 /area/borealis2/outdoors/grounds/tower/west)
 "nm" = (
 /obj/structure/cable/green{
-	d1 = 2;
-	d2 = 8;
 	icon_state = "2-8"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
@@ -6341,8 +6101,6 @@
 	},
 /obj/effect/floor_decal/rust,
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 4;
 	icon_state = "1-4"
 	},
 /turf/simulated/floor/tiled/techmaint,
@@ -6351,8 +6109,6 @@
 /obj/effect/floor_decal/industrial/warning/dust,
 /obj/effect/floor_decal/rust,
 /obj/structure/cable{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled/techmaint,
@@ -6363,8 +6119,6 @@
 	},
 /obj/effect/floor_decal/rust,
 /obj/structure/cable{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled/techmaint,
@@ -6390,8 +6144,6 @@
 	},
 /obj/effect/floor_decal/industrial/hatch/yellow,
 /obj/structure/cable{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled,
@@ -6402,8 +6154,6 @@
 	pixel_y = -24
 	},
 /obj/structure/cable{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled,
@@ -6454,13 +6204,12 @@
 "nL" = (
 /obj/effect/floor_decal/corner/paleblue/full,
 /obj/machinery/power/apc{
-	cell_type = /obj/item/weapon/cell/super;
+	cell_type = /obj/item/cell/super;
 	dir = 8;
 	name = "west bump";
 	pixel_x = -28
 	},
 /obj/structure/cable/green{
-	d2 = 4;
 	icon_state = "0-4"
 	},
 /obj/structure/disposalpipe/segment,
@@ -6513,8 +6262,6 @@
 	dir = 4
 	},
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/structure/disposalpipe/segment,
@@ -6523,7 +6270,7 @@
 /turf/simulated/floor/tiled/white,
 /area/crew_quarters/medbreak)
 "ob" = (
-/obj/item/device/geiger/wall{
+/obj/item/geiger/wall{
 	dir = 4;
 	pixel_x = -30
 	},
@@ -6563,8 +6310,6 @@
 /area/maintenance/auxsolarport)
 "or" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
@@ -6604,8 +6349,6 @@
 	icon_state = "pipe-c"
 	},
 /obj/structure/cable{
-	d1 = 2;
-	d2 = 4;
 	icon_state = "2-4"
 	},
 /obj/effect/floor_decal/corner_oldtile/gray{
@@ -6621,8 +6364,6 @@
 	dir = 4
 	},
 /obj/structure/cable{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/effect/floor_decal/corner_oldtile/gray{
@@ -6638,13 +6379,9 @@
 	dir = 4
 	},
 /obj/structure/cable{
-	d1 = 2;
-	d2 = 4;
 	icon_state = "2-4"
 	},
 /obj/structure/cable{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/effect/floor_decal/corner_oldtile/gray{
@@ -6665,16 +6402,12 @@
 	dir = 9
 	},
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /turf/simulated/floor/tiled,
 /area/cryogaia/station/hallway/primary/upper/south)
 "oz" = (
 /obj/structure/cable/green{
-	d1 = 2;
-	d2 = 8;
 	icon_state = "2-8"
 	},
 /turf/simulated/wall,
@@ -6696,7 +6429,7 @@
 /obj/machinery/light{
 	dir = 4
 	},
-/obj/item/device/geiger/wall{
+/obj/item/geiger/wall{
 	dir = 8;
 	pixel_x = 30
 	},
@@ -6748,8 +6481,6 @@
 /area/quartermaster/miningdock)
 "oI" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/machinery/atmospherics/pipe/manifold4w/hidden/supply,
@@ -6813,8 +6544,6 @@
 	dir = 1
 	},
 /obj/structure/cable{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled{
@@ -6855,8 +6584,6 @@
 "pb" = (
 /obj/structure/disposalpipe/segment,
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/structure/cable{
@@ -6866,8 +6593,6 @@
 /area/cryogaia/station/hallway/primary/upper/south)
 "pc" = (
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/tiled,
@@ -6877,7 +6602,7 @@
 	name = "plastic table frame"
 	},
 /obj/machinery/microwave,
-/obj/item/device/geiger/wall{
+/obj/item/geiger/wall{
 	dir = 8;
 	pixel_x = 30
 	},
@@ -6911,12 +6636,9 @@
 	dir = 6
 	},
 /obj/structure/cable{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/structure/cable{
-	d2 = 8;
 	icon_state = "0-8"
 	},
 /obj/effect/floor_decal/corner_oldtile/gray{
@@ -6965,18 +6687,12 @@
 	dir = 8
 	},
 /obj/structure/cable/yellow{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/structure/cable/yellow{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /obj/structure/cable/yellow{
-	d1 = 2;
-	d2 = 8;
 	icon_state = "2-8"
 	},
 /turf/simulated/floor/plating/snow/plating/cryogaia,
@@ -7011,8 +6727,6 @@
 /area/medical/medbayupper)
 "pJ" = (
 /obj/structure/cable/yellow{
-	d1 = 2;
-	d2 = 4;
 	icon_state = "2-4"
 	},
 /turf/simulated/floor/plating/snow/plating/cryogaia,
@@ -7027,7 +6741,7 @@
 /area/constructionsite/medical/upper)
 "pV" = (
 /obj/structure/table/woodentable,
-/obj/item/device/instrument/trombone,
+/obj/item/instrument/trombone,
 /turf/simulated/floor/wood,
 /area/chapel/monastery/music)
 "pW" = (
@@ -7035,8 +6749,6 @@
 	dir = 4
 	},
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled,
@@ -7049,8 +6761,6 @@
 /obj/structure/table/standard,
 /obj/item/clothing/gloves/yellow,
 /obj/structure/cable/yellow{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/plating/snow/plating,
@@ -7061,19 +6771,15 @@
 /area/civilian/atrium/upper)
 "qd" = (
 /obj/structure/cable/yellow{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/structure/cable/yellow{
-	d1 = 1;
-	d2 = 4;
 	icon_state = "1-4"
 	},
 /turf/simulated/floor/plating/snow/plating/cryogaia,
 /area/borealis2/outdoors/grounds/upper/solars)
 "qi" = (
-/obj/item/device/radio/intercom{
+/obj/item/radio/intercom{
 	dir = 1;
 	name = "Common Channel";
 	pixel_y = 21
@@ -7144,8 +6850,6 @@
 /area/medical/medbayupper)
 "qU" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/alarm{
@@ -7169,8 +6873,6 @@
 	dir = 4
 	},
 /obj/structure/cable/yellow{
-	d1 = 2;
-	d2 = 4;
 	icon_state = "2-4"
 	},
 /turf/simulated/floor/tiled/techfloor/grid,
@@ -7267,7 +6969,6 @@
 	name = "Port Solar Array"
 	},
 /obj/structure/cable/yellow{
-	d2 = 2;
 	icon_state = "0-2"
 	},
 /turf/simulated/floor/plating/snow/plating/cryogaia,
@@ -7304,7 +7005,7 @@
 /obj/effect/floor_decal/corner/paleblue{
 	dir = 10
 	},
-/obj/item/device/radio/intercom{
+/obj/item/radio/intercom{
 	name = "Common Channel";
 	pixel_y = -21
 	},
@@ -7352,7 +7053,7 @@
 /turf/simulated/floor/tiled,
 /area/quartermaster/miningdock)
 "rT" = (
-/obj/item/device/geiger/wall{
+/obj/item/geiger/wall{
 	dir = 4;
 	pixel_x = -30
 	},
@@ -7370,7 +7071,7 @@
 /turf/simulated/floor/wood,
 /area/security/breakroom)
 "sd" = (
-/obj/item/device/geiger/wall{
+/obj/item/geiger/wall{
 	dir = 1;
 	pixel_y = -30
 	},
@@ -7390,7 +7091,7 @@
 /turf/simulated/floor/plating/snow/plating,
 /area/civilian/atrium/upper)
 "sm" = (
-/obj/item/device/radio/intercom{
+/obj/item/radio/intercom{
 	name = "Common Channel";
 	pixel_y = -21
 	},
@@ -7426,8 +7127,6 @@
 	dir = 4
 	},
 /obj/structure/cable/yellow{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/door/airlock/voidcraft,
@@ -7512,26 +7211,22 @@
 /area/civilian/atrium/upper)
 "tc" = (
 /obj/structure/cable/yellow{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /obj/structure/cable/yellow{
-	d1 = 2;
-	d2 = 8;
 	icon_state = "2-8"
 	},
 /turf/simulated/floor/plating/snow/plating/cryogaia,
 /area/borealis2/outdoors/grounds/upper/solars)
 "td" = (
-/obj/item/weapon/stool/padded,
+/obj/item/stool/padded,
 /obj/effect/floor_decal/corner/paleblue/diagonal{
 	dir = 4
 	},
 /obj/machinery/light{
 	dir = 4
 	},
-/obj/item/device/radio/intercom{
+/obj/item/radio/intercom{
 	dir = 4;
 	name = "Common Channel";
 	pixel_x = 21
@@ -7569,8 +7264,6 @@
 /area/shuttle/excursion)
 "tp" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
@@ -7609,7 +7302,7 @@
 /turf/simulated/floor/tiled/white,
 /area/cryogaia/station/medical/upper)
 "tw" = (
-/obj/item/device/geiger/wall{
+/obj/item/geiger/wall{
 	dir = 4;
 	pixel_x = -30
 	},
@@ -7623,7 +7316,7 @@
 /turf/simulated/open/cryogaia,
 /area/borealis2/outdoors/grounds/tower/east)
 "tF" = (
-/obj/item/device/radio/intercom{
+/obj/item/radio/intercom{
 	dir = 4;
 	name = "Common Channel";
 	pixel_x = 21
@@ -7635,8 +7328,6 @@
 /area/borealis2/outdoors/grounds/tower/south)
 "tG" = (
 /obj/structure/cable{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
@@ -7662,8 +7353,6 @@
 /area/security/breakroom)
 "tK" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
@@ -7695,8 +7384,6 @@
 /area/borealis2/outdoors/grounds/upper)
 "tQ" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/wall,
@@ -7727,7 +7414,7 @@
 /obj/effect/floor_decal/corner/paleblue{
 	dir = 10
 	},
-/obj/item/device/geiger/wall{
+/obj/item/geiger/wall{
 	dir = 1;
 	pixel_y = -30
 	},
@@ -7824,7 +7511,7 @@
 /obj/structure/table/standard{
 	name = "plastic table frame"
 	},
-/obj/item/weapon/deck/cards,
+/obj/item/deck/cards,
 /turf/simulated/floor/wood,
 /area/security/breakroom)
 "uP" = (
@@ -7876,8 +7563,6 @@
 /area/cryogaia/station/hallway/primary/upper/south)
 "vg" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled/white,
@@ -7912,8 +7597,6 @@
 /area/maintenance/medical_upper)
 "vq" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/machinery/light/small{
@@ -7930,8 +7613,6 @@
 /area/borealis2/outdoors/grounds/tower/southwest)
 "vu" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 4;
 	icon_state = "1-4"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
@@ -7941,14 +7622,12 @@
 	dir = 4
 	},
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /turf/simulated/floor/tiled/white,
 /area/medical/medbayupper)
 "vx" = (
-/obj/item/device/radio/intercom{
+/obj/item/radio/intercom{
 	dir = 4;
 	name = "Common Channel";
 	pixel_x = 21
@@ -7982,8 +7661,6 @@
 /area/borealis2/outdoors/grounds/tower/northeast)
 "vG" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
@@ -8054,8 +7731,6 @@
 /area/borealis2/outdoors/grounds/tower/west)
 "vR" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
@@ -8083,13 +7758,11 @@
 /area/constructionsite/cryogaia/upper)
 "wb" = (
 /obj/structure/table/woodentable,
-/obj/item/device/instrument/eguitar,
+/obj/item/instrument/eguitar,
 /turf/simulated/floor/wood,
 /area/chapel/monastery/music)
 "wd" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled,
@@ -8105,8 +7778,6 @@
 	dir = 6
 	},
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/tiled/white,
@@ -8156,7 +7827,6 @@
 	req_one_access = list(51)
 	},
 /obj/structure/cable/green{
-	d2 = 8;
 	icon_state = "0-8"
 	},
 /turf/simulated/floor/wood,
@@ -8192,8 +7862,6 @@
 	dir = 10
 	},
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/camera/network/medbay{
@@ -8206,7 +7874,7 @@
 /obj/structure/bed/chair{
 	dir = 4
 	},
-/obj/item/device/radio/intercom{
+/obj/item/radio/intercom{
 	name = "Common Channel";
 	pixel_y = -21
 	},
@@ -8225,8 +7893,6 @@
 /area/borealis2/elevator/medupper)
 "wW" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
@@ -8282,7 +7948,7 @@
 /area/quartermaster/miningdock)
 "xk" = (
 /obj/machinery/portable_atmospherics/canister/oxygen,
-/obj/item/device/radio/intercom{
+/obj/item/radio/intercom{
 	dir = 4;
 	name = "Common Channel";
 	pixel_x = 21
@@ -8370,7 +8036,7 @@
 	pixel_y = -28
 	},
 /obj/machinery/power/apc{
-	cell_type = /obj/item/weapon/cell/super;
+	cell_type = /obj/item/cell/super;
 	dir = 8;
 	name = "west bump";
 	pixel_x = -28
@@ -8403,8 +8069,6 @@
 /area/shuttle/excursion)
 "xQ" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 4;
 	icon_state = "1-4"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
@@ -8463,8 +8127,6 @@
 /area/maintenance/medical_upper)
 "ym" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
@@ -8516,8 +8178,6 @@
 	},
 /obj/item/tape/engineering,
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
@@ -8530,8 +8190,6 @@
 /area/constructionsite/medical/upper)
 "yz" = (
 /obj/structure/cable/green{
-	d1 = 2;
-	d2 = 4;
 	icon_state = "2-4"
 	},
 /obj/machinery/holoposter{
@@ -8572,8 +8230,8 @@
 	dir = 4
 	},
 /obj/machinery/recharger,
-/obj/item/device/defib_kit/loaded,
-/obj/item/device/defib_kit/loaded,
+/obj/item/defib_kit/loaded,
+/obj/item/defib_kit/loaded,
 /obj/machinery/newscaster{
 	layer = 3.3;
 	pixel_x = 28
@@ -8589,14 +8247,12 @@
 /area/civilian/atrium/upper)
 "yR" = (
 /obj/structure/table/steel,
-/obj/item/weapon/gun/energy/netgun,
-/obj/item/weapon/gun/energy/netgun,
+/obj/item/gun/energy/netgun,
+/obj/item/gun/energy/netgun,
 /turf/simulated/floor/tiled,
 /area/cryogaia/station/explorer_prep)
 "yT" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/structure/disposalpipe/segment,
@@ -8625,8 +8281,6 @@
 	dir = 8
 	},
 /obj/structure/cable/yellow{
-	d1 = 1;
-	d2 = 4;
 	icon_state = "1-4"
 	},
 /turf/simulated/floor/plating/snow/plating/cryogaia,
@@ -8636,7 +8290,7 @@
 	dir = 5
 	},
 /obj/structure/table/steel,
-/obj/item/weapon/paper/rogueminer,
+/obj/item/paper/rogueminer,
 /turf/simulated/floor/tiled,
 /area/quartermaster/miningdock)
 "zi" = (
@@ -8710,7 +8364,7 @@
 	dir = 10
 	},
 /obj/structure/table/steel,
-/obj/item/device/radio,
+/obj/item/radio,
 /turf/simulated/floor/tiled,
 /area/security/watchtower)
 "zE" = (
@@ -8751,8 +8405,6 @@
 /obj/effect/wingrille_spawn/reinforced,
 /obj/structure/cable/green,
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/plating,
@@ -8777,8 +8429,6 @@
 	dir = 4
 	},
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/effect/floor_decal/corner_oldtile/gray,
@@ -8788,7 +8438,7 @@
 /turf/simulated/floor/tiled,
 /area/cryogaia/station/excursion_dock)
 "zR" = (
-/obj/item/weapon/stool/padded,
+/obj/item/stool/padded,
 /obj/effect/floor_decal/corner/paleblue/diagonal{
 	dir = 4
 	},
@@ -8835,7 +8485,7 @@
 /area/medical/medbayupper)
 "Aj" = (
 /obj/structure/table/woodentable,
-/obj/item/device/instrument/accordion,
+/obj/item/instrument/accordion,
 /turf/simulated/floor/wood,
 /area/chapel/monastery/music)
 "Al" = (
@@ -8844,8 +8494,6 @@
 "Ap" = (
 /obj/effect/decal/cleanable/dirt,
 /obj/structure/cable/yellow{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/plating/snow/plating,
@@ -8918,12 +8566,9 @@
 	dir = 4
 	},
 /obj/structure/cable/yellow{
-	d2 = 4;
 	icon_state = "0-4"
 	},
 /obj/structure/cable/yellow{
-	d1 = 2;
-	d2 = 4;
 	icon_state = "2-4"
 	},
 /turf/simulated/floor/plating/snow/plating,
@@ -8979,8 +8624,6 @@
 /area/chapel/monastery/upper)
 "AY" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
@@ -8993,8 +8636,6 @@
 	dir = 10
 	},
 /obj/structure/cable/green{
-	d1 = 2;
-	d2 = 8;
 	icon_state = "2-8"
 	},
 /turf/simulated/floor/tiled,
@@ -9013,8 +8654,6 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/tiled/dark,
@@ -9029,8 +8668,6 @@
 	dir = 4
 	},
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
@@ -9060,8 +8697,6 @@
 /area/medical/medbayupper)
 "Br" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
@@ -9071,8 +8706,6 @@
 	dir = 4
 	},
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /turf/simulated/floor/tiled/white,
@@ -9146,8 +8779,6 @@
 	dir = 4
 	},
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled,
@@ -9205,8 +8836,6 @@
 	dir = 8
 	},
 /obj/structure/cable/yellow{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/plating/snow/plating/cryogaia,
@@ -9283,8 +8912,6 @@
 /area/quartermaster/miningdock)
 "CC" = (
 /obj/structure/cable{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/door/firedoor,
@@ -9314,8 +8941,6 @@
 /area/security/breakroom)
 "CL" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/effect/floor_decal/corner/white{
@@ -9391,8 +9016,6 @@
 /area/security/breakroom)
 "Dh" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/atmospherics/pipe/manifold/hidden/supply{
@@ -9404,7 +9027,7 @@
 /turf/simulated/floor/tiled,
 /area/civilian/atrium/upper)
 "Di" = (
-/obj/item/device/radio/intercom{
+/obj/item/radio/intercom{
 	dir = 1;
 	name = "Common Channel";
 	pixel_y = 21
@@ -9422,14 +9045,14 @@
 /obj/effect/floor_decal/corner/paleblue/diagonal{
 	dir = 4
 	},
-/obj/item/weapon/stool/padded,
+/obj/item/stool/padded,
 /turf/simulated/floor/tiled/white,
 /area/crew_quarters/medbreak)
 "Do" = (
 /obj/machinery/light{
 	dir = 4
 	},
-/obj/item/device/geiger/wall{
+/obj/item/geiger/wall{
 	dir = 8;
 	pixel_x = 30
 	},
@@ -9461,8 +9084,6 @@
 /area/chapel/monastery/upper)
 "Du" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
@@ -9517,8 +9138,6 @@
 	dir = 4
 	},
 /obj/structure/cable/green{
-	d1 = 2;
-	d2 = 8;
 	icon_state = "2-8"
 	},
 /obj/structure/disposalpipe/segment,
@@ -9566,7 +9185,7 @@
 /obj/structure/bed/chair/wood{
 	dir = 8
 	},
-/obj/item/device/radio/intercom{
+/obj/item/radio/intercom{
 	dir = 4;
 	name = "Common Channel";
 	pixel_x = 21
@@ -9583,8 +9202,6 @@
 /area/security/watchtower)
 "Eg" = (
 /obj/structure/cable/green{
-	d1 = 2;
-	d2 = 8;
 	icon_state = "2-8"
 	},
 /obj/effect/floor_decal/rust,
@@ -9658,8 +9275,6 @@
 	dir = 10
 	},
 /obj/structure/cable/green{
-	d1 = 2;
-	d2 = 8;
 	icon_state = "2-8"
 	},
 /obj/structure/disposalpipe/segment{
@@ -9685,8 +9300,6 @@
 	dir = 9
 	},
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/atmospherics/pipe/manifold/hidden/supply{
@@ -9704,7 +9317,6 @@
 	pixel_x = -28
 	},
 /obj/structure/cable{
-	d2 = 2;
 	icon_state = "0-2"
 	},
 /obj/structure/cable/green,
@@ -9746,13 +9358,9 @@
 	dir = 2
 	},
 /obj/structure/cable/yellow{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /obj/structure/cable/yellow{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/plating/snow/plating,
@@ -9773,20 +9381,15 @@
 /obj/machinery/door/firedoor/glass,
 /obj/effect/wingrille_spawn/reinforced,
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/structure/cable/green{
-	d2 = 4;
 	icon_state = "0-4"
 	},
 /turf/simulated/floor/plating,
 /area/security/watchtower)
 "EY" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
@@ -9801,8 +9404,6 @@
 	dir = 1
 	},
 /obj/structure/cable/green{
-	d1 = 2;
-	d2 = 8;
 	icon_state = "2-8"
 	},
 /turf/simulated/floor/tiled/dark,
@@ -9834,7 +9435,7 @@
 /obj/machinery/light{
 	dir = 1
 	},
-/obj/item/device/radio/intercom{
+/obj/item/radio/intercom{
 	dir = 1;
 	name = "Common Channel";
 	pixel_y = 21
@@ -9854,7 +9455,7 @@
 /obj/machinery/light{
 	dir = 8
 	},
-/obj/item/device/geiger/wall{
+/obj/item/geiger/wall{
 	dir = 4;
 	pixel_x = -30
 	},
@@ -9887,12 +9488,9 @@
 /obj/machinery/door/firedoor/glass,
 /obj/effect/wingrille_spawn/reinforced,
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/structure/cable/green{
-	d2 = 2;
 	icon_state = "0-2"
 	},
 /turf/simulated/floor/plating,
@@ -9903,13 +9501,9 @@
 /area/quartermaster/miningdock)
 "FR" = (
 /obj/structure/cable/green{
-	d1 = 2;
-	d2 = 8;
 	icon_state = "2-8"
 	},
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /obj/machinery/atmospherics/pipe/manifold/hidden/scrubbers{
@@ -9935,8 +9529,6 @@
 /area/borealis2/outdoors/grounds/upper)
 "Gb" = (
 /obj/structure/cable/yellow{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /turf/simulated/floor/plating/snow/plating/cryogaia,
@@ -9955,8 +9547,6 @@
 /obj/machinery/door/firedoor/glass,
 /obj/effect/wingrille_spawn/reinforced,
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/structure/cable/green,
@@ -10020,8 +9610,6 @@
 /area/maintenance/auxsolarport)
 "GC" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
@@ -10049,8 +9637,6 @@
 /area/civilian/atrium/upper)
 "GN" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/tiled,
@@ -10082,8 +9668,6 @@
 /area/constructionsite/cryogaia/upper)
 "Hc" = (
 /obj/structure/cable/green{
-	d1 = 2;
-	d2 = 4;
 	icon_state = "2-4"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
@@ -10107,8 +9691,6 @@
 /area/security/watchtower)
 "Hj" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/effect/floor_decal/corner/white{
@@ -10161,13 +9743,9 @@
 /area/borealis2/outdoors/grounds/tower/southwest)
 "HJ" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/structure/disposalpipe/segment,
@@ -10212,8 +9790,6 @@
 /area/borealis2/outdoors/grounds/upper)
 "HZ" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
@@ -10309,8 +9885,6 @@
 "IF" = (
 /obj/effect/decal/cleanable/dirt,
 /obj/structure/cable/yellow{
-	d1 = 2;
-	d2 = 4;
 	icon_state = "2-4"
 	},
 /turf/simulated/floor/plating/snow/plating,
@@ -10320,7 +9894,7 @@
 /obj/machinery/atmospherics/unary/vent_pump/on{
 	dir = 1
 	},
-/obj/item/device/instrument/violin,
+/obj/item/instrument/violin,
 /turf/simulated/floor/wood,
 /area/chapel/monastery/music)
 "IH" = (
@@ -10331,8 +9905,6 @@
 /area/chapel/monastery/upper)
 "IK" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled,
@@ -10352,8 +9924,6 @@
 /area/borealis2/outdoors/grounds/upper/solars)
 "IS" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /obj/machinery/embedded_controller/radio/airlock/access_controller{
@@ -10371,8 +9941,6 @@
 /area/civilian/atrium/upper)
 "IU" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/structure/disposalpipe/segment,
@@ -10405,7 +9973,7 @@
 /obj/effect/floor_decal/corner/paleblue/diagonal{
 	dir = 4
 	},
-/obj/item/weapon/deck/cards,
+/obj/item/deck/cards,
 /obj/machinery/alarm{
 	dir = 8;
 	pixel_x = 25
@@ -10440,14 +10008,14 @@
 /turf/simulated/open,
 /area/chapel/monastery/upper)
 "Jp" = (
-/obj/item/weapon/stool/padded,
+/obj/item/stool/padded,
 /obj/effect/floor_decal/corner/paleblue/diagonal{
 	dir = 4
 	},
 /obj/machinery/light{
 	dir = 4
 	},
-/obj/item/device/radio/intercom/department/medbay{
+/obj/item/radio/intercom/department/medbay{
 	dir = 4;
 	pixel_x = 32
 	},
@@ -10461,8 +10029,6 @@
 /area/cryogaia/station/hallway/primary/upper/south)
 "Js" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/light,
@@ -10488,7 +10054,7 @@
 	},
 /area/cryogaia/station/ert_arrival)
 "Jz" = (
-/obj/item/weapon/stool/padded,
+/obj/item/stool/padded,
 /obj/effect/floor_decal/corner/paleblue/diagonal{
 	dir = 4
 	},
@@ -10511,8 +10077,6 @@
 	dir = 4
 	},
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled,
@@ -10528,8 +10092,6 @@
 	pixel_y = 24
 	},
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/effect/floor_decal/industrial/hatch/yellow,
@@ -10550,7 +10112,7 @@
 	dir = 9
 	},
 /obj/structure/table/steel,
-/obj/item/device/binoculars,
+/obj/item/binoculars,
 /turf/simulated/floor/tiled,
 /area/security/watchtower)
 "JN" = (
@@ -10578,8 +10140,6 @@
 /area/cryogaia/station/ert_arrival)
 "JV" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/effect/floor_decal/corner/paleblue{
@@ -10598,8 +10158,6 @@
 /area/cryogaia/station/medical/upper)
 "JZ" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
@@ -10632,8 +10190,6 @@
 	dir = 4
 	},
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
@@ -10663,7 +10219,7 @@
 /obj/structure/handrail{
 	dir = 1
 	},
-/obj/item/device/radio/intercom{
+/obj/item/radio/intercom{
 	name = "Common Channel";
 	pixel_y = -21
 	},
@@ -10683,8 +10239,6 @@
 /area/maintenance/medical_upper)
 "Kq" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/plating,
@@ -10696,8 +10250,6 @@
 	},
 /obj/machinery/door/firedoor/glass,
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/access_button/airlock_interior{
@@ -10727,8 +10279,6 @@
 "Kx" = (
 /obj/machinery/atmospherics/unary/vent_scrubber/on,
 /obj/structure/cable/green{
-	d1 = 2;
-	d2 = 4;
 	icon_state = "2-4"
 	},
 /turf/simulated/floor/tiled/white,
@@ -10747,8 +10297,6 @@
 /area/borealis2/elevator/uppermining)
 "KD" = (
 /obj/structure/cable/yellow{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/plating/snow/plating/cryogaia,
@@ -10835,8 +10383,6 @@
 	dir = 4
 	},
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /obj/effect/floor_decal/corner_oldtile/gray,
@@ -10851,8 +10397,6 @@
 	dir = 5
 	},
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/tiled,
@@ -10907,8 +10451,6 @@
 /area/cryogaia/station/hallway/primary/upper/south)
 "Lu" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/machinery/atmospherics/pipe/manifold/hidden/scrubbers{
@@ -10926,8 +10468,6 @@
 /area/cryogaia/station/hallway/primary/upper/south)
 "LE" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/structure/disposalpipe/segment,
@@ -10941,8 +10481,6 @@
 "LF" = (
 /obj/machinery/door/airlock/glass_medical,
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
@@ -11071,7 +10609,7 @@
 /obj/machinery/light{
 	dir = 8
 	},
-/obj/item/device/radio/intercom{
+/obj/item/radio/intercom{
 	dir = 8;
 	name = "Common Channel";
 	pixel_x = -21
@@ -11108,7 +10646,7 @@
 /area/civilian/atrium/upper)
 "Nl" = (
 /obj/structure/table/woodentable,
-/obj/item/device/instrument/saxophone,
+/obj/item/instrument/saxophone,
 /turf/simulated/floor/wood,
 /area/chapel/monastery/music)
 "Nn" = (
@@ -11116,7 +10654,7 @@
 /obj/structure/table/rack/shelf,
 /obj/item/clothing/suit/storage/hooded/wintercoat/snowsuit,
 /obj/item/clothing/shoes/boots/winter,
-/obj/item/weapon/ice_pick,
+/obj/item/ice_pick,
 /turf/simulated/floor/tiled,
 /area/cryogaia/station/hallway/primary/upper/south)
 "Ns" = (
@@ -11140,7 +10678,7 @@
 /obj/effect/floor_decal/corner/paleblue{
 	dir = 6
 	},
-/obj/item/device/radio/intercom{
+/obj/item/radio/intercom{
 	dir = 4;
 	name = "Common Channel";
 	pixel_x = 21
@@ -11157,8 +10695,6 @@
 /obj/machinery/door/firedoor,
 /obj/machinery/door/airlock/maintenance/common,
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/structure/disposalpipe/segment,
@@ -11226,7 +10762,7 @@
 	dir = 4
 	},
 /obj/effect/floor_decal/corner/red/full,
-/obj/item/device/geiger/wall{
+/obj/item/geiger/wall{
 	dir = 4;
 	pixel_x = -30
 	},
@@ -11254,8 +10790,6 @@
 	locked = 1
 	},
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/effect/floor_decal/industrial/hatch/yellow,
@@ -11264,8 +10798,6 @@
 "NZ" = (
 /obj/machinery/door/airlock/maintenance/medical,
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/plating,
@@ -11289,8 +10821,6 @@
 /area/borealis2/outdoors/grounds/checkpoint)
 "Oo" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/door/airlock/maintenance/common,
@@ -11328,14 +10858,10 @@
 /area/medical/medbayupper)
 "Oy" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/door/firedoor/glass,
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/access_button/airlock_interior{
@@ -11359,7 +10885,7 @@
 /obj/machinery/light{
 	dir = 8
 	},
-/obj/item/device/radio/intercom{
+/obj/item/radio/intercom{
 	dir = 8;
 	name = "Common Channel";
 	pixel_x = -21
@@ -11377,8 +10903,6 @@
 /obj/structure/window/reinforced/full,
 /obj/machinery/door/firedoor/glass,
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/yellow{
@@ -11457,8 +10981,6 @@
 	dir = 4
 	},
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/wood,
@@ -11473,8 +10995,6 @@
 /area/civilian/atrium/upper)
 "Pj" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
@@ -11519,8 +11039,6 @@
 	},
 /obj/effect/floor_decal/corner/paleblue,
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/tiled/white,
@@ -11571,8 +11089,6 @@
 "PE" = (
 /obj/effect/wingrille_spawn/reinforced,
 /obj/structure/cable{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor,
@@ -11588,8 +11104,6 @@
 /area/security/watchtower)
 "PG" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/light,
@@ -11617,13 +11131,11 @@
 	dir = 4
 	},
 /obj/structure/disposalpipe/segment,
-/obj/item/weapon/stool/padded,
+/obj/item/stool/padded,
 /turf/simulated/floor/tiled/white,
 /area/crew_quarters/medbreak)
 "PW" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
@@ -11638,8 +11150,6 @@
 	dir = 4
 	},
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled,
@@ -11680,7 +11190,7 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
 	dir = 6
 	},
-/obj/item/device/instrument/guitar,
+/obj/item/instrument/guitar,
 /turf/simulated/floor/wood,
 /area/chapel/monastery/music)
 "Qo" = (
@@ -11714,7 +11224,6 @@
 	pixel_y = 25
 	},
 /obj/structure/cable/green{
-	d2 = 8;
 	icon_state = "0-8"
 	},
 /obj/effect/floor_decal/rust,
@@ -11731,13 +11240,9 @@
 	dir = 4
 	},
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /turf/simulated/floor/tiled,
@@ -11746,12 +11251,9 @@
 /obj/machinery/door/firedoor/glass,
 /obj/effect/wingrille_spawn/reinforced,
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/structure/cable/green{
-	d2 = 8;
 	icon_state = "0-8"
 	},
 /turf/simulated/floor/plating,
@@ -11768,8 +11270,6 @@
 /area/cryogaia/station/medical/upper)
 "QK" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/effect/landmark{
@@ -11826,8 +11326,6 @@
 /area/maintenance/auxsolarport)
 "Rc" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/machinery/atmospherics/pipe/manifold/hidden/scrubbers{
@@ -11855,8 +11353,6 @@
 	dir = 4
 	},
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /turf/simulated/floor/tiled,
@@ -11873,8 +11369,6 @@
 /area/chapel/monastery/upper)
 "Rm" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/plating,
@@ -11939,8 +11433,6 @@
 /area/crew_quarters/medbreak)
 "Ry" = (
 /obj/structure/cable/yellow{
-	d1 = 2;
-	d2 = 8;
 	icon_state = "2-8"
 	},
 /turf/simulated/floor/plating/snow/plating/cryogaia,
@@ -11979,8 +11471,6 @@
 /area/civilian/atrium/upper)
 "RK" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 4;
 	icon_state = "1-4"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
@@ -12016,29 +11506,23 @@
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
 	dir = 4
 	},
-/obj/item/device/geiger/wall{
+/obj/item/geiger/wall{
 	dir = 1;
 	pixel_y = -30
 	},
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled,
 /area/chapel/monastery/upper)
 "RS" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled,
 /area/chapel/monastery/upper)
 "RV" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/wall,
@@ -12071,18 +11555,12 @@
 /area/shuttle/excursion)
 "Sa" = (
 /obj/structure/cable/yellow{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/structure/cable/yellow{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /obj/structure/cable/yellow{
-	d1 = 2;
-	d2 = 8;
 	icon_state = "2-8"
 	},
 /turf/simulated/floor/plating/snow/plating/cryogaia,
@@ -12158,8 +11636,6 @@
 	name = "Music Room"
 	},
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled,
@@ -12195,7 +11671,7 @@
 /area/borealis2/outdoors/grounds/upper)
 "SP" = (
 /obj/structure/table/woodentable,
-/obj/item/device/instrument/recorder,
+/obj/item/instrument/recorder,
 /turf/simulated/floor/wood,
 /area/chapel/monastery/music)
 "SZ" = (
@@ -12216,7 +11692,7 @@
 	name = "plastic table frame"
 	},
 /obj/item/pizzabox,
-/obj/item/weapon/material/ashtray/plastic,
+/obj/item/material/ashtray/plastic,
 /obj/effect/floor_decal/corner/paleblue/diagonal{
 	dir = 4
 	},
@@ -12258,14 +11734,12 @@
 /area/cryogaia/station/medical/upper)
 "Tv" = (
 /obj/structure/cable/yellow{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /turf/simulated/floor/plating/snow/plating/cryogaia,
 /area/borealis2/outdoors/grounds/upper)
 "Tw" = (
-/obj/item/device/radio/intercom{
+/obj/item/radio/intercom{
 	dir = 8;
 	name = "Common Channel";
 	pixel_x = -21
@@ -12310,8 +11784,6 @@
 /area/quartermaster/miningdock)
 "Ub" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
@@ -12324,7 +11796,7 @@
 /obj/structure/table/standard{
 	name = "plastic table frame"
 	},
-/obj/item/weapon/storage/box/donkpockets,
+/obj/item/storage/box/donkpockets,
 /obj/machinery/atmospherics/unary/vent_pump/on{
 	dir = 8
 	},
@@ -12350,8 +11822,6 @@
 /area/chapel/monastery/upper)
 "Uh" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
@@ -12382,8 +11852,6 @@
 /area/quartermaster/miningdock)
 "Up" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/atmospherics/unary/vent_pump/on{
@@ -12416,7 +11884,7 @@
 /turf/simulated/open/cryogaia,
 /area/borealis2/outdoors/grounds/tower/southwest)
 "Ux" = (
-/obj/item/device/radio/intercom/department/security{
+/obj/item/radio/intercom/department/security{
 	dir = 4;
 	pixel_x = 24
 	},
@@ -12431,8 +11899,6 @@
 /area/medical/medbayskybridge)
 "Uz" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers{
@@ -12442,8 +11908,6 @@
 	dir = 4
 	},
 /obj/structure/cable/green{
-	d1 = 2;
-	d2 = 4;
 	icon_state = "2-4"
 	},
 /obj/structure/disposalpipe/junction{
@@ -12495,8 +11959,6 @@
 	dir = 8
 	},
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled,
@@ -12515,8 +11977,6 @@
 /area/borealis2/outdoors/grounds/tower/west)
 "UO" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 4;
 	icon_state = "1-4"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
@@ -12529,8 +11989,6 @@
 	dir = 8
 	},
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /turf/simulated/floor/tiled,
@@ -12561,13 +12019,9 @@
 	dir = 1
 	},
 /obj/structure/cable/yellow{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled/techfloor/grid,
@@ -12596,8 +12050,6 @@
 "Vb" = (
 /obj/machinery/door/airlock/maintenance/sec,
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply,
@@ -12617,8 +12069,6 @@
 	dir = 5
 	},
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 4;
 	icon_state = "1-4"
 	},
 /obj/machinery/firealarm{
@@ -12648,8 +12098,6 @@
 /area/shuttle/excursion)
 "Vs" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
@@ -12683,8 +12131,6 @@
 	dir = 4
 	},
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 4;
 	icon_state = "1-4"
 	},
 /turf/simulated/floor/wood,
@@ -12725,8 +12171,6 @@
 "VV" = (
 /obj/machinery/door/airlock/maintenance/common,
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 2;
 	icon_state = "1-2"
 	},
 /obj/machinery/door/firedoor,
@@ -12737,7 +12181,7 @@
 	dir = 1
 	},
 /obj/structure/table/woodentable,
-/obj/item/device/instrument/keytar,
+/obj/item/instrument/keytar,
 /turf/simulated/floor/wood,
 /area/chapel/monastery/music)
 "Wa" = (
@@ -12821,8 +12265,6 @@
 	dir = 6
 	},
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 8;
 	icon_state = "1-8"
 	},
 /turf/simulated/floor/tiled/white,
@@ -12872,7 +12314,7 @@
 /turf/simulated/open/cryogaia,
 /area/borealis2/outdoors/grounds/upper)
 "WX" = (
-/obj/item/device/radio/intercom{
+/obj/item/radio/intercom{
 	dir = 1;
 	name = "Common Channel";
 	pixel_y = 21
@@ -12887,8 +12329,6 @@
 /area/chapel/monastery/upper)
 "Xc" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
@@ -12901,8 +12341,6 @@
 /area/medical/medbayupper)
 "Xd" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/door/firedoor/glass,
@@ -12970,8 +12408,6 @@
 	dir = 8
 	},
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled/white,
@@ -12980,7 +12416,7 @@
 /obj/effect/floor_decal/corner/paleblue/diagonal{
 	dir = 4
 	},
-/obj/item/weapon/stool/padded,
+/obj/item/stool/padded,
 /obj/machinery/light_switch{
 	dir = 8;
 	pixel_x = 28
@@ -13048,7 +12484,7 @@
 	c_tag = "Solar Array Shed - Interior";
 	dir = 4
 	},
-/obj/item/device/geiger/wall{
+/obj/item/geiger/wall{
 	dir = 4;
 	pixel_x = -30
 	},
@@ -13069,8 +12505,6 @@
 /area/borealis2/outdoors/grounds/tower/southwest)
 "XS" = (
 /obj/structure/cable/green{
-	d1 = 1;
-	d2 = 4;
 	icon_state = "1-4"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{
@@ -13171,13 +12605,9 @@
 /area/borealis2/outdoors/grounds/tower/northwest)
 "Yx" = (
 /obj/structure/cable/green{
-	d1 = 2;
-	d2 = 8;
 	icon_state = "2-8"
 	},
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/plating,
@@ -13188,8 +12618,8 @@
 /area/constructionsite/cryogaia/upper)
 "YC" = (
 /obj/structure/table/steel,
-/obj/item/device/suit_cooling_unit,
-/obj/item/device/suit_cooling_unit,
+/obj/item/suit_cooling_unit,
+/obj/item/suit_cooling_unit,
 /obj/effect/floor_decal/corner/brown{
 	dir = 6
 	},
@@ -13357,8 +12787,6 @@
 /area/quartermaster/miningdock)
 "ZK" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/vending/coffee{
@@ -13371,8 +12799,6 @@
 	dir = 4
 	},
 /obj/structure/cable{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /turf/simulated/floor/tiled,
@@ -13393,7 +12819,7 @@
 /turf/simulated/floor/tiled,
 /area/quartermaster/miningdock)
 "ZT" = (
-/obj/item/weapon/stool/padded,
+/obj/item/stool/padded,
 /obj/effect/floor_decal/corner/paleblue/diagonal{
 	dir = 4
 	},
@@ -13410,8 +12836,6 @@
 /area/chapel/monastery/upper)
 "ZW" = (
 /obj/structure/cable/green{
-	d1 = 4;
-	d2 = 8;
 	icon_state = "4-8"
 	},
 /obj/machinery/atmospherics/pipe/simple/hidden/supply{

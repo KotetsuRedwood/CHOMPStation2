@@ -26,7 +26,7 @@
 	maxbodytemp = 323	//Above 50 Degrees Celsius
 
 	meat_amount = 1
-	meat_type = /obj/item/weapon/reagent_containers/food/snacks/meat
+	meat_type = /obj/item/reagent_containers/food/snacks/meat
 
 	vore_active = TRUE
 	vore_capacity = 1
@@ -37,7 +37,7 @@
 	pain_emote_1p = list("chitter")
 	pain_emote_3p = list("chitters")
 
-/mob/living/simple_mob/animal/passive/raccoon_ch/Initialize()
+/mob/living/simple_mob/animal/passive/raccoon_ch/Initialize(mapload)
 	. = ..()
 	ghostjoin = 1
 	ghostjoin_icon()

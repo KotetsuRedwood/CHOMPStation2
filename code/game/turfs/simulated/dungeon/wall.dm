@@ -40,7 +40,7 @@
 /turf/simulated/wall/solidrock/Initialize(mapload)
 	. = ..(mapload, "bedrock")
 
-/turf/simulated/wall/solidrock/Initialize()
+/turf/simulated/wall/solidrock/Initialize(mapload)
 	. = ..()
 	update_icon(1)
 
@@ -66,6 +66,7 @@
 	return mining_overlay_cache["[cache_id]_[direction]"]
 
 /turf/simulated/wall/solidrock/update_icon(var/update_neighbors)
+	cut_overlays() //ChompEDIT
 	if(density)
 		var/image/I
 		for(var/i = 1 to 4)

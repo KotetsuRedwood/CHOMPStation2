@@ -8,17 +8,25 @@
 
 /mob/proc/movement_delay(oldloc, direct)
 	. = 0
-	if(locate(/obj/item/weapon/grab) in src)
+	if(locate(/obj/item/grab) in src)
 		. += 5
+
+	// CHOMPAdd Start - When crawling, move slow.
+	if(lying)
+		if(weakened >= 1)
+			. += 14			// Very slow when weakened.
+		else
+			. += 8
+	// CHOMPAdd End
 
 	// Movespeed delay based on movement mode
 	switch(m_intent)
-		if("run")
+		if(I_RUN)
 			if(drowsyness > 0)
 				. += 6
-			. += config.run_speed
-		if("walk")
-			. += config.walk_speed
+			. += CONFIG_GET(number/run_speed)
+		if(I_WALK)
+			. += CONFIG_GET(number/walk_speed)
 
 /client/proc/client_dir(input, direction=-1)
 	return turn(input, direction*dir2angle(dir))
@@ -72,7 +80,7 @@
 
 /client/verb/swap_hand()
 	set hidden = 1
-	if(istype(mob, /mob/living))
+	if(isliving(mob))
 		var/mob/living/L = mob
 		L.swap_hand()
 	if(istype(mob,/mob/living/silicon/robot))
@@ -145,12 +153,22 @@
 		Move_object(direct)
 
 	// Ghosty mob movement
-	if(my_mob.incorporeal_move && isobserver(my_mob))
-		Process_Incorpmove(direct)
-		DEBUG_INPUT("--------")
-		next_move_dir_add = 0	// This one I *think* exists so you can tap move and it will move even if delay isn't quite up.
-		next_move_dir_sub = 0 	// I'm not really sure why next_move_dir_sub even exists.
-		return
+	if(my_mob.is_incorporeal())
+		if(isobserver(my_mob)) //We're an observer! Don't worry about any more checks. Be free!
+			Process_Incorpmove(direct)
+			DEBUG_INPUT("--------")
+			next_move_dir_add = 0	// This one I *think* exists so you can tap move and it will move even if delay isn't quite up.
+			next_move_dir_sub = 0 	// I'm not really sure why next_move_dir_sub even exists.
+			return
+		else //We are anything BUT an observer.
+			if(!my_mob.canmove)//If you want to be very restrictive, add my_mob.restrained() and it'll stop people cuffed/straight jacketed. For now, that's too restrictive for a bugfix PR.
+				return
+			else //Proceed like normal.
+				Process_Incorpmove(direct)
+				DEBUG_INPUT("--------")
+				next_move_dir_add = 0
+				next_move_dir_sub = 0
+				return
 
 	// We're in the middle of another move we've already decided to do
 	if(moving)
@@ -183,7 +201,7 @@
 
 	if(isliving(my_mob))
 		var/mob/living/L = my_mob
-		if(L.incorporeal_move)//Move though walls
+		if(L.is_incorporeal())//Move though walls
 			Process_Incorpmove(direct)
 			return
 		/* TODO observer unzoom
@@ -208,7 +226,7 @@
 			return result
 
 	// Can't control ourselves when drifting
-	if((isspace(loc) || my_mob.lastarea?.has_gravity == 0) && isturf(loc))
+	if((isspace(loc) || my_mob.lastarea?.get_gravity() == 0) && isturf(loc))
 		if(!my_mob.Process_Spacemove(0))
 			return 0
 
@@ -233,6 +251,8 @@
 	if(my_mob.pinned.len)
 		to_chat(src, span_blue("You're pinned to a wall by [my_mob.pinned[1]]!"))
 		return 0
+
+	var/old_delay = mob.next_move //CHOMPEdit momentum
 
 	if(istype(my_mob.buckled, /obj/vehicle) || ismob(my_mob.buckled))
 		//manually set move_delay for vehicles so we don't inherit any mob movement penalties
@@ -264,10 +284,10 @@
 			//drunk wheelchair driving
 			else if(my_mob.confused)
 				switch(my_mob.m_intent)
-					if("run")
+					if(I_RUN)
 						if(prob(50))
 							direct = turn(direct, pick(90, -90))
-					if("walk")
+					if(I_WALK)
 						if(prob(25))
 							direct = turn(direct, pick(90, -90))
 			total_delay += 3
@@ -279,17 +299,16 @@
 	// Confused direction randomization
 	if(my_mob.confused)
 		switch(my_mob.m_intent)
-			if("run")
+			if(I_RUN)
 				if(prob(75))
 					direct = turn(direct, pick(90, -90))
 					n = get_step(my_mob, direct)
-			if("walk")
+			if(I_WALK)
 				if(prob(25))
 					direct = turn(direct, pick(90, -90))
 					n = get_step(my_mob, direct)
 
-	total_delay = DS2NEARESTTICK(total_delay) //Rounded to the next tick in equivalent ds
-	my_mob.setMoveCooldown(total_delay)
+	//CHOMP Removal moved downwards
 
 	if(istype(my_mob.pulledby, /obj/structure/bed/chair/wheelchair))
 		. = my_mob.pulledby.relaymove(my_mob, direct)
@@ -298,9 +317,17 @@
 	else
 		. = my_mob.SelfMove(n, direct, total_delay)
 
+	//CHOMPEdit Begin
 	// If we ended up moving diagonally, increase delay.
 	if((direct & (direct - 1)) && mob.loc == n)
-		my_mob.setMoveCooldown(total_delay * SQRT_2) //CHOMPEDIT
+		total_delay *= SQRT_2 //CHOMPEDIT
+
+	//total_delay = DS2NEARESTTICK(total_delay) //Rounded to the next tick in equivalent ds
+	if(mob.last_move_time > (world.time - total_delay * 1.25))
+		mob.next_move = DS2NEARESTTICK(old_delay + total_delay)
+	else
+		mob.next_move = DS2NEARESTTICK(world.time + total_delay)
+	//CHOMPEdit End
 
 	if(!isliving(my_mob)) //CHOMPAdd
 		moving = 0
@@ -332,40 +359,84 @@
 					my_mob.other_mobs = null
 
 	// Update all the grabs!
-	for (var/obj/item/weapon/grab/G in my_mob)
+	for (var/obj/item/grab/G in my_mob)
 		if (G.state == GRAB_NECK)
 			mob.set_dir(reverse_dir[direct])
 		G.adjust_position()
-	for (var/obj/item/weapon/grab/G in my_mob.grabbed_by)
+	for (var/obj/item/grab/G in my_mob.grabbed_by)
 		G.adjust_position()
 
 	// We're not in the middle of a move anymore
 	moving = 0
+	mob.last_move_time = world.time //CHOMPEdit
 
 /mob/proc/SelfMove(turf/n, direct, movetime)
 	return Move(n, direct, movetime)
+
+
+//Set your incorporeal movespeed
+//Important to note: world.time is always in deciseconds. Higher tickrates mean more subdivisions of world.time (20fps = 0.5, 40fps = 0.25)
+/client
+	var/is_leaving_belly = FALSE
+	var/incorporeal_speed = 0.5 // CHOMPAdd
+
+//ChompEDIT START
+/client/verb/set_incorporeal_speed()
+	set category = "OOC.Game Settings"
+	set name = "Set Incorporeal Speed"
+
+	var/input = tgui_input_number(usr, "Set an incorporeal movement delay between 0 (fastest) and 5 (slowest)", "Incorporeal movement speed", (0.5/world.tick_lag), 5, 0)
+	incorporeal_speed = input * world.tick_lag
+//ChompEDIT End
 
 ///Process_Incorpmove
 ///Called by client/Move()
 ///Allows mobs to run though walls
 /client/proc/Process_Incorpmove(direct)
+	if(isbelly(mob.loc) && isobserver(mob))
+		if(is_leaving_belly)
+			return
+		is_leaving_belly = TRUE
+		if(tgui_alert(mob, "Do you want to leave your predator's belly?", "Leave belly?", list("Yes", "No")) != "Yes")
+			is_leaving_belly = FALSE
+			return
+		is_leaving_belly = FALSE
 	var/turf/mobloc = get_turf(mob)
+
+	//ChompEDIT START
+	if(incorporeal_speed)
+		var/mob/my_mob = mob
+		if(!my_mob.checkMoveCooldown()) //Only bother with speed if it isn't 0
+			return
+		my_mob.setMoveCooldown(incorporeal_speed)
+	//ChompEDIT END
 
 	switch(mob.incorporeal_move)
 		if(1)
 			var/turf/T = get_step(mob, direct)
 			if(!T)
 				return
+			var/area/A = T.loc	//RS Port #658
 			if(mob.check_holy(T))
-				to_chat(mob, "<span class='warning'>You cannot get past holy grounds while you are in this plane of existence!</span>")
+				to_chat(mob, span_warning("You cannot get past holy grounds while you are in this plane of existence!"))
 				return
-			//CHOMPEdit start - add ability to block incorporeal movement for nonghosts
 			else if(!istype(mob, /mob/observer/dead) && T.blocks_nonghost_incorporeal)
 				return
-			//CHOMPEdit end
-			else
-				mob.forceMove(get_step(mob, direct))
-				mob.dir = direct
+			//RS Port #658 Start
+			if(!holder)
+				if(isliving(mob) && A.flag_check(AREA_BLOCK_PHASE_SHIFT))
+					to_chat(mob, span_warning("Something blocks you from entering this location while phased out."))
+					return
+				if(isobserver(mob) && A.flag_check(AREA_BLOCK_GHOSTS) && !isbelly(mob.loc))
+					to_chat(mob, span_warning("Ghosts can't enter this location."))
+					var/area/our_area = mobloc.loc
+					if(our_area.flag_check(AREA_BLOCK_GHOSTS) && !isbelly(mob.loc))
+						var/mob/observer/dead/D = mob
+						D.return_to_spawn()
+					return
+			mob.forceMove(get_step(mob, direct))
+			mob.dir = direct
+			//RS Port #658 End
 		if(2)
 			if(prob(50))
 				var/locx
@@ -439,7 +510,7 @@
 /* CHOMPedit: Nuking slipping.
 	//Check to see if we slipped
 	if(prob(Process_Spaceslipping(5)) && !buckled)
-		to_chat(src, "<span class='notice'><B>You slipped!</B></span>")
+		to_chat(src, span_boldnotice("You slipped!"))
 		inertia_dir = last_move
 		step(src, src.inertia_dir) // Not using Move for smooth glide here because this is a 'slip' so should be sudden.
 		return 0
@@ -457,7 +528,7 @@
 
 		if(istype(turf,/turf/simulated/floor)) // Floors don't count if they don't have gravity
 			var/area/A = turf.loc
-			if(istype(A) && A.has_gravity == 0)
+			if(istype(A) && A.get_gravity() == 0)
 				if(shoegrip == null)
 					shoegrip = Check_Shoegrip() //Shoegrip is only ever checked when a zero-gravity floor is encountered to reduce load
 				if(!shoegrip)
@@ -498,8 +569,8 @@
 	return(prob_slip)
 */// CHOMPedit end.
 
-/mob/proc/mob_has_gravity(turf/T)
-	return has_gravity(src, T)
+/mob/proc/mob_get_gravity(turf/T)
+	return get_gravity(src, T)
 
 /mob/proc/update_gravity()
 	return

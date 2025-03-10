@@ -15,7 +15,7 @@
 	ai_log("engage_target() : Entering.", AI_LOG_DEBUG)
 
 	// Can we still see them?
-	if(!target || !can_attack(target))
+	if(QDELETED(target) || !can_attack(target)) //CHOMPEdit
 		ai_log("engage_target() : Lost sight of target.", AI_LOG_TRACE)
 		if(lose_target()) // We lost them (returns TRUE if we found something else to do)
 			ai_log("engage_target() : Pursuing other options (last seen, or a new target).", AI_LOG_TRACE)
@@ -171,7 +171,7 @@
 /datum/ai_holder/proc/walk_to_target()
 	ai_log("walk_to_target() : Entering.", AI_LOG_DEBUG)
 	// Make sure we can still chase/attack them.
-	if(!target || !can_attack(target))
+	if(QDELETED(target) || !can_attack(target))
 		ai_log("walk_to_target() : Lost target.", AI_LOG_INFO)
 		lose_target()
 		return

@@ -130,7 +130,7 @@ var/global/list/obj/machinery/message_server/message_servers = list()
 	var/result
 	for (var/token in spamfilter)
 		if (findtextEx(message,token))
-			message = "<font color=\"red\">[message]</font>"	//Rejected messages will be indicated by red color.
+			message = span_red("[message]")	//Rejected messages will be indicated by red color.
 			result = token										//Token caused rejection (if there are multiple, last will be chosen>.
 	pda_msgs += new/datum/data_pda_msg(recipient,sender,message)
 	return result
@@ -154,31 +154,31 @@ var/global/list/obj/machinery/message_server/message_servers = list()
 				if(2)
 					if(!Console.silent)
 						playsound(Console, 'sound/machines/twobeep.ogg', 50, 1)
-						Console.audible_message(text("\icon[Console][bicon(Console)] *The Requests Console beeps: 'PRIORITY Alert in [sender]'"),,5, runemessage = "beep! beep!")
+						Console.audible_message(text("[icon2html(Console,hearers(Console))] *The Requests Console beeps: 'PRIORITY Alert in [sender]'"),,5, runemessage = "beep! beep!")
 					Console.message_log += list(list("High Priority message from [sender]", "[authmsg]"))
 				else
 					if(!Console.silent)
 						playsound(Console, 'sound/machines/twobeep.ogg', 50, 1)
-						Console.audible_message(text("\icon[Console][bicon(Console)] *The Requests Console beeps: 'Message from [sender]'"),,4, runemessage = "beep beep")
+						Console.audible_message(text("[icon2html(Console,hearers(Console))] *The Requests Console beeps: 'Message from [sender]'"),,4, runemessage = "beep beep")
 					Console.message_log += list(list("Message from [sender]", "[authmsg]"))
 			Console.set_light(2)
 
 
 /obj/machinery/message_server/attack_hand(user as mob)
-//	to_chat(user, "<font color='blue'>There seem to be some parts missing from this server. They should arrive on the station in a few days, give or take a few CentCom delays.</font>")
-	to_chat(user, "<span class='filter_notice'>You toggle PDA message passing from [active ? "On" : "Off"] to [active ? "Off" : "On"].</span>")
+//	to_chat(user, span_blue("There seem to be some parts missing from this server. They should arrive on the station in a few days, give or take a few CentCom delays."))
+	to_chat(user, span_filter_notice("You toggle PDA message passing from [active ? "On" : "Off"] to [active ? "Off" : "On"]."))
 	active = !active
 	update_icon()
 
 	return
 
-/obj/machinery/message_server/attackby(obj/item/weapon/O as obj, mob/living/user as mob)
+/obj/machinery/message_server/attackby(obj/item/O as obj, mob/living/user as mob)
 	if (active && !(stat & (BROKEN|NOPOWER)) && (spamfilter_limit < MESSAGE_SERVER_DEFAULT_SPAM_LIMIT*2) && \
-		istype(O,/obj/item/weapon/circuitboard/message_monitor))
+		istype(O,/obj/item/circuitboard/message_monitor))
 		spamfilter_limit += round(MESSAGE_SERVER_DEFAULT_SPAM_LIMIT / 2)
 		user.drop_item()
 		qdel(O)
-		to_chat(user, "<span class='filter_notice'>You install additional memory and processors into message server. Its filtering capabilities been enhanced.</span>")
+		to_chat(user, span_filter_notice("You install additional memory and processors into message server. Its filtering capabilities been enhanced."))
 	else
 		..(O, user)
 
@@ -371,24 +371,23 @@ var/obj/machinery/blackbox_recorder/blackbox
 
 	round_end_data_gathering() //round_end time logging and some other data processing
 	establish_db_connection()
-	if(!SSdbcore.IsConnected()) return //CHOMPEdit TGSQL
+	if(!SSdbcore.IsConnected()) return
 	var/round_id
 
-	var/datum/db_query/query = SSdbcore.NewQuery("SELECT MAX(round_id) AS round_id FROM erro_feedback") //CHOMPEdit TGSQL
+	var/datum/db_query/query = SSdbcore.NewQuery("SELECT MAX(round_id) AS round_id FROM erro_feedback")
 	query.Execute()
 	while(query.NextRow())
 		round_id = query.item[1]
-	qdel(query) //CHOMPEdit TGSQL
+	qdel(query)
 	if(!isnum(round_id))
 		round_id = text2num(round_id)
 	round_id++
 
 	for(var/datum/feedback_variable/FV in feedback)
-		var/list/sqlargs = list("t_roundid" = round_id, "t_variable" = "[FV.get_variable()]", "t_value" = "[FV.get_value()]", "t_details" = "[FV.get_details()]") //CHOMPEdit TGSQL
-		var/sql = "INSERT INTO erro_feedback VALUES (null, Now(), :t_roundid, :t_variable, :t_value, :t_details)" //CHOMPEdit TGSQL
-		var/datum/db_query/query_insert = SSdbcore.NewQuery(sql, sqlargs) //CHOMPEdit TGSQL
+		var/sql = "INSERT INTO erro_feedback VALUES (null, Now(), [round_id], \"[FV.get_variable()]\", [FV.get_value()], \"[FV.get_details()]\")"
+		var/datum/db_query/query_insert = SSdbcore.NewQuery(sql)
 		query_insert.Execute()
-		qdel(query_insert) //CHOMPEdit TGSQL
+		qdel(query_insert)
 
 // Sanitize inputs to avoid SQL injection attacks //CHOMPEdit NOTE: This is not secure. Basic filters like this are pretty easy to bypass. Use the format for arguments used in the above.
 /proc/sql_sanitize_text(var/text)

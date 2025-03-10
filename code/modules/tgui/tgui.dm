@@ -45,6 +45,8 @@
 	var/datum/tgui/parent_ui
 	/// Children of this UI
 	var/list/children = list()
+	/// Any partial packets that we have received from TGUI, waiting to be sent
+	var/partial_packets
 
 /**
  * public
@@ -89,7 +91,7 @@
  * return bool - TRUE if a new pooled window is opened, FALSE in all other situations including if a new pooled window didn't open because one already exists.
  */
 /datum/tgui/proc/open()
-	if(!user.client)
+	if(!user?.client)
 		return FALSE
 	if(window)
 		return FALSE
@@ -104,16 +106,13 @@
 	if(!window.is_ready())
 		window.initialize(
 			strict_mode = TRUE,
-			fancy = user.client.prefs.tgui_fancy,
+			fancy = user.read_preference(/datum/preference/toggle/tgui_fancy),
 			assets = list(
 				get_asset_datum(/datum/asset/simple/tgui),
-			))
+				))
 	else
 		window.send_message("ping")
-	window.send_asset(get_asset_datum(/datum/asset/simple/fontawesome))
-	window.send_asset(get_asset_datum(/datum/asset/simple/tgfont))
-	for(var/datum/asset/asset in src_object.ui_assets(user))
-		window.send_asset(asset)
+	send_assets()
 	window.send_message("update", get_payload(
 		with_data = TRUE,
 		with_static_data = TRUE))
@@ -122,6 +121,19 @@
 	SStgui.on_open(src)
 
 	return TRUE
+
+
+/datum/tgui/proc/send_assets()
+	var/flush_queue = window.send_asset(get_asset_datum(
+		/datum/asset/simple/namespaced/fontawesome))
+	flush_queue |= window.send_asset(get_asset_datum(
+		/datum/asset/simple/namespaced/tgfont))
+	flush_queue |= window.send_asset(get_asset_datum(
+		/datum/asset/json/icon_ref_map))
+	for(var/datum/asset/asset in src_object.ui_assets(user))
+		flush_queue |= window.send_asset(asset)
+	if (flush_queue)
+		user.client.browse_queue_flush()
 
 /**
  * public
@@ -206,7 +218,7 @@
  * optional force bool Send an update even if UI is not interactive.
  */
 /datum/tgui/proc/send_full_update(custom_data, force)
-	if(!user.client || !initialized || closing)
+	if(!user?.client || !initialized || closing)
 		return
 	//if(!COOLDOWN_FINISHED(src, refresh_cooldown))
 		//refreshing = TRUE
@@ -229,7 +241,7 @@
  * optional force bool Send an update even if UI is not interactive.
  */
 /datum/tgui/proc/send_update(custom_data, force)
-	if(!user.client || !initialized || closing)
+	if(!user?.client || !initialized || closing)
 		return
 	var/should_update_data = force || status >= STATUS_UPDATE
 	window.send_message("update", get_payload(
@@ -256,8 +268,8 @@
 		"window" = list(
 			"key" = window_key,
 			"size" = window_size,
-			"fancy" = user.client.prefs.tgui_fancy,
-			"locked" = user.client.prefs.tgui_lock,
+			"fancy" = user.read_preference(/datum/preference/toggle/tgui_fancy),
+			"locked" = user.read_preference(/datum/preference/toggle/tgui_lock),
 		),
 		"client" = list(
 			"ckey" = user.client.ckey,
@@ -321,7 +333,8 @@
  */
 /datum/tgui/proc/process_status()
 	var/prev_status = status
-	status = src_object.tgui_status(user, state)
+	if(src_object)
+		status = src_object.tgui_status(user, state)
 	if(parent_ui)
 		status = min(status, parent_ui.status)
 	return prev_status != status
@@ -338,12 +351,33 @@
 	// Pass act type messages to tgui_act
 	if(type && copytext(type, 1, 5) == "act/")
 		var/act_type = copytext(type, 5)
+		var/id = href_list["packetId"]
+		if(!isnull(id))
+			id = text2num(id)
+
+			var/total = text2num(href_list["totalPackets"])
+			if(id == 1)
+				if(total > MAX_MESSAGE_CHUNKS)
+					return
+
+				partial_packets = new /list(total)
+
+			partial_packets[id] = href_list["packet"]
+
+			if(id != total)
+				return
+
+			var/assembled_payload = ""
+			for(var/packet in partial_packets)
+				assembled_payload += packet
+
+			payload = json_decode(assembled_payload)
+			partial_packets = null
 		#ifdef TGUI_DEBUGGING
 		log_tgui(user, "Action: [act_type] [href_list["payload"]], Window: [window.id], Source: [src_object]")
 		#endif
 		process_status()
-		if(src_object.tgui_act(act_type, payload, src, state))
-			SStgui.update_uis(src_object)
+		DEFAULT_QUEUE_OR_CALL_VERB(VERB_CALLBACK(src, PROC_REF(on_act_message), act_type, payload, state))
 		return FALSE
 	switch(type)
 		if("ready")
@@ -371,3 +405,10 @@
 			log_tgui(user, "Fallback Triggered: [href_list["payload"]], Window: [window.id], Source: [src_object]")
 			#endif
 			src_object.tgui_fallback(payload)
+
+/// Wrapper for behavior to potentially wait until the next tick if the server is overloaded
+/datum/tgui/proc/on_act_message(act_type, payload, state)
+	if(QDELETED(src) || QDELETED(src_object))
+		return
+	if(src_object.tgui_act(act_type, payload, src, state))
+		SStgui.update_uis(src_object)

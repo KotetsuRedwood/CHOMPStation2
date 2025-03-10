@@ -18,9 +18,7 @@
 	item_state = "black"
 	permeability_coefficient = 0.05
 
-	cold_protection = HANDS
 	min_cold_protection_temperature = GLOVES_MIN_COLD_PROTECTION_TEMPERATURE
-	heat_protection = HANDS
 	max_heat_protection_temperature = GLOVES_MAX_HEAT_PROTECTION_TEMPERATURE
 
 /obj/item/clothing/gloves/swat
@@ -30,9 +28,7 @@
 	item_state = "swat"
 	siemens_coefficient = 0.50
 	permeability_coefficient = 0.05
-	cold_protection = HANDS
 	min_cold_protection_temperature = GLOVES_MIN_COLD_PROTECTION_TEMPERATURE
-	heat_protection = HANDS
 	max_heat_protection_temperature = GLOVES_MAX_HEAT_PROTECTION_TEMPERATURE
 	armor = list(melee = 15, bullet = 10, laser = 10, energy = 10, bomb = 5, bio = 0, rad = 0) // CHOMPedit: Now protective.
 
@@ -43,9 +39,7 @@
 	item_state = "swat"
 	siemens_coefficient = 0
 	permeability_coefficient = 0.05
-	cold_protection = HANDS
 	min_cold_protection_temperature = GLOVES_MIN_COLD_PROTECTION_TEMPERATURE
-	heat_protection = HANDS
 	max_heat_protection_temperature = GLOVES_MAX_HEAT_PROTECTION_TEMPERATURE
 	armor = list(melee = 20, bullet = 15, laser = 15, energy = 15, bomb = 10, bio = 0, rad = 0) // CHOMPedit: Now protective.
 
@@ -64,7 +58,7 @@
 
 //TODO: Make inflating gloves a thing
 /*/obj/item/clothing/gloves/sterile/proc/Inflate(/mob/living/carbon/human/user)
-	user.visible_message("<b>\The [src]</b> expands!")
+	user.visible_message(span_infoplain(span_bold("\The [src]") + " expands!"))
 	qdel(src)*/
 
 /obj/item/clothing/gloves/sterile/latex
@@ -124,25 +118,8 @@
 	pickup_sound = 'sound/items/pickup/toolbox.ogg'
 	armor = list (melee = 20, bullet = 15, laser = 10, energy = 10, bomb =5, bio = 30, rad = 30) //gently bumped up Heavy engineering gloves value for protection //ChompEdit
 
-	cold_protection = HANDS
 	min_cold_protection_temperature = GLOVES_MIN_COLD_PROTECTION_TEMPERATURE
-	heat_protection = HANDS
 	max_heat_protection_temperature = GLOVES_MAX_HEAT_PROTECTION_TEMPERATURE
-
-/obj/item/clothing/gloves/knuckledusters
-	name = "knuckle dusters"
-	desc = "A pair of brass knuckles. Generally used to enhance the user's punches."
-	icon_state = "knuckledusters"
-	matter = list(MAT_STEEL = 500)
-	attack_verb = list("punched", "beaten", "struck")
-	flags = THICKMATERIAL	// Stops rings from increasing hit strength
-	siemens_coefficient = 1
-	fingerprint_chance = 100
-	overgloves = 1
-	force = 5
-	punch_force = 5
-	drop_sound = 'sound/items/drop/metalboots.ogg'
-	pickup_sound = 'sound/items/pickup/toolbox.ogg'
 
 /obj/item/clothing/gloves/ranger
 	var/glovecolor = "white"
@@ -152,7 +129,7 @@
 	icon = 'icons/obj/clothing/ranger.dmi'
 	icon_state = "ranger_gloves"
 
-/obj/item/clothing/gloves/ranger/Initialize()
+/obj/item/clothing/gloves/ranger/Initialize(mapload)
 	. = ..()
 	if(icon_state == "ranger_gloves")
 		name = "[glovecolor] ranger gloves"

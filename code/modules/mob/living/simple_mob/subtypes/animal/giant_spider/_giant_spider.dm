@@ -68,8 +68,9 @@
 	icon_living = "guard"
 	icon_dead = "guard_dead"
 	has_eye_glow = TRUE
+	density = FALSE
 	minbodytemp = 175 //yw edit, Makes mobs survive cryogaia temps
-	faction = "awaymission" //yw edit, Makes away mobs be on the same fuckin' side.
+	faction = FACTION_AWAYMISSION //yw edit, Makes away mobs be on the same fuckin' side.
 	maxHealth = 200
 	health = 200
 	pass_flags = PASSTABLE
@@ -99,17 +100,17 @@
 	speak_emote = list("chitters")
 
 	meat_amount = 5
-	meat_type = /obj/item/weapon/reagent_containers/food/snacks/xenomeat/spidermeat
+	meat_type = /obj/item/reagent_containers/food/snacks/xenomeat/spidermeat
 
 	say_list_type = /datum/say_list/spider
 
 	tame_items = list(
-	/obj/item/weapon/reagent_containers/food/snacks/xenomeat = 10,
-	/obj/item/weapon/reagent_containers/food/snacks/crabmeat = 40,
-	/obj/item/weapon/reagent_containers/food/snacks/meat = 20
+	/obj/item/reagent_containers/food/snacks/xenomeat = 10,
+	/obj/item/reagent_containers/food/snacks/crabmeat = 40,
+	/obj/item/reagent_containers/food/snacks/meat = 20
 	)
 
-	var/poison_type = "spidertoxin"	// The reagent that gets injected when it attacks.
+	var/poison_type = REAGENT_ID_SPIDERTOXIN	// The reagent that gets injected when it attacks.
 	var/poison_chance = 10			// Chance for injection to occur.
 	var/poison_per_bite = 5			// Amount added per injection.
 
@@ -117,10 +118,20 @@
 		/obj/item/stack/material/chitin = 1\
 		)
 
+	allow_mind_transfer = TRUE
 	can_be_drop_prey = FALSE //CHOMP Add
 	species_sounds = "Spider"
 	pain_emote_1p = list("chitter", "click") //CHOMP Add
 	pain_emote_3p = list("chitters", "clicks") //CHOMP Add
+
+/mob/living/simple_mob/animal/giant_spider/Initialize(mapload)
+	. = ..()
+	AddComponent(/datum/component/swarming)
+
+/mob/living/simple_mob/animal/giant_spider/CanPass(atom/movable/mover, turf/target)
+	if(isliving(mover) && !istype(mover, /mob/living/simple_mob/animal/giant_spider) && mover.density == TRUE)
+		return FALSE
+	return ..()
 
 /mob/living/simple_mob/animal/giant_spider/apply_melee_effects(var/atom/A)
 	if(isliving(A))
@@ -133,7 +144,7 @@
 // Does actual poison injection, after all checks passed.
 /mob/living/simple_mob/animal/giant_spider/proc/inject_poison(mob/living/L, target_zone)
 	if(prob(poison_chance))
-		to_chat(L, "<span class='warning'>You feel a tiny prick.</span>")
+		to_chat(L, span_warning("You feel a tiny prick."))
 		L.reagents.add_reagent(poison_type, poison_per_bite)
 
 /mob/living/simple_mob/animal/giant_spider/proc/make_spiderling()
