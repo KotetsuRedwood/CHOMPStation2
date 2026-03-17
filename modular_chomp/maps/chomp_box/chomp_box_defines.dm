@@ -18,7 +18,7 @@
 	lobby_screens = list()
 	id_hud_icons = 'icons/mob/hud_jobs_vr.dmi'
 
-	station_name  = "NLS Orion's Call" //No idea why
+	station_name  = "NLS Orion's Call" //No idea why Orion's Call. Just called to me?
 	station_short = "Orion's Call"
 	dock_name     = "NCS Northern Star"
 	boss_name     = "Central Command"
