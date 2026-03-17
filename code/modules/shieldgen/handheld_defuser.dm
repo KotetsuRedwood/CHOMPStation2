@@ -26,7 +26,7 @@
 	if(!enabled)
 		return PROCESS_KILL
 
-	for(var/direction in cardinal)
+	for(var/direction in GLOB.cardinal)
 		var/turf/simulated/shielded_tile = get_step(get_turf(src), direction)
 		for(var/obj/effect/shield/S in shielded_tile)
 			// 10kJ per pulse, but gap in the shield lasts for longer than regular diffusers.
@@ -44,6 +44,9 @@
 		icon_state = "hdiffuser_off"
 
 /obj/item/shield_diffuser/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	enabled = !enabled
 	update_icon()
 	if(enabled)

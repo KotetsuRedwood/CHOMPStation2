@@ -1,4 +1,4 @@
-var/list/overminds = list()
+GLOBAL_LIST_EMPTY(overminds)
 
 /mob/observer/blob
 	name = "Blob Overmind"
@@ -36,7 +36,7 @@ var/list/overminds = list()
 	if(pre_placed) //we already have a core!
 		placed = 1
 
-	overminds += src
+	GLOB.overminds += src
 	var/new_name = "[initial(name)] ([rand(1, 999)])"
 	name = new_name
 	real_name = new_name
@@ -67,7 +67,7 @@ var/list/overminds = list()
 			BM.overmind = null
 			BM.update_icons()
 
-	overminds -= src
+	GLOB.overminds -= src
 	return ..()
 
 /mob/observer/blob/get_status_tab_items()
@@ -146,7 +146,7 @@ var/list/overminds = list()
 	//Handle nonverbal languages here
 	for(var/datum/multilingual_say_piece/S in message_pieces)
 		if(S.speaking.flags & NONVERBAL)
-			custom_emote(1, "[pick(S.speaking.signlang_verb)].")
+			custom_emote(VISIBLE_MESSAGE, "[pick(S.speaking.signlang_verb)].")
 
 	for(var/mob/M in listening)
 		spawn()
@@ -162,5 +162,5 @@ var/list/overminds = list()
 				if(dst <= world.view)
 					O.hear_talk(src, message_pieces, "conveys")
 
-	log_say(message, src)
+	log_talk(message, LOG_SAY)
 	return 1

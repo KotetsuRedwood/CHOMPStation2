@@ -42,8 +42,8 @@
 	rigsuit_min_pressure = 0							  // Min pressure the rig protects against when sealed
 
 	req_one_access = list()
-	req_access = list(access_engine)
-	allowed = list(/obj/item/flashlight,/obj/item/tank,/obj/item/suit_cooling_unit,/obj/item/storage)
+	req_access = list(ACCESS_ENGINE)
+	allowed = list(POCKET_GENERIC, POCKET_ALL_TANKS, POCKET_SECURITY, POCKET_SUIT_REGULATORS)
 	offline_vision_restriction = 1
 
 	initial_modules = list(
@@ -76,7 +76,7 @@
 	emp_protection = 40 //change this to 30 if too high.
 
 	req_one_access = list()
-	allowed = list(/obj/item/flashlight,/obj/item/tank,/obj/item/suit_cooling_unit,/obj/item/storage)
+	allowed = list(POCKET_GENERIC, POCKET_ALL_TANKS, POCKET_SECURITY, POCKET_SUIT_REGULATORS)
 	offline_vision_restriction = 1
 
 	initial_modules = list(

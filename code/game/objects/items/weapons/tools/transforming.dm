@@ -6,8 +6,8 @@
 	var/obj/item/weldingtool/welder
 	var/weldertype = /obj/item/weldingtool/dummy
 
-/obj/item/tool/transforming/New(newloc, no_counterpart = TRUE)
-	..(newloc)
+/obj/item/tool/transforming/Initialize(mapload, no_counterpart = TRUE)
+	. = ..()
 	if(TOOL_WELDER in possible_tooltypes)
 		welder = new weldertype(src)
 	on_tool_switch()
@@ -15,12 +15,15 @@
 /obj/item/tool/transforming/Destroy()
 	if(welder)
 		QDEL_NULL(welder)
-	..()
+	. = ..()
 
 /obj/item/tool/transforming/get_welder()
 	return welder
 
 /obj/item/tool/transforming/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	if(!possible_tooltypes.len || possible_tooltypes.len < 2)
 		return
 	if(current_tooltype == possible_tooltypes.len)

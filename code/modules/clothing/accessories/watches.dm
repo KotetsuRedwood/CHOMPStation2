@@ -58,13 +58,14 @@
 			var/datum/gas_mixture/env = T.return_air()
 			. += span_notice("Pressure: [env.return_pressure()]kPa / Temperature: [env.temperature]K ")
 
-/obj/item/clothing/accessory/watch/survival/New()
+/obj/item/clothing/accessory/watch/survival/Initialize(mapload)
+	. = ..()
 	gps = new/obj/item/gps/watch(src)
 
 /obj/item/gps/watch
 	gps_tag = "SRV-WTCH"
 
-/obj/item/clothing/accessory/watch/survival/AltClick(mob/user)
+/obj/item/clothing/accessory/watch/survival/click_alt(mob/user)
 	. = ..()
 
 	if(Adjacent(user))

@@ -9,28 +9,11 @@
 
 	helm_type = /obj/item/clothing/head/helmet/space/rig/pmc
 
-	req_access = list(access_cent_specops)
+	req_access = list(ACCESS_CENT_SPECOPS)
 
 	armor = list(melee = 60, bullet = 50, laser = 35,energy = 15, bomb = 30, bio = 100, rad = 95)
-	allowed = list(
-		/obj/item/flashlight,
-		/obj/item/tank,
-		/obj/item/t_scanner,
-		/obj/item/rcd,
-		/obj/item/tool/crowbar,
-		/obj/item/tool/screwdriver,
-		/obj/item/weldingtool,
-		/obj/item/tool/wirecutters,
-		/obj/item/tool/wrench,
-		/obj/item/multitool,
-		/obj/item/radio,
-		/obj/item/analyzer,
-		/obj/item/melee/baton,
-		/obj/item/gun,
-		/obj/item/storage,
-		/obj/item/reagent_containers/hypospray,
-		/obj/item/roller
-		)
+
+	allowed = list(POCKET_GENERIC, POCKET_EMERGENCY, POCKET_ALL_TANKS, POCKET_SUIT_REGULATORS, POCKET_ENGINEERING, POCKET_SECURITY, POCKET_MEDICAL, POCKET_HEAVYTOOLS, POCKET_BAYSUIT, /obj/item/storage/firstaid)
 
 /obj/item/rig/pmc/commander
 	name = "PMC-C hardsuit control module"

@@ -5,15 +5,13 @@
 	initial_sprite_stack = list()
 	light_color = "#0099ff"
 	access = list(801)
+	special_handling = TRUE
 
 /obj/item/card/id/keycard/update_icon()
 	return
 
 /obj/item/card/id/keycard/read()
 	to_chat(usr, span_notice("It is a red keycard, it must unlock something."))
-
-/obj/item/card/id/keycard/attack_self(mob/living/user as mob)
-	return
 
 /obj/item/card/id/keycard/blue
 	icon_state = "keycard-blue"
@@ -26,13 +24,13 @@
 /obj/item/glamourcrystal
 	name = "white crytal"
 	desc = "A large white, highly reflective crystal with a slight glow to it."
-	icon = 'icons/obj/items_vr.dmi'
+	icon = 'icons/obj/items.dmi'
 	icon_state = "glamourcrystal"
 
 /obj/structure/crystalholder
 	name = "material cart"
 	desc = "A cart designed to fit and carry one large carefully cut crystal."
-	icon = 'icons/obj/items_vr.dmi'
+	icon = 'icons/obj/items.dmi'
 	icon_state = "crystalholder"
 	var/crystal = 0
 	density = 1
@@ -73,13 +71,13 @@
 	if(!crystal_found)
 		return
 
-	for(var/obj/machinery/light/L in machines)
+	for(var/obj/machinery/light/L in GLOB.machines)
 		if(L.z != src.z || get_dist(src,L) > 10)
 			continue
 		else
 			L.flicker(10)
 
-	for(var/obj/machinery/door/blast/M in machines)
+	for(var/obj/machinery/door/blast/M in GLOB.machines)
 		if(M.id == id)
 			if(M.density)
 				spawn(0)
@@ -96,5 +94,5 @@
 	desc = "A switch tied to nearby machinery."
 
 /obj/machinery/button/remote/experimenter/trigger()
-	for(var/obj/machinery/crystalexperimenter/E in machines)
+	for(var/obj/machinery/crystalexperimenter/E in GLOB.machines)
 		E.experiment()

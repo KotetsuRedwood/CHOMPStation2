@@ -1,4 +1,8 @@
 //MAP CONVERTED BY dmm2tgm.py THIS HEADER COMMENT PREVENTS RECONVERSION, DO NOT REMOVE
+"aa" = (
+/obj/structure/ghost_pod/ghost_activated/maint_lurker/redgate,
+/turf/simulated/floor/tiled/steel,
+/area/redgate/hotsprings/outdoors)
 "as" = (
 /turf/simulated/floor/water{
 	name = "hotspring";
@@ -951,7 +955,7 @@
 	},
 /area/redgate/hotsprings/outdoors)
 "wL" = (
-/obj/structure/bed/double,
+/obj/structure/bed/double/padded,
 /obj/item/bedsheet/hopdouble,
 /turf/simulated/floor/carpet/sblucarpet,
 /area/redgate/hotsprings/house/dorm1)
@@ -1084,7 +1088,7 @@
 	},
 /area/redgate/hotsprings/outdoors)
 "zB" = (
-/obj/structure/bed/double,
+/obj/structure/bed/double/padded,
 /obj/item/bedsheet/hopdouble,
 /turf/simulated/floor/carpet/sblucarpet,
 /area/redgate/hotsprings/house/dorm2)
@@ -1147,7 +1151,7 @@
 /area/redgate/hotsprings/house/lovercave)
 "AM" = (
 /obj/structure/bed/chair/sofa/corner/purp{
-	dir = 1
+	dir = 4
 	},
 /turf/simulated/floor/carpet/gaycarpet,
 /area/redgate/hotsprings/house)
@@ -20512,7 +20516,7 @@ La
 iF
 fB
 iF
-iF
+aa
 iF
 be
 iF

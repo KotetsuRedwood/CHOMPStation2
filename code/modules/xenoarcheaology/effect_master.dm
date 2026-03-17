@@ -15,11 +15,6 @@
 #define THERMITE_PATH /datum/reagent/thermite
 #define TOXIN_PATH /datum/reagent/toxin
 
-var/list/water_reagents = list(HYDROGEN_PATH, WATER_PATH)
-var/list/acid_reagents = list(ACID_PATH, DIETHYLAMINE_PATH)
-var/list/volatile_reagents = list(PHORON_PATH, HYDROPHORON_PATH, THERMITE_PATH)
-var/list/toxic_reagents = list(TOXIN_PATH)
-
 /atom/proc/is_anomalous()
 	return (GetComponent(/datum/component/artifact_master))
 
@@ -64,6 +59,11 @@ var/list/toxic_reagents = list(TOXIN_PATH)
 
 	var/artifact_id
 
+	var/static/list/water_reagents = list(HYDROGEN_PATH, WATER_PATH)
+	var/static/list/acid_reagents = list(ACID_PATH, DIETHYLAMINE_PATH)
+	var/static/list/volatile_reagents = list(PHORON_PATH, HYDROPHORON_PATH, THERMITE_PATH)
+	var/static/list/toxic_reagents = list(TOXIN_PATH)
+
 /datum/component/artifact_master/New()
 	. = ..()
 	holder = parent
@@ -79,6 +79,12 @@ var/list/toxic_reagents = list(TOXIN_PATH)
 	do_setup()
 	return
 
+// This handles the randomization for large artifacts. This allows them to spawn in and do the 50/50 to see if they'll be activated or not.
+/datum/component/artifact_master/proc/do_large_randomization()
+	for(var/datum/artifact_effect/my_effect in my_effects)
+		if(my_effect.can_start_activated && prob(50))
+			my_effect.ToggleActivate(TRUE, TRUE)
+
 /*
  * Component System Registry.
  * Here be dragons.
@@ -90,7 +96,7 @@ var/list/toxic_reagents = list(TOXIN_PATH)
 
 /datum/component/artifact_master/proc/DoRegistry()
 //Melee Hit
-	RegisterSignal(holder, COMSIG_PARENT_ATTACKBY, /datum/component/artifact_master/proc/on_attackby, override = FALSE)
+	RegisterSignal(holder, COMSIG_ATOM_ATTACKBY, /datum/component/artifact_master/proc/on_attackby, override = FALSE)
 //Explosions
 	RegisterSignal(holder, COMSIG_ATOM_EX_ACT, /datum/component/artifact_master/proc/on_exact, override = FALSE)
 //Bullets
@@ -107,21 +113,21 @@ var/list/toxic_reagents = list(TOXIN_PATH)
 	RegisterSignal(holder, COMSIG_MOVABLE_MOVED, /datum/component/artifact_master/proc/on_moved, override = FALSE)
 
 //Splashed with a reagent.
-	RegisterSignal(holder, COMSIG_REAGENTS_TOUCH, /datum/component/artifact_master/proc/on_reagent, override = FALSE)
+	RegisterSignal(holder, COMSIG_REAGENT_EXPOSE_OBJ, /datum/component/artifact_master/proc/on_reagent, override = FALSE)
 
 /*
  *
  */
 
 /datum/component/artifact_master/proc/do_unregister()
-	UnregisterSignal(holder, COMSIG_PARENT_ATTACKBY)
+	UnregisterSignal(holder, COMSIG_ATOM_ATTACKBY)
 	UnregisterSignal(holder, COMSIG_ATOM_EX_ACT)
 	UnregisterSignal(holder, COMSIG_ATOM_BULLET_ACT)
 	UnregisterSignal(holder, COMSIG_ATOM_ATTACK_HAND)
 	UnregisterSignal(holder, COMSIG_MOVABLE_BUMP)
 	UnregisterSignal(holder, COMSIG_ATOM_BUMPED)
 	UnregisterSignal(holder, COMSIG_MOVABLE_MOVED)
-	UnregisterSignal(holder, COMSIG_REAGENTS_TOUCH)
+	UnregisterSignal(holder, COMSIG_REAGENT_EXPOSE_OBJ)
 
 /datum/component/artifact_master/proc/get_active_effects()
 	var/list/active_effects = list()
@@ -183,7 +189,7 @@ var/list/toxic_reagents = list(TOXIN_PATH)
 
 /datum/component/artifact_master/proc/generate_effects()
 	while(effect_generation_chance > 0)
-		var/chosen_path = pick(subtypesof(/datum/artifact_effect) - blacklisted_artifact_effects)
+		var/chosen_path = pick(subtypesof(/datum/artifact_effect) - GLOB.blacklisted_artifact_effects)
 		if(effect_generation_chance >= 100)	// If we're above 100 percent, just cut a flat amount and add an effect.
 			var/datum/artifact_effect/AE = new chosen_path(src)
 			if(istype(holder, AE.req_type))
@@ -214,6 +220,7 @@ var/list/toxic_reagents = list(TOXIN_PATH)
  */
 
 /datum/component/artifact_master/proc/on_exact()
+	SIGNAL_HANDLER
 	var/severity = args[2]
 	var/triggered = FALSE
 	for(var/datum/artifact_effect/my_effect in my_effects)
@@ -237,6 +244,7 @@ var/list/toxic_reagents = list(TOXIN_PATH)
 	return
 
 /datum/component/artifact_master/proc/on_bullet()
+	SIGNAL_HANDLER
 	var/obj/item/projectile/P = args[2]
 	var/triggered = TRUE
 	for(var/datum/artifact_effect/my_effect in my_effects)
@@ -258,44 +266,56 @@ var/list/toxic_reagents = list(TOXIN_PATH)
 	return
 
 /datum/component/artifact_master/proc/on_bump()
+	SIGNAL_HANDLER
 	var/atom/bumped = args[2]
 	var/warn = FALSE
 	for(var/datum/artifact_effect/my_effect in my_effects)
-		if(istype(bumped,/obj))
-			if(bumped:throwforce >= 10)
+		if(isitem(bumped))
+			var/obj/item/bumped_item = bumped
+			if(bumped_item.throwforce >= 10)
 				if(my_effect.trigger == TRIGGER_FORCE)
 					my_effect.ToggleActivate()
 
 		else if(ishuman(bumped) && GetAnomalySusceptibility(bumped) >= 0.5)
 			if (my_effect.trigger == TRIGGER_TOUCH)
 				my_effect.ToggleActivate()
+				warn = 1
 				if(my_effect.activated && my_effect.effect == EFFECT_TOUCH)
 					my_effect.DoEffectTouch(bumped)
-				warn = 1
+					continue //We activated it, go ahead and move on to the next. If we don't continue, we hit them with the effect again.
+			if(my_effect.effect == EFFECT_TOUCH && my_effect.activated) //We are activated and have a touch effect!
+				my_effect.DoEffectTouch(bumped)
 
 	if(warn && isliving(bumped))
 		to_chat(bumped, span_filter_notice(span_bold("You accidentally touch \the [holder] as it hits you.")))
 
 /datum/component/artifact_master/proc/on_bumped()
+	SIGNAL_HANDLER
 	var/atom/movable/M = args[2]
 	var/warn = FALSE
 	for(var/datum/artifact_effect/my_effect in my_effects)
-		if(istype(M,/obj))
-			if(M:throwforce >= 10)
+		if(isitem(M))
+			var/obj/item/bumped_item = M
+			if(bumped_item.throwforce >= 10)
 				if(my_effect.trigger == TRIGGER_FORCE)
 					my_effect.ToggleActivate()
 
 		else if(ishuman(M) && !istype(M:gloves,/obj/item/clothing/gloves))
-			if (my_effect.trigger == TRIGGER_TOUCH)
+			if(my_effect.trigger == TRIGGER_TOUCH)
 				my_effect.ToggleActivate(M)
+				warn = 1
 				if(my_effect.activated && my_effect.effect == EFFECT_TOUCH)
 					my_effect.DoEffectTouch(M)
-				warn = 1
+					continue //We activated it, go ahead and move on to the next. If we don't continue, we hit them with the effect again.
+			if(my_effect.effect == EFFECT_TOUCH && my_effect.activated) //We are activated and have a touch effect!
+				my_effect.DoEffectTouch(M)
+
 
 	if(warn && isliving(M))
 		to_chat(M, span_filter_notice(span_bold("You accidentally touch \the [holder].")))
 
 /datum/component/artifact_master/proc/on_attack_hand()
+	SIGNAL_HANDLER
 	var/mob/living/user = args[2]
 	if(!istype(user))
 		return
@@ -313,6 +333,9 @@ var/list/toxic_reagents = list(TOXIN_PATH)
 				my_effect.ToggleActivate()
 				if(my_effect.activated && my_effect.effect == EFFECT_TOUCH)
 					my_effect.DoEffectTouch(user)
+					continue //We activated it, go ahead and move on to the next. If we don't continue, we hit them with the effect again.
+			if(my_effect.effect == EFFECT_TOUCH && my_effect.activated) //We are activated and have a touch effect!
+				my_effect.DoEffectTouch(user)
 
 	if(triggered)
 		to_chat(user, span_filter_notice(span_bold("You touch [holder].")))
@@ -322,6 +345,7 @@ var/list/toxic_reagents = list(TOXIN_PATH)
 
 
 /datum/component/artifact_master/proc/on_attackby()
+	SIGNAL_HANDLER
 	var/obj/item/W = args[2]
 
 	for(var/datum/artifact_effect/my_effect in my_effects)
@@ -330,25 +354,25 @@ var/list/toxic_reagents = list(TOXIN_PATH)
 			if(my_effect.trigger == TRIGGER_WATER)
 				for(var/datum/reagent/R in W.reagents.reagent_list) //What chems are in the beaker?
 					var/T = R.type
-					if(is_path_in_list(T,water_reagents)) //Check the reagent and activate!
+					if(is_path_in_list(T, water_reagents)) //Check the reagent and activate!
 						my_effect.ToggleActivate()
 
 			else if(my_effect.trigger == TRIGGER_ACID)
 				for(var/datum/reagent/R in W.reagents.reagent_list)
 					var/T = R.type
-					if(is_path_in_list(T,acid_reagents))
+					if(is_path_in_list(T, acid_reagents))
 						my_effect.ToggleActivate()
 
 			else if(my_effect.trigger == TRIGGER_VOLATILE)
 				for(var/datum/reagent/R in W.reagents.reagent_list)
 					var/T = R.type
-					if(is_path_in_list(T,volatile_reagents))
+					if(is_path_in_list(T, volatile_reagents))
 						my_effect.ToggleActivate()
 
 			else if(my_effect.trigger == TRIGGER_TOXIN)
 				for(var/datum/reagent/R in W.reagents.reagent_list)
 					var/T = R.type
-					if(is_path_in_list(T,toxic_reagents))
+					if(is_path_in_list(T, toxic_reagents))
 						my_effect.ToggleActivate()
 		//If we weren't splashed, let's see if we were hit by a energy item and if we're energy activation.
 		else if(istype(W,/obj/item/melee/baton) && W:status ||\
@@ -372,6 +396,7 @@ var/list/toxic_reagents = list(TOXIN_PATH)
 				my_effect.ToggleActivate()
 
 /datum/component/artifact_master/proc/on_reagent()
+	SIGNAL_HANDLER
 	//A strange bug here is that, when a reagent is splashed on an artifact, it calls this proc twice.
 	//Why? I have no clue. I only accidentally stumbled upon it during debugging!
 	//I left one of the debug logs commented out so others can confirm this.
@@ -379,21 +404,21 @@ var/list/toxic_reagents = list(TOXIN_PATH)
 	var/T = touching.type //What type of reagent is being splashed on it?
 
 	for(var/datum/artifact_effect/my_effect in my_effects)
-		if(is_path_in_list(T,water_reagents))
-			//log_debug("ON REAGENT T in path = [is_path_in_list(T,water_reagents)]!")
+		if(is_path_in_list(T, water_reagents))
 			if(my_effect.trigger == TRIGGER_WATER)
 				my_effect.ToggleActivate()
-		else if(is_path_in_list(T,acid_reagents))
+		else if(is_path_in_list(T, acid_reagents))
 			if(my_effect.trigger == TRIGGER_ACID)
 				my_effect.ToggleActivate()
-		else if(is_path_in_list(T,volatile_reagents))
+		else if(is_path_in_list(T, volatile_reagents))
 			if(my_effect.trigger == TRIGGER_VOLATILE)
 				my_effect.ToggleActivate()
-		else if(is_path_in_list(T,toxic_reagents))
+		else if(is_path_in_list(T, toxic_reagents))
 			if(my_effect.trigger == TRIGGER_TOXIN)
 				my_effect.ToggleActivate()
 
 /datum/component/artifact_master/proc/on_moved()
+	SIGNAL_HANDLER
 	for(var/datum/artifact_effect/my_effect in my_effects)
 		if(my_effect)
 			my_effect.UpdateMove()

@@ -601,13 +601,13 @@
 "axP" = (
 /obj/machinery/access_button{
 	command = "cycle_exterior";
-	frequency = 1380;
+	frequency = 1381;
 	master_tag = "ursula";
 	name = "exterior access button";
 	pixel_y = 26
 	},
 /obj/machinery/door/airlock/voidcraft/vertical{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "ursula_outer";
 	locked = 1;
 	name = "External Access"
@@ -1127,7 +1127,6 @@
 /turf/simulated/floor/plating,
 /area/space)
 "aRk" = (
-/obj/screen/alert/highpressure,
 /obj/machinery/r_n_d/destructive_analyzer,
 /turf/simulated/shuttle/floor/purple,
 /area/space)
@@ -1620,7 +1619,7 @@
 /obj/machinery/light,
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
 	dir = 1;
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "ursula_pump"
 	},
 /turf/simulated/shuttle/plating,
@@ -2810,12 +2809,8 @@
 /turf/simulated/floor/tiled,
 /area/space)
 "bUv" = (
-/obj/effect/decal/cleanable/blood/tracks{
-	color = "red";
-	desc = "Your instincts say you shouldn't be following these.";
-	dir = 4;
-	icon = 'icons/effects/blood.dmi';
-	icon_state = "tracks"
+/obj/effect/decal/cleanable/blood/tracks/suspicious{
+	dir = 4
 	},
 /turf/simulated/floor/outdoors/dirt,
 /area/space)
@@ -3472,12 +3467,8 @@
 /obj/item/cell/void,
 /obj/item/cell/void,
 /obj/item/gun/energy/sickshot,
-/obj/machinery/smartfridge/survival_pod{
-	desc = "A mysterious machine which can fabricate many tools for acquiring test subjects.";
-	icon = 'icons/obj/abductor_vr.dmi';
-	icon_base = "dispenser_2way";
-	icon_state = "dispenser_2way";
-	name = "Ro-Bust-Us"
+/obj/machinery/smartfridge/survival_pod/abductor{
+	dir = 2
 	},
 /obj/item/storage/box/handcuffs,
 /obj/item/storage/box/handcuffs,
@@ -3554,12 +3545,8 @@
 /turf/simulated/floor/wood/sif,
 /area/space)
 "cuj" = (
-/obj/machinery/smartfridge/survival_pod{
-	desc = "A mysterious machine which can fabricate many tools for acquiring test subjects.";
-	icon = 'icons/obj/abductor_vr.dmi';
-	icon_base = "dispenser_2way";
-	icon_state = "dispenser_2way";
-	name = "Implant-Co"
+/obj/machinery/smartfridge/survival_pod/abductor{
+	dir = 2
 	},
 /obj/item/implantcase/taser,
 /obj/item/implantcase/taser,
@@ -3751,7 +3738,7 @@
 /turf/simulated/floor/outdoors/dirt,
 /area/space)
 "cAO" = (
-/obj/machinery/exonet_node/map,
+/obj/machinery/exonet_node,
 /turf/simulated/floor/tiled/asteroid_steel,
 /area/space)
 "cBF" = (
@@ -4156,12 +4143,7 @@
 /obj/item/radio/headset/syndicate,
 /obj/item/radio/headset/syndicate,
 /obj/item/radio/headset/syndicate,
-/obj/machinery/smartfridge/survival_pod{
-	desc = "A mysterious machine which can fabricate many tools for acquiring test subjects.";
-	dir = 4;
-	icon = 'icons/obj/abductor_vr.dmi';
-	icon_base = "dispenser_2way";
-	icon_state = "dispenser_2way";
+/obj/machinery/smartfridge/survival_pod/abductor{
 	name = "ID-Mart"
 	},
 /obj/item/card/id/casino{
@@ -4358,13 +4340,7 @@
 /area/space)
 "cTz" = (
 /obj/effect/floor_decal/industrial/outline/yellow,
-/obj/machinery/power/smes/buildable{
-	icon = 'icons/obj/alien_smes.dmi';
-	icon_state = "unit";
-	input_level = 950000;
-	name = "Alien Royal Capacitor";
-	output_level = 950000
-	},
+/obj/machinery/power/smes/buildable/alien_royal,
 /turf/simulated/floor,
 /area/space)
 "cTZ" = (
@@ -4627,13 +4603,7 @@
 /area/space)
 "dbD" = (
 /obj/effect/floor_decal/industrial/outline/yellow,
-/obj/machinery/power/smes/buildable{
-	icon = 'icons/obj/alien_smes.dmi';
-	icon_state = "unit";
-	input_level = 950000;
-	name = "Alien Royal Capacitor";
-	output_level = 950000
-	},
+/obj/machinery/power/smes/buildable/alien_royal,
 /obj/structure/cable/cyan{
 	icon_state = "0-2"
 	},
@@ -4832,15 +4802,6 @@
 /obj/machinery/atmospherics/pipe/manifold4w/hidden/yellow,
 /turf/simulated/shuttle/wall/voidcraft/green,
 /area/space)
-"dmp" = (
-/obj/effect/decal/cleanable/blood/tracks{
-	color = "red";
-	desc = "Your instincts say you shouldn't be following these.";
-	icon = 'icons/effects/blood.dmi';
-	icon_state = "tracks"
-	},
-/turf/simulated/floor/outdoors/dirt,
-/area/space)
 "dmw" = (
 /turf/template_noop,
 /area/awaymission/snowfield/outside)
@@ -5026,7 +4987,7 @@
 "dqR" = (
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
 	dir = 1;
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "echidna_pump"
 	},
 /obj/effect/floor_decal/industrial/warning{
@@ -5034,7 +4995,7 @@
 	},
 /obj/structure/closet/walllocker_double/hydrant/south,
 /obj/machinery/airlock_sensor{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "echidna_sensor";
 	pixel_x = -25;
 	pixel_y = -1
@@ -5736,9 +5697,6 @@
 /area/space)
 "dRK" = (
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/map_effect/interval/sound_emitter/ballistic_gunfight,
 /turf/simulated/floor/outdoors/dirt,
 /area/space)
@@ -5867,7 +5825,7 @@
 /turf/simulated/floor/plating,
 /area/space)
 "dXo" = (
-/obj/machinery/r_n_d/server/core,
+/obj/machinery/rnd/server/master,
 /obj/machinery/light/small,
 /turf/simulated/floor/bluegrid{
 	name = "Server Base";
@@ -5881,12 +5839,7 @@
 /obj/item/clothing/accessory/collar/shock,
 /obj/item/radio/electropack,
 /obj/item/clothing/accessory/collar/shock,
-/obj/machinery/smartfridge/survival_pod{
-	desc = "A mysterious machine which can fabricate many tools for acquiring test subjects.";
-	dir = 4;
-	icon = 'icons/obj/abductor_vr.dmi';
-	icon_base = "dispenser_2way";
-	icon_state = "dispenser_2way";
+/obj/machinery/smartfridge/survival_pod/abductor{
 	name = "Ross-Traints";
 	req_access = list(777)
 	},
@@ -5984,7 +5937,7 @@
 	pixel_y = 5
 	},
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "echidna_pump"
 	},
 /turf/simulated/shuttle/plating,
@@ -6142,7 +6095,7 @@
 /obj/machinery/light,
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
 	dir = 1;
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "echidna_pump"
 	},
 /turf/simulated/shuttle/plating,
@@ -6232,14 +6185,14 @@
 /area/space)
 "ekn" = (
 /obj/machinery/door/airlock/voidcraft/vertical{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "needle_outer";
 	locked = 1;
 	name = "External Access"
 	},
 /obj/machinery/access_button{
 	command = "cycle_exterior";
-	frequency = 1380;
+	frequency = 1381;
 	master_tag = "needle";
 	name = "exterior access button";
 	pixel_y = 26
@@ -6355,14 +6308,6 @@
 	name = "Spill of fear"
 	},
 /turf/simulated/floor/gorefloor,
-/area/space)
-"epX" = (
-/obj/effect/alien/weeds,
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/outdoors/rocks{
-	outdoors = 0
-	},
 /area/space)
 "eqm" = (
 /obj/structure/window/titanium/full,
@@ -6633,11 +6578,11 @@
 /area/space)
 "eBD" = (
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "needle_pump"
 	},
 /obj/machinery/embedded_controller/radio/airlock/docking_port{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "needle";
 	pixel_y = 26;
 	tag_airpump = "needle_pump";
@@ -6877,7 +6822,7 @@
 /obj/structure/window/reinforced/survival_pod{
 	opacity = 1
 	},
-/obj/machinery/r_n_d/circuit_imprinter,
+/obj/machinery/rnd/production/circuit_imprinter,
 /obj/item/reagent_containers/glass/beaker{
 	pixel_x = 9;
 	pixel_y = 8
@@ -6917,10 +6862,6 @@
 "eJV" = (
 /obj/structure/bed/chair/comfy/black,
 /turf/simulated/floor/carpet/bcarpet,
-/area/space)
-"eKu" = (
-/obj/screen/alert/highpressure,
-/turf/simulated/shuttle/wall/hard_corner,
 /area/space)
 "eKV" = (
 /obj/structure/extinguisher_cabinet{
@@ -7278,13 +7219,7 @@
 /area/space)
 "eYy" = (
 /obj/effect/floor_decal/industrial/outline/yellow,
-/obj/machinery/power/smes/buildable{
-	icon = 'icons/obj/alien_smes.dmi';
-	icon_state = "unit";
-	input_level = 950000;
-	name = "Alien Royal Capacitor";
-	output_level = 950000
-	},
+/obj/machinery/power/smes/buildable/alien_royal,
 /obj/structure/cable/cyan,
 /turf/simulated/floor,
 /area/space)
@@ -7380,7 +7315,7 @@
 	},
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
 	dir = 1;
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "ursula_pump"
 	},
 /turf/simulated/shuttle/plating,
@@ -7720,12 +7655,7 @@
 /obj/item/radio/bluespacehandset/linked/talon_prelinked,
 /obj/item/radio/bluespacehandset/linked/talon_prelinked,
 /obj/item/radio/bluespacehandset/linked/talon_prelinked,
-/obj/machinery/smartfridge/survival_pod{
-	desc = "A mysterious machine which can fabricate many tools for acquiring test subjects.";
-	dir = 4;
-	icon = 'icons/obj/abductor_vr.dmi';
-	icon_base = "dispenser_2way";
-	icon_state = "dispenser_2way";
+/obj/machinery/smartfridge/survival_pod/abductor{
 	name = "Translocate-R-US"
 	},
 /turf/simulated/floor/tiled/techfloor,
@@ -7866,9 +7796,7 @@
 /obj/mecha/combat/fighter/pinnace{
 	dir = 8
 	},
-/obj/machinery/mech_recharger{
-	icon = 'icons/turf/shuttle_alien_blue.dmi'
-	},
+/obj/machinery/mech_recharger/alien,
 /turf/simulated/floor/reinforced,
 /area/space)
 "fue" = (
@@ -8160,7 +8088,7 @@
 	dir = 9
 	},
 /obj/machinery/embedded_controller/radio/airlock/docking_port{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "ursula";
 	pixel_y = 26;
 	tag_airpump = "ursula_pump";
@@ -8470,14 +8398,14 @@
 /area/space)
 "fVq" = (
 /obj/machinery/door/airlock/voidcraft/vertical{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "ursula_inner";
 	locked = 1;
 	name = "Internal Access"
 	},
 /obj/machinery/access_button{
 	command = "cycle_interior";
-	frequency = 1380;
+	frequency = 1381;
 	master_tag = "ursula";
 	name = "interior access button";
 	pixel_y = 26
@@ -9365,12 +9293,8 @@
 /obj/structure/window/reinforced/survival_pod{
 	opacity = 1
 	},
-/obj/machinery/smartfridge/survival_pod{
-	desc = "A mysterious machine which can fabricate many tools for acquiring test subjects.";
-	icon = 'icons/obj/abductor_vr.dmi';
-	icon_base = "dispenser_2way";
-	icon_state = "dispenser_2way";
-	name = "Implant-Co"
+/obj/machinery/smartfridge/survival_pod/abductor{
+	dir = 2
 	},
 /obj/effect/floor_decal/techfloor{
 	dir = 6
@@ -9482,7 +9406,7 @@
 /obj/item/paper_bin,
 /obj/item/pen/fountain,
 /obj/item/pen/chameleon,
-/obj/item/gps/advanced/science,
+/obj/item/gps/science,
 /obj/machinery/button/remote/blast_door{
 	id = "estrella_blast";
 	name = "remote blast shielding control";
@@ -9680,7 +9604,7 @@
 /obj/structure/closet/emcloset,
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
 	dir = 1;
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "stargazer_pump"
 	},
 /turf/simulated/shuttle/plating,
@@ -9805,7 +9729,7 @@
 /turf/simulated/floor/tiled/dark,
 /area/space)
 "gMt" = (
-/obj/machinery/mecha_part_fabricator,
+/obj/machinery/mecha_part_fabricator_tg,
 /obj/structure/window/reinforced/survival_pod{
 	dir = 1
 	},
@@ -9897,7 +9821,6 @@
 /turf/simulated/shuttle/floor/yellow,
 /area/space)
 "gPK" = (
-/obj/screen/alert/highpressure,
 /obj/machinery/computer/rdconsole/core{
 	dir = 4
 	},
@@ -10187,7 +10110,7 @@
 "gZZ" = (
 /obj/machinery/access_button{
 	command = "cycle_interior";
-	frequency = 1380;
+	frequency = 1381;
 	master_tag = "echidna";
 	name = "interior access button";
 	pixel_y = 26
@@ -10997,7 +10920,7 @@
 /area/space)
 "hAE" = (
 /obj/structure/table/reinforced,
-/obj/item/gps/advanced/science,
+/obj/item/gps/science,
 /obj/item/reagent_containers/spray/cleaner{
 	desc = "Someone has crossed out the 'Space' from Space Cleaner and written in Chemistry. Scrawled on the back is, 'Okay, whoever filled this with polytrinic acid, it was only funny the first time. It was hard enough replacing the CMO's first cat!'";
 	name = "Chemistry Cleaner"
@@ -11222,13 +11145,8 @@
 /obj/item/implanter,
 /obj/item/implanter,
 /obj/item/implanter,
-/obj/machinery/smartfridge/survival_pod{
-	desc = "A mysterious machine which can fabricate many tools for acquiring test subjects.";
-	dir = 4;
-	icon = 'icons/obj/abductor_vr.dmi';
-	icon_base = "dispenser_2way";
-	icon_state = "dispenser_2way";
-	name = "Implant-Co"
+/obj/machinery/smartfridge/survival_pod/abductor{
+	dir = 4
 	},
 /turf/simulated/floor/tiled/techfloor,
 /area/space)
@@ -11886,7 +11804,7 @@
 "ifn" = (
 /obj/machinery/access_button{
 	command = "cycle_exterior";
-	frequency = 1380;
+	frequency = 1381;
 	master_tag = "echidna";
 	name = "exterior access button";
 	pixel_y = 26
@@ -12001,14 +11919,14 @@
 "ikc" = (
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
 	dir = 1;
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "estrella_pump"
 	},
 /obj/effect/floor_decal/industrial/warning{
 	dir = 6
 	},
 /obj/machinery/airlock_sensor{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "estrella_sensor";
 	pixel_y = -28
 	},
@@ -12424,13 +12342,13 @@
 /area/space)
 "iwA" = (
 /obj/machinery/door/airlock/voidcraft/vertical{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "stargazer_inner";
 	name = "Internal Access"
 	},
 /obj/machinery/access_button{
 	command = "cycle_interior";
-	frequency = 1380;
+	frequency = 1381;
 	master_tag = "stargazer";
 	name = "interior access button";
 	pixel_y = -26
@@ -12458,11 +12376,6 @@
 	dir = 1
 	},
 /turf/simulated/shuttle/floor/white,
-/area/space)
-"ixh" = (
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/wood,
 /area/space)
 "ixo" = (
 /obj/structure/grille/cult{
@@ -12603,7 +12516,7 @@
 /obj/structure/closet/emcloset,
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
 	dir = 1;
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "baby_mammoth_pump"
 	},
 /turf/simulated/shuttle/plating,
@@ -12920,11 +12833,6 @@
 	},
 /turf/simulated/floor/reinforced,
 /area/space)
-"iKm" = (
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/tiled/white,
-/area/space)
 "iKL" = (
 /obj/machinery/door/airlock/maintenance/command,
 /turf/simulated/floor/outdoors/dirt,
@@ -13017,7 +12925,6 @@
 /area/space)
 "iPZ" = (
 /obj/item/clothing/suit/storage/apron/white,
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled/white,
 /area/space)
@@ -13529,11 +13436,11 @@
 /area/space)
 "jfi" = (
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "estrella_pump"
 	},
 /obj/machinery/embedded_controller/radio/airlock/docking_port{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "estrella";
 	pixel_y = 26;
 	tag_airpump = "estrella_pump";
@@ -14384,12 +14291,12 @@
 	dir = 5
 	},
 /obj/machinery/airlock_sensor{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "stargazer_sensor";
 	pixel_y = 28
 	},
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "stargazer_pump"
 	},
 /turf/simulated/shuttle/plating,
@@ -14623,7 +14530,6 @@
 /area/space)
 "jWp" = (
 /obj/machinery/r_n_d/protolathe,
-/obj/screen/alert/highpressure,
 /turf/simulated/shuttle/floor/purple,
 /area/space)
 "jWW" = (
@@ -14673,11 +14579,7 @@
 	},
 /obj/item/handcuffs/legcuffs/fuzzy,
 /obj/item/handcuffs/legcuffs/fuzzy,
-/obj/machinery/smartfridge/survival_pod{
-	desc = "A mysterious machine which can fabricate many tools for acquiring test subjects.";
-	icon = 'icons/obj/abductor_vr.dmi';
-	icon_base = "dispenser_2way";
-	icon_state = "dispenser_2way";
+/obj/machinery/smartfridge/survival_pod/abductor{
 	name = "Ross-Traints";
 	req_access = list(777)
 	},
@@ -14880,7 +14782,7 @@
 /turf/simulated/floor/wood/sif,
 /area/space)
 "kcO" = (
-/obj/machinery/mecha_part_fabricator/pros,
+/obj/machinery/mecha_part_fabricator_tg/prosthetics,
 /obj/structure/window/reinforced/survival_pod{
 	dir = 1
 	},
@@ -14968,7 +14870,7 @@
 	},
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
 	dir = 1;
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "estrella_pump"
 	},
 /turf/simulated/shuttle/plating,
@@ -15245,14 +15147,14 @@
 /area/space)
 "kkQ" = (
 /obj/machinery/door/airlock/voidcraft/vertical{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "baby_mammoth_outer";
 	locked = 1;
 	name = "External Access"
 	},
 /obj/machinery/access_button{
 	command = "cycle_exterior";
-	frequency = 1380;
+	frequency = 1381;
 	master_tag = "baby_mammoth";
 	name = "exterior access button";
 	pixel_y = 26
@@ -15314,13 +15216,7 @@
 /obj/structure/cable{
 	icon_state = "0-8"
 	},
-/obj/machinery/power/smes/buildable{
-	icon = 'icons/obj/alien_smes.dmi';
-	icon_state = "unit";
-	input_level = 950000;
-	name = "Alien Royal Capacitor";
-	output_level = 950000
-	},
+/obj/machinery/power/smes/buildable/alien_royal,
 /turf/simulated/floor/tiled/techfloor,
 /area/space)
 "kns" = (
@@ -16074,11 +15970,8 @@
 /turf/simulated/floor/outdoors/dirt,
 /area/space)
 "kOg" = (
-/obj/machinery/smartfridge/survival_pod{
-	desc = "A mysterious machine which can fabricate many tools for acquiring test subjects.";
-	icon = 'icons/obj/abductor_vr.dmi';
-	icon_base = "dispenser_2way";
-	icon_state = "dispenser_2way";
+/obj/machinery/smartfridge/survival_pod/abductor{
+	    dir = 2;
 	name = "Translocate-R-US"
 	},
 /obj/item/gps/syndie,
@@ -17596,7 +17489,7 @@
 /turf/simulated/shuttle/wall/alien/blue,
 /area/space)
 "lTt" = (
-/obj/machinery/r_n_d/server/robotics,
+/obj/machinery/rnd/server,
 /obj/structure/window/reinforced/survival_pod{
 	dir = 8
 	},
@@ -17789,7 +17682,7 @@
 /turf/simulated/floor/tiled/dark,
 /area/space)
 "lYv" = (
-/obj/machinery/r_n_d/circuit_imprinter,
+/obj/machinery/rnd/production/circuit_imprinter,
 /obj/item/reagent_containers/glass/beaker{
 	pixel_x = 9;
 	pixel_y = 8
@@ -17930,12 +17823,8 @@
 /turf/simulated/floor/tiled/dark,
 /area/space)
 "mdx" = (
-/obj/effect/decal/cleanable/blood/tracks{
-	color = "red";
-	desc = "Your instincts say you shouldn't be following these.";
-	dir = 5;
-	icon = 'icons/effects/blood.dmi';
-	icon_state = "tracks"
+/obj/effect/decal/cleanable/blood/tracks/suspicious{
+	dir = 5
 	},
 /turf/simulated/floor/outdoors/dirt,
 /area/space)
@@ -18537,11 +18426,6 @@
 /obj/structure/flora/ausbushes/ywflowers,
 /turf/simulated/floor/grass,
 /area/space)
-"mvi" = (
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/carpet/sblucarpet,
-/area/space)
 "mvE" = (
 /obj/machinery/light{
 	dir = 4
@@ -18617,11 +18501,8 @@
 /turf/simulated/floor/tiled/techfloor,
 /area/space)
 "mxW" = (
-/obj/machinery/smartfridge/survival_pod{
-	desc = "A mysterious machine which can fabricate many tools for acquiring test subjects.";
-	icon = 'icons/obj/abductor_vr.dmi';
-	icon_base = "dispenser_2way";
-	icon_state = "dispenser_2way";
+/obj/machinery/smartfridge/survival_pod/abductor{
+	dir = 2;
 	name = "ID-Mart"
 	},
 /obj/item/encryptionkey/syndicate,
@@ -18884,12 +18765,7 @@
 	pixel_x = -2;
 	pixel_y = 5
 	},
-/obj/machinery/smartfridge/survival_pod{
-	desc = "A mysterious machine which can fabricate many tools for acquiring test subjects.";
-	dir = 4;
-	icon = 'icons/obj/abductor_vr.dmi';
-	icon_base = "dispenser_2way";
-	icon_state = "dispenser_2way";
+/obj/machinery/smartfridge/survival_pod/abductor{
 	name = "Ross-Traints";
 	req_access = list(777)
 	},
@@ -19231,7 +19107,7 @@
 /obj/machinery/atmospherics/pipe/simple/hidden,
 /obj/machinery/meter,
 /obj/machinery/airlock_sensor{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "ursula_sensor";
 	pixel_y = 28
 	},
@@ -19529,7 +19405,7 @@
 	},
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
 	dir = 1;
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "stargazer_pump"
 	},
 /turf/simulated/shuttle/plating,
@@ -19787,7 +19663,7 @@
 "nbU" = (
 /obj/machinery/door/airlock/multi_tile/metal/mait{
 	dir = 1;
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "estrella_inner";
 	locked = 1;
@@ -20612,7 +20488,6 @@
 	pixel_y = 10
 	},
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/wood,
 /area/space)
 "nKz" = (
@@ -20670,7 +20545,7 @@
 /turf/simulated/floor/outdoors/dirt,
 /area/space)
 "nMg" = (
-/obj/machinery/r_n_d/server/core,
+/obj/machinery/rnd/server/master,
 /obj/structure/window/reinforced/survival_pod{
 	dir = 8
 	},
@@ -21792,12 +21667,6 @@
 	},
 /turf/simulated/shuttle/floor/alienplating,
 /area/space)
-"oEe" = (
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/wood/broken,
-/area/space)
 "oEo" = (
 /obj/structure/bed/double/padded,
 /turf/simulated/floor/wood/sif/broken,
@@ -21854,14 +21723,14 @@
 /area/space)
 "oGr" = (
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "baby_mammoth_pump"
 	},
 /obj/effect/floor_decal/industrial/warning{
 	dir = 9
 	},
 /obj/machinery/embedded_controller/radio/airlock/docking_port{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "baby_mammoth_shuttle";
 	pixel_y = 26;
 	tag_airpump = "baby_mammoth_pump";
@@ -22646,8 +22515,6 @@
 /area/space)
 "pfu" = (
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/outdoors/dirt,
 /area/space)
 "pfH" = (
@@ -23289,12 +23156,7 @@
 /obj/item/tank/emergency/oxygen/double,
 /obj/item/tank/emergency/oxygen/double,
 /obj/item/gun/energy/sickshot,
-/obj/machinery/smartfridge/survival_pod{
-	desc = "A mysterious machine which can fabricate many tools for acquiring test subjects.";
-	dir = 4;
-	icon = 'icons/obj/abductor_vr.dmi';
-	icon_base = "dispenser_2way";
-	icon_state = "dispenser_2way";
+/obj/machinery/smartfridge/survival_pod/abductor{
 	name = "UP-Duction";
 	req_access = list(777)
 	},
@@ -23835,11 +23697,6 @@
 	},
 /turf/simulated/shuttle/floor/voidcraft,
 /area/space)
-"pRG" = (
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/wood/broken,
-/area/space)
 "pSg" = (
 /obj/effect/blocker,
 /turf/template_noop,
@@ -24072,12 +23929,7 @@
 	pixel_x = -2;
 	pixel_y = 5
 	},
-/obj/machinery/smartfridge/survival_pod{
-	desc = "A mysterious machine which can fabricate many tools for acquiring test subjects.";
-	dir = 4;
-	icon = 'icons/obj/abductor_vr.dmi';
-	icon_base = "dispenser_2way";
-	icon_state = "dispenser_2way";
+/obj/machinery/smartfridge/survival_pod/abductor{
 	name = "Ross-Traints";
 	req_access = list(777)
 	},
@@ -24979,10 +24831,6 @@
 /obj/item/storage/box/flare,
 /turf/simulated/shuttle/floor/voidcraft/light,
 /area/space)
-"qGy" = (
-/obj/screen/alert/highpressure,
-/turf/simulated/shuttle/wall,
-/area/space)
 "qGE" = (
 /obj/machinery/atmospherics/pipe/simple/hidden,
 /turf/simulated/shuttle/wall/voidcraft/green,
@@ -25422,7 +25270,7 @@
 /obj/machinery/atmospherics/pipe/simple/visible,
 /obj/machinery/access_button{
 	command = "cycle_interior";
-	frequency = 1380;
+	frequency = 1381;
 	master_tag = "estrella";
 	name = "interior access button";
 	pixel_y = 26
@@ -25877,7 +25725,6 @@
 "rgx" = (
 /obj/effect/alien/weeds,
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /obj/random/junk,
 /turf/simulated/floor/outdoors/dirt{
 	outdoors = 0
@@ -26103,8 +25950,6 @@
 /obj/machinery/light/small{
 	dir = 8
 	},
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/wood,
 /area/space)
@@ -26611,7 +26456,6 @@
 /obj/item/clothing/shoes/footwraps,
 /obj/item/clothing/shoes/footwraps,
 /obj/item/clothing/shoes/footwraps,
-/obj/item/toy/bosunwhistle/fluff/strix,
 /obj/item/blobcore_chunk,
 /obj/item/towel/random,
 /obj/item/towel/random,
@@ -26857,7 +26701,7 @@
 	dir = 9
 	},
 /obj/machinery/embedded_controller/radio/airlock/docking_port{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "stargazer";
 	pixel_y = 26;
 	tag_airpump = "stargazer_pump";
@@ -26866,7 +26710,7 @@
 	tag_interior_door = "stargazer_inner"
 	},
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "stargazer_pump"
 	},
 /turf/simulated/shuttle/plating,
@@ -26933,7 +26777,6 @@
 /area/space)
 "rUy" = (
 /obj/structure/simple_door/resin,
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/outdoors/dirt{
 	outdoors = 0
@@ -27493,7 +27336,6 @@
 /area/space)
 "sjH" = (
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /mob/living/simple_mob/humanoid/merc/ranged{
 	health = 15;
 	maxHealth = 15
@@ -27590,7 +27432,7 @@
 "snv" = (
 /obj/machinery/door/airlock/multi_tile/metal/mait{
 	dir = 1;
-	frequency = 1380;
+	frequency = 1381;
 	icon_state = "door_locked";
 	id_tag = "estrella_outer";
 	locked = 1;
@@ -27698,13 +27540,13 @@
 /area/space)
 "srZ" = (
 /obj/machinery/door/airlock/voidcraft/vertical{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "stargazer_outer";
 	name = "External Access"
 	},
 /obj/machinery/access_button{
 	command = "cycle_exterior";
-	frequency = 1380;
+	frequency = 1381;
 	master_tag = "stargazer";
 	name = "exterior access button";
 	pixel_y = 26
@@ -27976,12 +27818,7 @@
 /obj/item/clothing/accessory/collar/shock,
 /obj/item/radio/electropack,
 /obj/item/clothing/accessory/collar/shock,
-/obj/machinery/smartfridge/survival_pod{
-	desc = "A mysterious machine which can fabricate many tools for acquiring test subjects.";
-	dir = 4;
-	icon = 'icons/obj/abductor_vr.dmi';
-	icon_base = "dispenser_2way";
-	icon_state = "dispenser_2way";
+/obj/machinery/smartfridge/survival_pod/abductor{
 	name = "Ross-Traints";
 	req_access = list(777)
 	},
@@ -28128,7 +27965,6 @@
 /area/space)
 "sHj" = (
 /obj/item/pack/cardemon,
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/carpet/bcarpet,
 /area/space)
@@ -28294,7 +28130,6 @@
 /area/space)
 "sPn" = (
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /obj/item/paper{
 	info = "Seems to be filled with odd runes drawn with blood";
 	name = "Blood stained paper"
@@ -28366,12 +28201,6 @@
 	amount = 25
 	},
 /turf/simulated/floor/plating,
-/area/space)
-"sRs" = (
-/obj/random/trash,
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/carpet/sblucarpet,
 /area/space)
 "sRL" = (
 /obj/structure/prop/alien/pod,
@@ -28492,12 +28321,9 @@
 /turf/simulated/shuttle/floor/alienplating,
 /area/space)
 "sVQ" = (
-/obj/effect/decal/cleanable/blood/tracks{
-	color = "red";
-	desc = "Your instincts say you shouldn't be following these.";
+/obj/effect/decal/cleanable/blood/tracks/suspicious{
 	dir = 6;
-	icon = 'icons/effects/blood.dmi';
-	icon_state = "tracks"
+	
 	},
 /turf/simulated/floor/outdoors/dirt,
 /area/space)
@@ -28505,14 +28331,7 @@
 /obj/structure/window/reinforced/survival_pod{
 	opacity = 1
 	},
-/obj/machinery/smartfridge/survival_pod{
-	desc = "A mysterious machine which can fabricate many tools for acquiring test subjects.";
-	dir = 4;
-	icon = 'icons/obj/abductor_vr.dmi';
-	icon_base = "dispenser_2way";
-	icon_state = "dispenser_2way";
-	name = "Implant-Co"
-	},
+/obj/machinery/smartfridge/survival_pod/abductor,
 /obj/effect/floor_decal/techfloor{
 	dir = 10
 	},
@@ -28682,7 +28501,7 @@
 	},
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
 	dir = 1;
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "baby_mammoth_pump"
 	},
 /obj/machinery/light,
@@ -28966,7 +28785,7 @@
 /turf/simulated/floor/reinforced,
 /area/space)
 "tjy" = (
-/obj/machinery/exonet_node/map,
+/obj/machinery/exonet_node,
 /turf/simulated/floor/outdoors/dirt,
 /area/space)
 "tjB" = (
@@ -29804,7 +29623,6 @@
 "tMW" = (
 /obj/effect/alien/weeds,
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /mob/living/simple_mob/humanoid/merc/melee/sword/poi{
 	health = 15;
 	maxHealth = 15
@@ -29875,7 +29693,7 @@
 /obj/effect/floor_decal/industrial/warning/cee,
 /obj/machinery/light,
 /obj/machinery/airlock_sensor{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "needle_sensor";
 	pixel_x = -28;
 	pixel_y = -1
@@ -30009,13 +29827,7 @@
 /turf/simulated/floor/tiled/techmaint,
 /area/space)
 "tSl" = (
-/obj/machinery/smartfridge/survival_pod{
-	desc = "A mysterious machine which can fabricate many tools for acquiring test subjects.";
-	icon = 'icons/obj/abductor_vr.dmi';
-	icon_base = "dispenser_2way";
-	icon_state = "dispenser_2way";
-	name = "Implant-Co"
-	},
+/obj/machinery/smartfridge/survival_pod/abductor,
 /obj/item/implantcase/taser,
 /obj/item/implantcase/taser,
 /obj/item/implantcase/taser,
@@ -30111,14 +29923,6 @@
 	},
 /turf/simulated/shuttle/plating/airless/carry,
 /area/space)
-"tTw" = (
-/obj/effect/alien/weeds,
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/outdoors/dirt{
-	outdoors = 0
-	},
-/area/space)
 "tTG" = (
 /obj/item/storage/firstaid,
 /turf/simulated/floor/outdoors/dirt,
@@ -30199,7 +30003,7 @@
 	dir = 9
 	},
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "estrella_pump"
 	},
 /turf/simulated/shuttle/plating,
@@ -30610,10 +30414,6 @@
 	},
 /turf/template_noop,
 /area/space)
-"uiZ" = (
-/obj/screen/alert/highpressure,
-/turf/template_noop,
-/area/space)
 "ujr" = (
 /obj/effect/floor_decal/techfloor,
 /turf/simulated/floor/tiled/techmaint,
@@ -30804,8 +30604,6 @@
 /area/space)
 "urd" = (
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/carpet/bcarpet,
 /area/space)
 "usi" = (
@@ -30869,12 +30667,10 @@
 /obj/item/ore/marble,
 /obj/item/ore/osmium,
 /obj/item/ore/rutile,
-/obj/item/toy/bosunwhistle/fluff/strix,
 /obj/item/toy/character/wizard,
 /obj/item/reagent_containers/hypospray/autoinjector/biginjector/mindbreaker/unidentified,
 /obj/item/reagent_containers/hypospray/autoinjector/biginjector/mindbreaker/unidentified,
 /obj/item/fluff/squeezetoy,
-/obj/item/fluff/zekewatch,
 /obj/item/fluff/fidgetspinner/red,
 /obj/item/storage/pill_bottle/dice_nerd,
 /turf/simulated/floor/wood,
@@ -30918,11 +30714,11 @@
 /area/space)
 "uwY" = (
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "echidna_pump"
 	},
 /obj/machinery/embedded_controller/radio/airlock/docking_port{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "echidna";
 	pixel_y = 26;
 	tag_airpump = "echidna_pump";
@@ -30965,7 +30761,7 @@
 "uze" = (
 /obj/machinery/access_button{
 	command = "cycle_exterior";
-	frequency = 1380;
+	frequency = 1381;
 	master_tag = "estrella";
 	name = "exterior access button";
 	pixel_y = 26
@@ -31587,10 +31383,7 @@
 /obj/item/radio/electropack,
 /obj/item/clothing/accessory/collar/shock,
 /obj/machinery/smartfridge/survival_pod{
-	desc = "A mysterious machine which can fabricate many tools for acquiring test subjects.";
-	icon = 'icons/obj/abductor_vr.dmi';
-	icon_base = "dispenser_2way";
-	icon_state = "dispenser_2way";
+	dir = 2;
 	name = "Ross-Traints";
 	req_access = list(777)
 	},
@@ -31805,8 +31598,6 @@
 /area/space)
 "vbb" = (
 /obj/effect/alien/weeds/node,
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/outdoors/dirt{
 	outdoors = 0
@@ -32494,10 +32285,7 @@
 /area/space)
 "vAo" = (
 /obj/machinery/smartfridge/survival_pod{
-	desc = "A mysterious machine which can fabricate many tools for acquiring test subjects.";
-	icon = 'icons/obj/abductor.dmi';
-	icon_base = "dispenser_2way";
-	icon_state = "dispenser";
+	dir = 2;
 	name = "Scrap-Storage"
 	},
 /turf/simulated/floor/tiled/techfloor,
@@ -32939,12 +32727,12 @@
 	dir = 5
 	},
 /obj/machinery/airlock_sensor{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "baby_mammoth_sensor";
 	pixel_y = 28
 	},
 /obj/machinery/atmospherics/unary/vent_pump/high_volume{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "baby_mammoth_pump"
 	},
 /turf/simulated/shuttle/plating,
@@ -34014,14 +33802,14 @@
 /area/space)
 "wFw" = (
 /obj/machinery/door/airlock/voidcraft/vertical{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "needle_inner";
 	locked = 1;
 	name = "Internal Access"
 	},
 /obj/machinery/access_button{
 	command = "cycle_interior";
-	frequency = 1380;
+	frequency = 1381;
 	master_tag = "needle";
 	name = "interior access button";
 	pixel_y = 26
@@ -34586,7 +34374,6 @@
 /area/space)
 "xau" = (
 /obj/effect/alien/weeds/node,
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /obj/random/junk,
 /turf/simulated/floor/outdoors/dirt{
@@ -35180,10 +34967,7 @@
 /obj/item/healthanalyzer/phasic,
 /obj/item/healthanalyzer/phasic,
 /obj/machinery/smartfridge/survival_pod{
-	desc = "A mysterious machine which can fabricate many tools for acquiring test subjects.";
-	icon = 'icons/obj/abductor_vr.dmi';
-	icon_base = "dispenser_2way";
-	icon_state = "dispenser_2way";
+	dir = 2;
 	name = "Ross-Traints";
 	req_access = list(777)
 	},
@@ -35338,7 +35122,6 @@
 "xyE" = (
 /obj/effect/alien/weeds,
 /obj/effect/alien/weeds,
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/outdoors/rocks{
 	outdoors = 0
@@ -35639,14 +35422,6 @@
 "xIV" = (
 /obj/structure/fence,
 /turf/simulated/floor/outdoors/grass/heavy,
-/area/space)
-"xJd" = (
-/obj/effect/alien/weeds/node,
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/outdoors/dirt{
-	outdoors = 0
-	},
 /area/space)
 "xJg" = (
 /obj/effect/floor_decal/industrial/hatch/yellow,
@@ -36079,11 +35854,6 @@
 	},
 /turf/simulated/floor/carpet/bcarpet,
 /area/space)
-"xVi" = (
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor,
-/area/space)
 "xVA" = (
 /obj/effect/gibspawner/robot,
 /turf/simulated/floor/outdoors/dirt,
@@ -36147,13 +35917,13 @@
 	},
 /obj/machinery/access_button{
 	command = "cycle_interior";
-	frequency = 1380;
+	frequency = 1381;
 	master_tag = "baby_mammoth";
 	name = "interior access button";
 	pixel_y = 26
 	},
 /obj/machinery/door/airlock/voidcraft/vertical{
-	frequency = 1380;
+	frequency = 1381;
 	id_tag = "baby_mammoth_inner";
 	locked = 1;
 	name = "Internal Access"
@@ -36181,7 +35951,6 @@
 	pixel_y = 2
 	},
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor,
 /area/space)
 "xZn" = (
@@ -36192,7 +35961,6 @@
 /obj/machinery/light/small{
 	dir = 4
 	},
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor,
 /area/space)
@@ -36223,7 +35991,6 @@
 /obj/random/junk,
 /obj/random/junk,
 /obj/random/junk,
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor,
 /area/space)
@@ -42063,7 +41830,7 @@ noS
 uGy
 mYY
 mYY
-dmp
+bUv
 bUv
 sVQ
 mdx
@@ -53460,7 +53227,7 @@ mYY
 mYY
 hIe
 ygs
-ixh
+lmI
 jGl
 lfY
 lfY
@@ -53726,7 +53493,7 @@ fZc
 vHw
 pNG
 rlV
-sRs
+ulT
 lfY
 fZc
 wrW
@@ -53979,7 +53746,7 @@ lMZ
 fZc
 xoj
 llr
-mvi
+lfZ
 lmI
 lMZ
 lmI
@@ -54755,12 +54522,12 @@ hIe
 lmI
 lmI
 nKr
-oEe
-pRG
+ygs
+ygs
 rpj
-ixh
-ixh
-ixh
+lmI
+lmI
+lmI
 ygs
 hIe
 wGN
@@ -55266,7 +55033,7 @@ nwG
 nwG
 vHw
 hXY
-iKm
+iYc
 jUk
 fZc
 myA
@@ -55275,11 +55042,11 @@ oLW
 pUb
 vHw
 sYn
-pRG
+ygs
 hUt
 wtD
 xaO
-xVi
+wtD
 vHw
 wGN
 ssV
@@ -55524,7 +55291,7 @@ nwG
 nwG
 lMZ
 iac
-iKm
+iYc
 jVj
 lmI
 myT
@@ -55537,7 +55304,7 @@ urd
 vHQ
 vHw
 xck
-xVi
+wtD
 vHw
 wGN
 sBp
@@ -61765,14 +61532,14 @@ nwG
 nwG
 nwG
 nwG
-uiZ
-qGy
+nwG
+git
 pmh
 pmh
 pmh
-qGy
-uiZ
-uiZ
+git
+nwG
+nwG
 nwG
 nwG
 nwG
@@ -62024,14 +61791,14 @@ nwG
 nwG
 git
 pmh
-eKu
+dTV
 jWp
 aRk
 gPK
-eKu
+dTV
 pmh
-qGy
-uiZ
+git
+nwG
 nwG
 nwG
 nwG
@@ -62289,7 +62056,7 @@ gfe
 sof
 lYv
 git
-uiZ
+nwG
 nwG
 nwG
 nwG
@@ -71066,7 +70833,7 @@ ybA
 ybA
 ybA
 mza
-tTw
+fal
 xau
 ybA
 ybA
@@ -71323,7 +71090,7 @@ ybA
 ybA
 ybA
 ybA
-epX
+pzv
 xyE
 rtj
 ybA
@@ -72869,7 +72636,7 @@ ybA
 ybA
 ybA
 qxF
-xJd
+vbb
 fal
 ybA
 ybA

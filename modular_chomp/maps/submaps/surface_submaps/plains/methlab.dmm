@@ -49,7 +49,6 @@
 	anchored = 1;
 	canhear_range = 1;
 	frequency = 1487;
-	icon = 'icons/obj/items.dmi';
 	icon_state = "red_phone";
 	name = "Reception Emergency Phone"
 	},
@@ -238,12 +237,6 @@
 /obj/effect/wingrille_spawn/reinforced,
 /turf/simulated/floor/tiled/techfloor,
 /area/submap/methlab)
-"tL" = (
-/obj/effect/floor_decal/rust,
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/tiled/steel_dirty,
-/area/submap/methlab)
 "tQ" = (
 /obj/structure/girder,
 /turf/simulated/floor,
@@ -292,7 +285,6 @@
 /obj/item/clothing/shoes/dress{
 	pixel_y = -9
 	},
-/obj/item/clothing/mask/fluff/lucerna_1,
 /obj/structure/curtain/black,
 /obj/random/medical/pillbottle,
 /turf/simulated/floor/tiled/techfloor,
@@ -301,11 +293,6 @@
 /obj/effect/floor_decal/rust,
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled/steel_dirty,
-/area/submap/methlab)
-"zu" = (
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/tiled/old_tile/green,
 /area/submap/methlab)
 "zG" = (
 /obj/random/junk,
@@ -339,8 +326,6 @@
 /turf/simulated/floor/tiled/steel_dirty,
 /area/submap/methlab)
 "BP" = (
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled/steel_dirty,
 /area/submap/methlab)
@@ -444,8 +429,6 @@
 /obj/machinery/light,
 /obj/effect/floor_decal/rust,
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled/steel_dirty,
 /area/submap/methlab)
 "Ih" = (
@@ -494,12 +477,10 @@
 "LM" = (
 /obj/random/trash,
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled/steel_dirty,
 /area/submap/methlab)
 "LX" = (
 /obj/item/stool,
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled/steel_dirty,
 /area/submap/methlab)
@@ -511,12 +492,6 @@
 /obj/effect/wingrille_spawn/reinforced,
 /obj/structure/barricade,
 /turf/simulated/floor/tiled/techfloor,
-/area/submap/methlab)
-"Ol" = (
-/obj/effect/floor_decal/rust,
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/tiled/old_tile/green,
 /area/submap/methlab)
 "Oq" = (
 /obj/structure/fence{
@@ -554,8 +529,6 @@
 "Sn" = (
 /obj/structure/barricade,
 /obj/effect/floor_decal/steeldecal/steel_decals_central5,
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled/steel_dirty,
 /area/submap/methlab)
@@ -643,7 +616,6 @@
 /area/submap/methlab)
 "Vw" = (
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /obj/random/maintenance,
 /turf/simulated/floor/tiled/steel_dirty,
 /area/submap/methlab)
@@ -683,7 +655,6 @@
 /turf/simulated/floor/tiled/old_tile/white,
 /area/submap/methlab)
 "Zh" = (
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /obj/random/maintenance/engineering,
 /turf/simulated/floor/tiled/old_tile/green,
@@ -824,7 +795,7 @@ hQ
 uY
 xM
 kp
-Ol
+PZ
 Zh
 PH
 jo
@@ -847,9 +818,9 @@ Xo
 Xi
 HA
 HA
-zu
-Ol
-zu
+IH
+PZ
+IH
 IH
 QW
 HA
@@ -952,7 +923,7 @@ rK
 AB
 EW
 PO
-tL
+yY
 BP
 UD
 Xi

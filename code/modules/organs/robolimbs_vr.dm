@@ -2,24 +2,6 @@ GLOBAL_LIST_INIT(dsi_to_species, list(SPECIES_TAJARAN = "DSI - Tajaran", SPECIES
 									SPECIES_VULPKANIN = "DSI - Vulpkanin", SPECIES_AKULA = "DSI - Akula", SPECIES_VASILISSAN = "DSI - Vasilissan", SPECIES_ZORREN = "DSI - Zorren",\
 									SPECIES_TESHARI = "DSI - Teshari", SPECIES_FENNEC = "DSI - Fennec"))
 
-//CitRP Port
-var/const/cyberbeast_monitor_styles = "blank=cyber_blank;\
-	default=cyber_default;\
-	eyes=eyes;\
-	static=cyber_static;\
-	alert=cyber_alert;\
-	happy=cyber_happ;\
-	unhappy=cyber_unhapp;\
-	flat=cyber_flat;\
-	sad=cyber_sad;\
-	heart=cyber_heart;\
-	cross=cyber_cross;\
-	wave=cyber_wave;\
-	uwu=cyber_uwu;\
-	question=cyber_question;\
-	lowpower=cyber_lowpower;\
-	idle=cyber_idle;\
-	nwn=cyber_nwn"
 
 // Placeholder for protean limbs during character spawning, before they have a properly set model
 /datum/robolimb/protean
@@ -61,18 +43,18 @@ var/const/cyberbeast_monitor_styles = "blank=cyber_blank;\
 
 // tucker0666 : Frost
 /datum/robolimb/zenghu_frost
-    company = "Zeng-Hu (Custom)"
-    desc = "This limb has realistic synthetic flesh covering with 'blue accents'."
-    icon = 'icons/mob/human_races/cyberlimbs/_fluff_vr/Frosty.dmi'
-    blood_color = "#45ccff"
-    lifelike = 1
-    skin_tone = 1
-    unavailable_to_build = 1
-    whitelisted_to = list("tucker0666")
+	company = "Zeng-Hu (Custom)"
+	desc = "This limb has realistic synthetic flesh covering with 'blue accents'."
+	icon = 'icons/mob/human_races/cyberlimbs/_fluff_vr/Frosty.dmi'
+	blood_color = "#45ccff"
+	lifelike = 1
+	skin_tone = 1
+	unavailable_to_build = 1
+	whitelisted_to = list("tucker0666")
 
 /obj/item/disk/limb/zenghu_frost
-    company = "Zeng-Hu (Modified)"
-    catalogue_data = list(/datum/category_item/catalogue/information/organization/zeng_hu)
+	company = "Zeng-Hu (Modified)"
+	catalogue_data = list(/datum/category_item/catalogue/information/organization/zeng_hu)
 
 //Ported from CitRP
 /datum/robolimb/cyber_beast
@@ -82,7 +64,7 @@ var/const/cyberbeast_monitor_styles = "blank=cyber_blank;\
 	unavailable_to_build = 1
 	parts = list(BP_HEAD)
 	monitor_icon = 'icons/mob/monitor_icons_vr.dmi'
-	monitor_styles = cyberbeast_monitor_styles
+	monitor_styles = CYBERBEAST_MONITOR_STYLES
 
 /obj/item/disk/limb/cyber_beast
 	company = "Cyber Tech"

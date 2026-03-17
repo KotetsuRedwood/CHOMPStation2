@@ -31,10 +31,17 @@ const AtmoSensor = (props: { sensor: sensor }) => {
     return <Box color="bad">UNABLE TO FIND SENSOR</Box>;
   }
 
-  const { pressure, temperature, oxygen, nitrogen, carbon_dioxide, phoron } =
-    sensor.sensor_data;
+  const {
+    pressure,
+    temperature,
+    oxygen,
+    nitrogen,
+    carbon_dioxide,
+    phoron,
+    methane,
+  } = sensor.sensor_data;
 
-  let labeledListContents: React.JSX.Element[] = [];
+  const labeledListContents: React.JSX.Element[] = [];
   if (pressure) {
     labeledListContents.push(
       <LabeledList.Item label="Pressure">{pressure} kPa</LabeledList.Item>,
@@ -56,7 +63,8 @@ const AtmoSensor = (props: { sensor: sensor }) => {
           {carbon_dioxide ? (
             <Stack.Item>({carbon_dioxide}% CO²)</Stack.Item>
           ) : null}
-          {phoron ? <Stack.Item>({phoron}% TX)</Stack.Item> : null}
+          {phoron ? <Stack.Item>({phoron}% PH)</Stack.Item> : null}
+          {methane ? <Stack.Item>({methane}% CH₄)</Stack.Item> : null}
         </Stack>
       </LabeledList.Item>,
     );

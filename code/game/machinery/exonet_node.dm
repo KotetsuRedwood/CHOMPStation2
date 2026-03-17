@@ -1,7 +1,7 @@
 /obj/machinery/exonet_node
 	name = "exonet node"
 	desc = null // Gets written in New()
-	icon = 'icons/obj/stationobjs_vr.dmi' //VOREStation Edit
+	icon = 'icons/obj/stationobjs.dmi'
 	icon_state = "exonet" //VOREStation Edit
 	idle_power_usage = 2500
 	density = TRUE
@@ -23,9 +23,7 @@
 // Proc: New()
 // Parameters: None
 // Description: Adds components to the machine for deconstruction.
-/obj/machinery/exonet_node/map/Initialize(mapload)
-	. = ..()
-	default_apply_parts()
+/obj/machinery/exonet_node/Initialize(mapload)
 	// CHOMPAdd: Exonet Machinery humming
 	soundloop = new(list(src), FALSE)
 	if(prob(60)) // 60% chance to change the midloop
@@ -40,12 +38,11 @@
 			soundloop.mid_length = 30
 	soundloop.start() // CHOMPStation Edit: This starts on
 	// CHOMPAdd End
-
-/obj/machinery/exonet_node/map/Initialize(mapload)
 	. = ..()
-	//default_apply_parts() //CHOMPEdit
-	desc = "This machine is one of many, many nodes inside [using_map.starsys_name]'s section of the Exonet, connecting the [using_map.station_short] to the rest of the system, at least \
-	electronically."
+	default_apply_parts()
+	if(mapload)
+		desc = "This machine is one of many, many nodes inside [using_map.starsys_name]'s section of the Exonet, connecting the [using_map.station_short] to the rest of the system, at least \
+		electronically."
 
 /obj/machinery/exonet_node/Destroy() // CHOMPAdd: Just in case.
 	QDEL_NULL(soundloop) // CHOMPAdd: Exonet noises
@@ -88,10 +85,10 @@
 		noisy = TRUE // CHOMPStation Add: Hummy noises
 	update_icon()
 
-// Proc: emp_act()
+// Proc: emp_act(severity, recursive)
 // Parameters: 1 (severity - how strong the EMP is, with lower numbers being stronger)
 // Description: Shuts off the machine for awhile if an EMP hits it.  Ion anomalies also call this to turn it off.
-/obj/machinery/exonet_node/emp_act(severity)
+/obj/machinery/exonet_node/emp_act(severity, recursive)
 	if(!(stat & EMPED))
 		stat |= EMPED
 		var/duration = (300 * 10)/severity
@@ -197,7 +194,7 @@
 // Parameters: None
 // Description: Helper proc to get a reference to an Exonet node.
 /proc/get_exonet_node()
-	for(var/obj/machinery/exonet_node/E in machines)
+	for(var/obj/machinery/exonet_node/E in GLOB.machines)
 		if(E.on)
 			return E
 

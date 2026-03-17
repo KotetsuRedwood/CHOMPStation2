@@ -13,10 +13,9 @@
 	Look at radio.dm for the prequel to this code.
 */
 
-var/global/list/obj/machinery/telecomms/telecomms_list = list()
 
 /obj/machinery/telecomms
-	icon = 'icons/obj/stationobjs_vr.dmi' //VOREStation Add
+	icon = 'icons/obj/stationobjs.dmi'
 	unacidable = TRUE
 	var/list/links = list() // list of machines this machine is linked to
 	var/traffic = 0 // value increases as traffic increases
@@ -105,6 +104,11 @@ var/global/list/obj/machinery/telecomms/telecomms_list = list()
 	// receive information from linked machinery
 	return
 
+/obj/machinery/telecomms/proc/receive_information_delayed(datum/signal/signal, obj/machinery/telecomms/machine_from)
+	// The second half of receive_information(), called after the slowness delay from its first half.
+	PROTECTED_PROC(TRUE)
+	return
+
 /obj/machinery/telecomms/proc/is_freq_listening(datum/signal/signal)
 	// return 1 if found, 0 if not found
 	if(!signal)
@@ -116,15 +120,13 @@ var/global/list/obj/machinery/telecomms/telecomms_list = list()
 
 
 /obj/machinery/telecomms/Initialize(mapload)
-	telecomms_list += src
+	GLOB.telecomms_list += src
 	..()
 	default_apply_parts()
 	return INITIALIZE_HINT_LATELOAD
 
 
 /obj/machinery/telecomms/LateInitialize()
-	. = ..()
-
 	//Set the listening_level if there's none.
 	if(!listening_level)
 		//Defaults to our Z level!
@@ -137,7 +139,7 @@ var/global/list/obj/machinery/telecomms/telecomms_list = list()
 			for(var/obj/machinery/telecomms/T in orange(20, src))
 				add_link(T)
 		else
-			for(var/obj/machinery/telecomms/T in telecomms_list)
+			for(var/obj/machinery/telecomms/T in GLOB.telecomms_list)
 				add_link(T)
 	// CHOMPAdd: TComms humming
 	soundloop = new(list(src), FALSE)
@@ -155,12 +157,12 @@ var/global/list/obj/machinery/telecomms/telecomms_list = list()
 	// CHOMPAdd End
 
 /obj/machinery/telecomms/Destroy()
-	telecomms_list -= src
-	for(var/obj/machinery/telecomms/comm in telecomms_list)
+	GLOB.telecomms_list -= src
+	for(var/obj/machinery/telecomms/comm in GLOB.telecomms_list)
 		comm.links -= src
 	links = list()
 	QDEL_NULL(soundloop) // CHOMPAdd: Tcomms noises
-	..()
+	. = ..()
 
 // Used in auto linking
 /obj/machinery/telecomms/proc/add_link(var/obj/machinery/telecomms/T)
@@ -207,7 +209,7 @@ var/global/list/obj/machinery/telecomms/telecomms_list = list()
 	if(traffic > 0)
 		traffic -= netspeed
 
-/obj/machinery/telecomms/emp_act(severity)
+/obj/machinery/telecomms/emp_act(severity, recursive)
 	if(prob(100/severity))
 		if(!(stat & EMPED))
 			stat |= EMPED
@@ -411,8 +413,8 @@ var/global/list/obj/machinery/telecomms/telecomms_list = list()
 	var/broadcasting = 1
 	var/receiving = 1
 
-/obj/machinery/telecomms/relay/forceMove(var/newloc)
-	. = ..(newloc)
+/obj/machinery/telecomms/relay/forceMove(atom/destination, direction, movetime)
+	. = ..(destination, direction, movetime)
 	listening_level = z
 
 /obj/machinery/telecomms/relay/receive_information(datum/signal/signal, obj/machinery/telecomms/machine_from)
@@ -462,7 +464,7 @@ var/global/list/obj/machinery/telecomms/telecomms_list = list()
 	machinetype = 2
 	circuit = /obj/item/circuitboard/telecomms/bus
 	netspeed = 40
-	var/change_frequency = 0
+	var/change_frequency = ZERO_FREQ
 
 /obj/machinery/telecomms/bus/receive_information(datum/signal/signal, obj/machinery/telecomms/machine_from)
 
@@ -699,7 +701,7 @@ var/global/list/obj/machinery/telecomms/telecomms_list = list()
 //Generic telecomm connectivity test proc
 /proc/can_telecomm(var/atom/A, var/atom/B, var/ad_hoc = FALSE)
 	if(!A || !B)
-		log_debug("can_telecomm(): Undefined endpoints!")
+		log_mapping("can_telecomm(): Undefined endpoints!")
 		return FALSE
 
 	//Can't in this case, obviously!

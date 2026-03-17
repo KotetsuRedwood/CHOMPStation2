@@ -34,6 +34,19 @@
 	containertype = /obj/structure/closet/crate/freezer/centauri
 	containername = "Artisanal food crate"
 
+/datum/supply_pack/supply/condiments
+	name = "Cooking seasonings crate"
+	desc = "Essential seasonings and spices for cooking."
+	contains = list(
+			/obj/item/reagent_containers/food/condiment/small/saltshaker = 6,
+			/obj/item/reagent_containers/food/condiment/small/peppermill = 6,
+			/obj/item/reagent_containers/food/condiment/spacespice = 3,
+			/obj/item/reagent_containers/food/condiment/sugar = 3,
+			)
+	cost = 30
+	containertype = /obj/structure/closet/crate/freezer/centauri
+	containername = "Cooking seasonings crate"
+
 
 /datum/supply_pack/supply/toner
 	name = "Toner cartridges"
@@ -61,7 +74,7 @@
 			/obj/item/reagent_containers/spray/cleaner,
 			/obj/item/reagent_containers/glass/rag,
 			/obj/item/grenade/chem_grenade/cleaner = 3,
-			/obj/item/vac_attachment, //CHOMPAdd
+			/obj/item/vac_attachment,
 			/obj/item/clothing/glasses/hud/janitor,
 			/obj/structure/mopbucket
 			)
@@ -144,7 +157,7 @@
 	cost = 10
 	containertype = /obj/structure/closet/crate/secure/xion
 	containername = "Shaft miner equipment"
-	access = access_mining
+	access = ACCESS_MINING
 
 /* //No longer supported on our current maps, as it requires specialized dropoff beacons and the pathfinding doesn't work well on multi-z
 //plus we have the destination tagger
@@ -169,6 +182,20 @@
 	contains = list(/obj/vehicle/train/trolley)
 	cost = 15
 
+/datum/supply_pack/supply/cargotank
+	name = "Cargo Train Tanker"
+	desc = "A cargo train tanker. For selling large volumes of a reagent."
+	contains = list(/obj/vehicle/train/trolley_tank)
+	cost = 15
+
+/datum/supply_pack/supply/freezer
+	name = "Freezer crate"
+	desc = "An empty freezer for storing perishable items."
+	contains = list()
+	cost = 20
+	containertype = /obj/structure/closet/crate/freezer
+	containername = "Freezer crate"
+
 /datum/supply_pack/explorergear
 	name= JOB_EXPLORER + " gear"
 	desc = "Standard issue equipment for Explorers. Requires EVA and Exploration access."
@@ -182,19 +209,19 @@
 					/obj/item/storage/belt/explorer,
 					/obj/item/clothing/mask/gas/explorer,
 					/obj/item/cartridge/explorer,
-			 		/obj/item/gps/explorer,
-			 		/obj/item/clothing/under/explorer,
-			 		/obj/item/radio/headset/explorer,
-			 		/obj/item/clothing/shoes/boots/winter/explorer,
+					/obj/item/gps/explorer,
+					/obj/item/clothing/under/explorer,
+					/obj/item/radio/headset/explorer,
+					/obj/item/clothing/shoes/boots/winter/explorer,
 					/obj/item/material/knife/tacknife/survival,
 					/obj/item/material/knife/machete,
-			 		/obj/item/clothing/accessory/holster/machete,
+					/obj/item/clothing/accessory/holster/machete,
 					/obj/item/clothing/accessory/watch/survival
 					)
 	cost=25
 	containertype = /obj/structure/closet/crate/secure/xion
 	containername = JOB_EXPLORER + " equipment"
-	access = access_explorer //CHOMP explo keep
+	access = ACCESS_EXPLORER //CHOMP explo keep
 
 /datum/supply_pack/pilotgear
 	name= JOB_PILOT + " gear"
@@ -210,7 +237,7 @@
 					/obj/item/clothing/gloves/fingerless,
 					/obj/item/cataloguer/compact, //CHOMP explo keep
 					/obj/item/clothing/suit/storage/toggle/bomber/pilot,
-			 		/obj/item/clothing/shoes/boots/winter/explorer,
+					/obj/item/clothing/shoes/boots/winter/explorer,
 					/obj/item/flashlight,
 					/obj/item/material/knife/tacknife/survival,
 					/obj/item/clothing/head/pilot_vr,
@@ -221,7 +248,7 @@
 	cost=20
 	containertype = /obj/structure/closet/crate/secure/xion
 	containername =  JOB_PILOT + " equipment"
-	access = access_pilot
+	access = ACCESS_PILOT
 
 /datum/supply_pack/supply/foodcubes
 	name = "Emergency food cubes"
@@ -245,21 +272,22 @@
 					/obj/item/storage/belt/explorer/pathfinder,
 					/obj/item/clothing/mask/gas/explorer,
 					/obj/item/cartridge/explorer,
-			 		/obj/item/gps/explorer,
-			 		/obj/item/clothing/under/explorer,
-			 		/obj/item/radio/headset/pathfinder,
-			 		/obj/item/clothing/shoes/boots/winter/explorer,
+					/obj/item/gps/explorer,
+					/obj/item/clothing/under/explorer,
+					/obj/item/radio/headset/pathfinder,
+					/obj/item/clothing/shoes/boots/winter/explorer,
 					/obj/item/material/knife/tacknife/survival,
 					/obj/item/material/knife/machete/deluxe,
-			 		/obj/item/clothing/accessory/holster/machete,
+					/obj/item/clothing/accessory/holster/machete,
 					/obj/item/storage/box/explorerkeys,
 					/obj/item/mapping_unit,
-					/obj/item/clothing/accessory/watch/survival
+					/obj/item/clothing/accessory/watch/survival,
+					/obj/item/personal_shield_generator/belt/melee/loaded
 					)
 	cost = 75
 	containertype = /obj/structure/closet/crate/secure/xion
 	containername = JOB_PATHFINDER + " equipment"
-	access = list(access_explorer)
+	access = list(ACCESS_EXPLORER)
 
 /datum/supply_pack/supply/postal_service
 	name = "Postal Service Supplies"

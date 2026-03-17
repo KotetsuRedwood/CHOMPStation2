@@ -37,8 +37,8 @@
 	..()
 */
 // On creation automatically connects to active sensors. This is delayed to ensure sensors already exist.
-/obj/machinery/computer/power_monitor/New()
-	..()
+/obj/machinery/computer/power_monitor/Initialize(mapload)
+	. = ..()
 	power_monitor = new(src)
 
 // On user click opens the UI of this computer.
@@ -48,6 +48,9 @@
 	if(stat & (BROKEN|NOPOWER))
 		return
 	tgui_interact(user)
+
+/obj/machinery/computer/power_monitor/allow_pai_interaction(mob/living/silicon/pai/user, proximity_flag)
+	return proximity_flag
 
 // Uses dark magic to operate the NanoUI of this computer.
 /obj/machinery/computer/power_monitor/tgui_interact(mob/user, var/datum/tgui/ui = null)

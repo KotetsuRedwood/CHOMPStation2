@@ -421,7 +421,7 @@
 /obj/item/clothing/head/fedora/brown
 	desc = "A brown fedora. Perfect for detectives or those trying to pilfer artifacts."
 	icon_state = "fedora_brown"
-	allowed = list(/obj/item/reagent_containers/food/snacks/candy_corn, /obj/item/pen)
+	allowed = list(POCKET_SLEUTH)
 
 /obj/item/clothing/head/fedora/white
 	desc = "A white fedora, really cool hat if you're a mobster. A really lame hat if you're not."
@@ -530,6 +530,13 @@
 	name = "red laser tag helmet"
 	desc = "Reputed to go faster."
 	icon_state = "redtag"
+	flags_inv = HIDEEARS|BLOCKHEADHAIR
+	body_parts_covered = HEAD|EYES
+
+/obj/item/clothing/head/omnitag
+	name = "omni laser tag helmet"
+	desc = "FIRST BLOOD!"
+	icon_state = "marine"
 	flags_inv = HIDEEARS|BLOCKHEADHAIR
 	body_parts_covered = HEAD|EYES
 

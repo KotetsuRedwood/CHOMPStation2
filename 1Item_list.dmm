@@ -5879,7 +5879,7 @@
 	},
 /area/survivalpod)
 "bMh" = (
-/obj/item/toy/plushie/squid/green,
+/obj/item/toy/plushie/squid,
 /turf/simulated/fitness{
 	icon_state = "vault"
 	},
@@ -6891,12 +6891,6 @@
 /area/survivalpod)
 "caX" = (
 /obj/item/gun/energy/taser/xeno/robot,
-/turf/simulated/fitness{
-	icon_state = "vault"
-	},
-/area/survivalpod)
-"cbc" = (
-/obj/item/clothing/under/fluff/techpriestunder,
 /turf/simulated/fitness{
 	icon_state = "vault"
 	},
@@ -8025,12 +8019,6 @@
 	icon_state = "vault"
 	},
 /area/survivalpod)
-"csh" = (
-/obj/structure/ghost_pod/ghost_activated/maintpred/no_announce,
-/turf/simulated/fitness{
-	icon_state = "vault"
-	},
-/area/survivalpod)
 "csn" = (
 /obj/item/bone/skull/unathi,
 /turf/simulated/fitness{
@@ -8620,7 +8608,7 @@
 	},
 /area/survivalpod)
 "cBi" = (
-/obj/item/toy/plushie/therapy/red,
+/obj/item/toy/plushie/therapy,
 /turf/simulated/fitness{
 	icon_state = "vault"
 	},
@@ -9795,12 +9783,6 @@
 	icon_state = "vault"
 	},
 /area/survivalpod)
-"cSJ" = (
-/obj/item/clothing/suit/storage/labcoat/fluff/zeke_vincir_3/axis,
-/turf/simulated/fitness{
-	icon_state = "vault"
-	},
-/area/survivalpod)
 "cSK" = (
 /obj/item/reagent_containers/food/snacks/donut/homer/jelly,
 /turf/simulated/fitness{
@@ -9963,12 +9945,6 @@
 /area/survivalpod)
 "cVr" = (
 /obj/item/clothing/under/croptop,
-/turf/simulated/fitness{
-	icon_state = "vault"
-	},
-/area/survivalpod)
-"cVu" = (
-/obj/item/fluff/zekewatch,
 /turf/simulated/fitness{
 	icon_state = "vault"
 	},
@@ -11737,12 +11713,6 @@
 /area/survivalpod)
 "dwK" = (
 /obj/item/stack/tile/floor/eris/steel/violetcorener,
-/turf/simulated/fitness{
-	icon_state = "vault"
-	},
-/area/survivalpod)
-"dwO" = (
-/obj/item/clothing/head/axiscap/officer,
 /turf/simulated/fitness{
 	icon_state = "vault"
 	},
@@ -15069,12 +15039,6 @@
 	icon_state = "vault"
 	},
 /area/survivalpod)
-"evu" = (
-/obj/item/clothing/under/axis,
-/turf/simulated/fitness{
-	icon_state = "vault"
-	},
-/area/survivalpod)
 "evA" = (
 /obj/machinery/power/rtg/abductor/built,
 /turf/simulated/fitness{
@@ -15495,12 +15459,6 @@
 /area/survivalpod)
 "eBw" = (
 /obj/item/fuel_assembly/phoron,
-/turf/simulated/fitness{
-	icon_state = "vault"
-	},
-/area/survivalpod)
-"eBC" = (
-/obj/item/clothing/suit/space/void/merc/axis/axisrig,
 /turf/simulated/fitness{
 	icon_state = "vault"
 	},
@@ -16081,12 +16039,6 @@
 	ai_holder_type = null
 	},
 /turf/simulated/floor/atoll,
-/area/survivalpod)
-"eKg" = (
-/obj/machinery/r_n_d/server/centcom,
-/turf/simulated/fitness{
-	icon_state = "vault"
-	},
 /area/survivalpod)
 "eKh" = (
 /obj/item/integrated_circuit,
@@ -18192,12 +18144,6 @@
 /area/survivalpod)
 "fsA" = (
 /obj/item/clothing/accessory/solgov/department/supply,
-/turf/simulated/fitness{
-	icon_state = "vault"
-	},
-/area/survivalpod)
-"fsQ" = (
-/obj/item/clothing/accessory/fluff/zeta_blackwell_1,
 /turf/simulated/fitness{
 	icon_state = "vault"
 	},
@@ -22499,7 +22445,7 @@
 /turf/simulated/floor/atoll,
 /area/survivalpod)
 "gFj" = (
-/obj/machinery/r_n_d/server/robotics,
+/obj/machinery/rnd/server,
 /turf/simulated/fitness{
 	icon_state = "vault"
 	},
@@ -27266,7 +27212,7 @@
 	},
 /area/survivalpod)
 "hYk" = (
-/obj/machinery/r_n_d/circuit_imprinter,
+/obj/machinery/rnd/production/circuit_imprinter,
 /turf/simulated/fitness{
 	icon_state = "vault"
 	},
@@ -28802,12 +28748,6 @@
 	icon_state = "vault"
 	},
 /area/survivalpod)
-"ivh" = (
-/obj/item/clothing/suit/space/void/merc/axis/sovrig,
-/turf/simulated/fitness{
-	icon_state = "vault"
-	},
-/area/survivalpod)
 "ivm" = (
 /obj/machinery/door/airlock/angled_bay/standard/color/security,
 /turf/simulated/fitness{
@@ -29864,20 +29804,8 @@
 	icon_state = "vault"
 	},
 /area/survivalpod)
-"iMb" = (
-/obj/item/clothing/mask/fluff/lucerna_1,
-/turf/simulated/fitness{
-	icon_state = "vault"
-	},
-/area/survivalpod)
 "iMf" = (
 /obj/item/gun/projectile/p92x/large/preban,
-/turf/simulated/fitness{
-	icon_state = "vault"
-	},
-/area/survivalpod)
-"iMh" = (
-/obj/item/clothing/accessory/medal/fluff/rindeimos,
 /turf/simulated/fitness{
 	icon_state = "vault"
 	},
@@ -31471,7 +31399,7 @@
 	},
 /area/survivalpod)
 "jkQ" = (
-/mob/living/simple_mob/animal/passive/raccoon_ch{
+/mob/living/simple_mob/animal/passive/raccoon{
 	ai_holder_type = null
 	},
 /turf/simulated/floor/atoll,
@@ -35862,12 +35790,6 @@
 	icon_state = "vault"
 	},
 /area/survivalpod)
-"kyF" = (
-/obj/item/clothing/suit/storage/labcoat/fluff/zeke_vincir_3/axis/officer,
-/turf/simulated/fitness{
-	icon_state = "vault"
-	},
-/area/survivalpod)
 "kyR" = (
 /obj/vehicle/train/rover/engine/dunebuggy,
 /turf/simulated/fitness{
@@ -38038,12 +37960,6 @@
 /mob/living/simple_mob/horror/Master,
 /turf/simulated/floor/atoll,
 /area/survivalpod)
-"ldJ" = (
-/obj/item/clothing/head/axiscap,
-/turf/simulated/fitness{
-	icon_state = "vault"
-	},
-/area/survivalpod)
 "ldO" = (
 /obj/item/clothing/accessory/solgov/department/exploration/jumper,
 /turf/simulated/fitness{
@@ -38995,7 +38911,7 @@
 	},
 /area/survivalpod)
 "ltJ" = (
-/obj/machinery/mecha_part_fabricator,
+/obj/machinery/mecha_part_fabricator_tg,
 /turf/simulated/fitness{
 	icon_state = "vault"
 	},
@@ -39266,12 +39182,6 @@
 /area/survivalpod)
 "lxU" = (
 /obj/item/clothing/suit/storage/hooded/wintercoat/security/hos,
-/turf/simulated/fitness{
-	icon_state = "vault"
-	},
-/area/survivalpod)
-"lxZ" = (
-/obj/item/clothing/head/helmet/space/void/axis/merc/sovrigh,
 /turf/simulated/fitness{
 	icon_state = "vault"
 	},
@@ -40863,12 +40773,6 @@
 /area/survivalpod)
 "lVS" = (
 /obj/machinery/vending/weeb,
-/turf/simulated/fitness{
-	icon_state = "vault"
-	},
-/area/survivalpod)
-"lVY" = (
-/obj/item/clothing/shoes/boots/jackboots/fluff/techpriestboots,
 /turf/simulated/fitness{
 	icon_state = "vault"
 	},
@@ -42901,12 +42805,6 @@
 	icon_state = "vault"
 	},
 /area/survivalpod)
-"mBv" = (
-/obj/item/clothing/head/helmet/space/void/merc/axis/axisrigh,
-/turf/simulated/fitness{
-	icon_state = "vault"
-	},
-/area/survivalpod)
 "mBw" = (
 /obj/item/storage/belt/explorer/pathfinder,
 /turf/simulated/fitness{
@@ -44166,7 +44064,7 @@
 	},
 /area/survivalpod)
 "mUP" = (
-/obj/machinery/r_n_d/server/core,
+/obj/machinery/rnd/server/master,
 /turf/simulated/fitness{
 	icon_state = "vault"
 	},
@@ -45864,12 +45762,6 @@
 	icon_state = "vault"
 	},
 /area/survivalpod)
-"nta" = (
-/obj/item/clothing/gloves/fluff/techpriestgloves,
-/turf/simulated/fitness{
-	icon_state = "vault"
-	},
-/area/survivalpod)
 "nti" = (
 /obj/item/reagent_containers/food/snacks/slice/braincake/filled,
 /turf/simulated/fitness{
@@ -46063,7 +45955,7 @@
 	},
 /area/survivalpod)
 "nwq" = (
-/obj/structure/closet/secure_closet/CMO,
+/obj/structure/closet/secure_closet/chief_medical_officer,
 /turf/simulated/fitness{
 	icon_state = "vault"
 	},
@@ -46292,12 +46184,6 @@
 /area/survivalpod)
 "nyN" = (
 /obj/item/reagent_containers/food/drinks/glass2/coffeemug/rainbow,
-/turf/simulated/fitness{
-	icon_state = "vault"
-	},
-/area/survivalpod)
-"nyQ" = (
-/obj/item/clothing/head/helmet/axis,
 /turf/simulated/fitness{
 	icon_state = "vault"
 	},
@@ -47441,12 +47327,6 @@
 /area/survivalpod)
 "nOM" = (
 /obj/item/clothing/under/away/daedalus,
-/turf/simulated/fitness{
-	icon_state = "vault"
-	},
-/area/survivalpod)
-"nON" = (
-/obj/item/clothing/under/axis/officer,
 /turf/simulated/fitness{
 	icon_state = "vault"
 	},
@@ -48785,12 +48665,6 @@
 /area/survivalpod)
 "oim" = (
 /obj/item/clothing/gloves/bluespace/emagged,
-/turf/simulated/fitness{
-	icon_state = "vault"
-	},
-/area/survivalpod)
-"oir" = (
-/obj/machinery/exonet_node/map,
 /turf/simulated/fitness{
 	icon_state = "vault"
 	},
@@ -52711,12 +52585,6 @@
 	icon_state = "vault"
 	},
 /area/survivalpod)
-"psB" = (
-/obj/item/clothing/suit/storage/fluff/techpriestrobes,
-/turf/simulated/fitness{
-	icon_state = "vault"
-	},
-/area/survivalpod)
 "psL" = (
 /obj/machinery/atmospherics/pipe/simple/hidden/scrubbers,
 /turf/simulated/fitness{
@@ -55911,12 +55779,6 @@
 	icon_state = "vault"
 	},
 /area/survivalpod)
-"qsi" = (
-/obj/structure/ghost_pod/ghost_activated/morphspawn/no_announce,
-/turf/simulated/fitness{
-	icon_state = "vault"
-	},
-/area/survivalpod)
 "qsm" = (
 /obj/machinery/abstract_grub_machine,
 /turf/simulated/fitness{
@@ -57871,12 +57733,6 @@
 	icon_state = "vault"
 	},
 /area/survivalpod)
-"qXp" = (
-/obj/item/clothing/suit/space/void/merc/axis,
-/turf/simulated/fitness{
-	icon_state = "vault"
-	},
-/area/survivalpod)
 "qXq" = (
 /obj/item/storage/box/botanydisk,
 /turf/simulated/fitness{
@@ -58737,12 +58593,6 @@
 /area/survivalpod)
 "rlr" = (
 /obj/item/storage/box/syndie_kit/imp_aug/surge,
-/turf/simulated/fitness{
-	icon_state = "vault"
-	},
-/area/survivalpod)
-"rlt" = (
-/obj/item/toy/bosunwhistle/fluff/strix,
 /turf/simulated/fitness{
 	icon_state = "vault"
 	},
@@ -71971,12 +71821,6 @@
 	icon_state = "vault"
 	},
 /area/survivalpod)
-"vhb" = (
-/obj/item/clothing/head/helmet/space/void/merc/axis,
-/turf/simulated/fitness{
-	icon_state = "vault"
-	},
-/area/survivalpod)
 "vhc" = (
 /obj/item/storage/box/casino/costume_sexyclown,
 /turf/simulated/fitness{
@@ -75118,12 +74962,6 @@
 	icon_state = "vault"
 	},
 /area/survivalpod)
-"war" = (
-/obj/item/clothing/under/swimsuit/fluff/zara_uniform,
-/turf/simulated/fitness{
-	icon_state = "vault"
-	},
-/area/survivalpod)
 "was" = (
 /obj/machinery/atmospherics/pipe/cap/hidden/supply,
 /turf/simulated/fitness{
@@ -76317,7 +76155,7 @@
 	},
 /area/survivalpod)
 "wsV" = (
-/obj/structure/closet/secure_closet/RD,
+/obj/structure/closet/secure_closet/research_director,
 /turf/simulated/fitness{
 	icon_state = "vault"
 	},
@@ -78702,7 +78540,7 @@
 	},
 /area/survivalpod)
 "xcQ" = (
-/obj/machinery/mecha_part_fabricator/pros,
+/obj/machinery/mecha_part_fabricator_tg/prosthetics,
 /turf/simulated/fitness{
 	icon_state = "vault"
 	},
@@ -79603,12 +79441,6 @@
 /area/survivalpod)
 "xqH" = (
 /obj/item/clothing/suit/storage/fluff/gntop,
-/turf/simulated/fitness{
-	icon_state = "vault"
-	},
-/area/survivalpod)
-"xqI" = (
-/obj/item/gps/advanced,
 /turf/simulated/fitness{
 	icon_state = "vault"
 	},
@@ -84258,7 +84090,7 @@ gHu
 bSW
 irv
 bSW
-eKg
+bSW
 bSW
 bdh
 bSW
@@ -88962,7 +88794,7 @@ bCw
 eUy
 fxB
 bSW
-csh
+pDu
 bSW
 bSW
 bSW
@@ -89366,7 +89198,7 @@ ugJ
 qMm
 kZl
 bSW
-qsi
+ldZ
 bSW
 hVu
 bSW
@@ -92153,7 +91985,7 @@ hhZ
 bSW
 huP
 bSW
-oir
+hih
 bSW
 nHW
 bSW
@@ -97485,7 +97317,7 @@ szS
 cQS
 naL
 xOD
-iMh
+bSW
 jFu
 ycT
 dsN
@@ -100099,7 +99931,7 @@ ecy
 apG
 viO
 bSW
-ldJ
+bSW
 chs
 iPo
 vGa
@@ -100301,7 +100133,7 @@ mnD
 gYy
 bSW
 bSW
-dwO
+bSW
 bsR
 pbv
 kez
@@ -102480,7 +102312,7 @@ jKg
 rDt
 fyU
 ubC
-nyQ
+bSW
 fxM
 lvD
 wth
@@ -102700,7 +102532,7 @@ rmi
 whe
 wov
 wKe
-vhb
+bSW
 hxh
 dNn
 tey
@@ -102902,7 +102734,7 @@ aQE
 eAQ
 jGW
 nCH
-mBv
+bSW
 dXS
 mnh
 tzO
@@ -102946,7 +102778,7 @@ tlR
 bRZ
 gXF
 pHC
-qXp
+bSW
 mEF
 trR
 gCt
@@ -103098,7 +102930,7 @@ dEJ
 cNT
 qay
 owM
-lxZ
+bSW
 azT
 lsS
 oUq
@@ -103148,8 +102980,8 @@ rcG
 edf
 jck
 fch
-eBC
-ivh
+bSW
+bSW
 tId
 qMt
 gRN
@@ -103956,7 +103788,7 @@ bSW
 uad
 xBi
 kSr
-psB
+bSW
 hax
 iEf
 ctD
@@ -106058,7 +105890,7 @@ hJY
 aKf
 idO
 vNP
-war
+bSW
 vDi
 uwB
 fmD
@@ -106197,7 +106029,7 @@ jPD
 hcY
 iMx
 fdu
-evu
+bSW
 aYV
 eka
 iKh
@@ -106399,7 +106231,7 @@ qxc
 mmT
 jlN
 qwZ
-nON
+bSW
 jpb
 vqW
 kif
@@ -107236,7 +107068,7 @@ fzb
 nUa
 hro
 reS
-cVu
+bSW
 ovU
 bMs
 tFx
@@ -107262,7 +107094,7 @@ gJd
 iYE
 pKx
 rpk
-lVY
+bSW
 qhi
 uzy
 cRv
@@ -107451,14 +107283,14 @@ vQv
 iDV
 vUn
 xGQ
-fsQ
+bSW
 xvY
 mil
 cxS
 gLx
 mrd
 aRK
-nta
+bSW
 qhf
 psW
 cbR
@@ -107472,7 +107304,7 @@ eeF
 nAp
 mFl
 uXh
-cSJ
+bSW
 gqy
 jQc
 gKe
@@ -107482,7 +107314,7 @@ qom
 pIL
 bup
 iCb
-cbc
+bSW
 wef
 tGu
 ceA
@@ -107674,7 +107506,7 @@ vwy
 gEF
 vAD
 lpT
-kyF
+bSW
 saf
 nVY
 vbW
@@ -107865,7 +107697,7 @@ fVo
 vQT
 gSA
 eQD
-iMb
+bSW
 geU
 wyH
 mPI
@@ -108042,7 +107874,7 @@ brz
 dvK
 uhk
 iNY
-rlt
+bSW
 raD
 ujS
 xzZ
@@ -112290,7 +112122,7 @@ rKJ
 xKG
 pGN
 gpu
-xqI
+tHP
 cKf
 mnp
 uJi

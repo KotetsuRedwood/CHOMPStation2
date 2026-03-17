@@ -23,7 +23,7 @@
 	min_pressure_protection = 0 * ONE_ATMOSPHERE
 	max_pressure_protection = 3 * ONE_ATMOSPHERE
 	max_heat_protection_temperature = SPACE_SUIT_MAX_HEAT_PROTECTION_TEMPERATURE
-	allowed = list(/obj/item/gun,/obj/item/ammo_magazine,/obj/item/ammo_casing,/obj/item/melee/baton,/obj/item/melee/energy/sword,/obj/item/handcuffs,/obj/item/tank/emergency/oxygen)
+	allowed = list(POCKET_SECURITY, POCKET_EMERGENCY, /obj/item/melee/baton,/obj/item/melee/energy/sword,/obj/item/handcuffs)
 
 /obj/item/clothing/head/darkvrwizard
 	name = "wizard hat"
@@ -50,7 +50,7 @@
 	min_pressure_protection = 0 * ONE_ATMOSPHERE
 	max_pressure_protection = 3 * ONE_ATMOSPHERE
 	max_heat_protection_temperature = SPACE_SUIT_MAX_HEAT_PROTECTION_TEMPERATURE
-	allowed = list(/obj/item/gun,/obj/item/ammo_magazine,/obj/item/ammo_casing,/obj/item/melee/baton,/obj/item/melee/energy/sword,/obj/item/handcuffs,/obj/item/tank/emergency/oxygen)
+	allowed = list(POCKET_SECURITY, POCKET_EMERGENCY, /obj/item/melee/baton,/obj/item/melee/energy/sword)
 
 //Candy section
 /obj/item/clothing/head/psy_crown/candycrown
@@ -91,9 +91,9 @@
 			H.custom_pain("Your hands feel strange",1)
 	..()
 
-/obj/item/clothing/gloves/stamina/New()
+/obj/item/clothing/gloves/stamina/Initialize(mapload)
+	. = ..()
 	START_PROCESSING(SSobj, src)
-	..()
 
 /obj/item/clothing/gloves/stamina/Destroy()
 	STOP_PROCESSING(SSobj, src)
@@ -159,12 +159,11 @@
 /obj/item/clothing/suit/armor/alien/vistor
 	name = "rocky suit"
 	desc = "A strange set of armor made of rocky plates"
-	description_info = "It always reduces all damage by the same amount, with a 12% chance to block."
+	description_info = "Reduces all admage types by 25% with a 12% chance to block."
 	icon_state = "alien_tank"
 	slowdown = 0
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
-	armor = list(melee = 0, bullet = 0, laser = 0, energy = 0, bomb = 0, bio = 0, rad = 0)
-	armorsoak = list( melee = 12, bullet = 12,laser = 12, energy = 12 , bomb = 0, bio = 0, rad = 0)
+	armor = list(melee = 25, bullet = 25, laser = 25, energy = 25, bomb = 25, bio = 25, rad = 25) //Should be good enough to mimic the old '12% reduction'.
 	block_chance = 12
 
 /obj/item/clothing/suit/armor/tesla/vistor

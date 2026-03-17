@@ -4,11 +4,12 @@
 	catalogue_data = list(/datum/category_item/catalogue/technology/resleeving)
 	origin_tech = list(TECH_DATA = 2)
 	show_messages = 0
-	var/emagged = FALSE
 	matter = list(MAT_STEEL = 4000, MAT_GLASS = 4000)
+	has_emag_toolkit = FALSE // sleevecards don't have multitools or signalers,  you can just change their laws
+	special_handling = TRUE
 
 /obj/item/paicard/sleevecard/attack_ghost(mob/user as mob)
-	return
+	return // No ghosts can invite, these are intended for sleevemates only
 
 /obj/item/paicard/sleevecard/attackby(var/obj/item/I as obj, mob/user as mob)
 	if(istype(I,/obj/item/sleevemate))
@@ -18,7 +19,7 @@
 			var/datum/transcore_db/db = SStranscore.db_by_mind_name(M.name)
 			if(db)
 				to_chat(user, span_notice("You begin uploading [M.name] into \the [src]."))
-				if(do_after(user,8 SECONDS,src))
+				if(do_after(user, 8 SECONDS, target = src))
 					var/datum/transhuman/mind_record/record = db.backed_up[M.name]
 					to_chat(user, span_notice("You have successfully uploaded [M.name] into \the [src]"))
 					sleeveInto(record)
@@ -37,7 +38,7 @@
 				to_chat(our_infomorph, span_warning("You can feel the restricting binds of your card's directives taking hold of your mind as \the [user] swipes their [E] over you. You must serve your master."))
 
 /obj/item/paicard/sleevecard/proc/sleeveInto(var/datum/transhuman/mind_record/MR, var/db_key)
-	var/mob/living/silicon/pai/infomorph/infomorph = new(src,MR.mindname,db_key=db_key)
+	var/mob/living/silicon/pai/infomorph/infomorph = new(src,MR.mindname,db_key)
 
 	for(var/datum/language/L in MR.languages)
 		infomorph.add_language(L.name)
@@ -46,11 +47,9 @@
 	infomorph.ooc_notes = MR.mind_oocnotes
 	infomorph.ooc_notes_likes = MR.mind_ooclikes
 	infomorph.ooc_notes_dislikes = MR.mind_oocdislikes
-	//CHOMPEdit Start
 	infomorph.ooc_notes_favs = MR.mind_oocfavs
 	infomorph.ooc_notes_maybes = MR.mind_oocmaybes
 	infomorph.ooc_notes_style = MR.mind_oocstyle
-	//CHOMPEdit End
 	infomorph.apply_vore_prefs() //Cheap hack for now to give them SOME bellies.
 
 	//Don't set 'real_name' because then we get a nice (as sleevecard) thing.
@@ -68,6 +67,9 @@
 	return 0
 
 /obj/item/paicard/sleevecard/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	add_fingerprint(user)
 
 	if(!pai)
@@ -75,7 +77,7 @@
 	else
 		if(!emagged)
 			to_chat(user,span_notice("\The [src] displays the name '[pai]'."))
-		else ..()
+		else ..(user, TRUE)
 
 /mob/living/silicon/pai/infomorph
 	name = "sleevecard" //Has the same name as the card for consistency, but this is the MOB in the card.
@@ -83,8 +85,8 @@
 	ram = 35
 	var/emagged = FALSE
 
-/mob/living/silicon/pai/infomorph/New(var/obj/item/paicard/sleevecard/SC, var/our_name = "Unknown", var/db_key)
-	..()
+/mob/living/silicon/pai/infomorph/Initialize(mapload, var/our_name = "Unknown", var/db_key)
+	. = ..()
 
 	name = our_name
 
@@ -92,6 +94,8 @@
 	pda.ownjob = "Sleevecard"
 	pda.owner = text("[]", src)
 	pda.name = pda.owner + " (" + pda.ownjob + ")"
+
+	default_language = GLOB.all_languages[LANGUAGE_GALCOM] // Same issue as bots
 
 
 /mob/living/silicon/pai/infomorph/tgui_data(mob/user, datum/tgui/ui, datum/tgui_state/state)
@@ -102,8 +106,8 @@
 	// Software we have not bought
 	var/list/not_bought_software = list()
 
-	for(var/key in pai_software_by_key)
-		var/datum/pai_software/S = pai_software_by_key[key]
+	for(var/key in GLOB.pai_software_by_key)
+		var/datum/pai_software/S = GLOB.pai_software_by_key[key]
 		var/software_data[0]
 		if(istype(S, /datum/pai_software/directives) && !emagged)
 			continue
@@ -122,11 +126,11 @@
 
 	// Emotions
 	var/list/emotions = list()
-	for(var/name in pai_emotions)
+	for(var/name in GLOB.pai_emotions)
 		var/list/emote = list()
 		emote["name"] = name
-		emote["id"] = pai_emotions[name]
-		emotions.Add(list(emote))
+		emote["id"] = GLOB.pai_emotions[name]
+		UNTYPED_LIST_ADD(emotions, emote)
 
 	data["emotions"] = emotions
 	data["current_emotion"] = card.current_emotion

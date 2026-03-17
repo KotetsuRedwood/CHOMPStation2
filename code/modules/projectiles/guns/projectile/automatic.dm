@@ -53,7 +53,7 @@
  * C-20r
  */
 
- /* CHOMPedit remove: Moved to automatic_ch.dm. *
+/* CHOMPedit remove: Moved to automatic_ch.dm. *
 
 /obj/item/gun/projectile/automatic/c20r
 	name = "submachine gun"
@@ -232,8 +232,8 @@
 	var/use_launcher = 0
 	var/obj/item/gun/launcher/grenade/underslung/launcher
 
-/obj/item/gun/projectile/automatic/z8/New()
-	..()
+/obj/item/gun/projectile/automatic/z8/Initialize(mapload)
+	. = ..()
 	launcher = new(src)
 
 /obj/item/gun/projectile/automatic/z8/attackby(obj/item/I, mob/user)
@@ -310,6 +310,8 @@
 		list(mode_name="short bursts",	burst=5,burst_delay=1 ,move_delay=3, burst_accuracy = list(0,-15,-15,-30,-30), dispersion = list(0.6, 1.0, 1.0, 1.0, 1.2)) //CHOMPedit, firerate buff
 		)
 
+	special_weapon_handling = TRUE
+
 /obj/item/gun/projectile/automatic/l6_saw/special_check(mob/user)
 	if(cover_open)
 		to_chat(user, span_warning("[src]'s cover is open! Close it before firing!"))
@@ -322,11 +324,14 @@
 	update_icon()
 	update_held_icon()
 
-/obj/item/gun/projectile/automatic/l6_saw/attack_self(mob/user as mob)
+/obj/item/gun/projectile/automatic/l6_saw/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	if(cover_open)
 		toggle_cover(user) //close the cover
 	else
-		return ..() //once closed, behave like normal
+		return ..(user, TRUE) //once closed, behave like normal
 
 /obj/item/gun/projectile/automatic/l6_saw/attack_hand(mob/user as mob)
 	if(!cover_open && user.get_inactive_hand() == src)

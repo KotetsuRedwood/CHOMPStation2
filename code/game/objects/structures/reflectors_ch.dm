@@ -89,7 +89,7 @@
 	var/pdir = P.dir
 	var/pangle = P.Angle
 	var/ploc = get_turf(P)
-	if(!finished || !allowed_projectile_typecache[P.type] || !(P.dir in cardinal))
+	if(!finished || !allowed_projectile_typecache[P.type] || !(P.dir in GLOB.cardinal))
 		return ..()
 	if(auto_reflect(P, pdir, ploc, pangle) != 2)
 		return ..()
@@ -177,7 +177,7 @@
 		setAngle(SIMPLIFY_DEGREES(new_angle))
 	return TRUE
 
-/obj/structure/reflector/AltClick(mob/user)
+/obj/structure/reflector/click_alt(mob/user)
 	if(!CanUseTopic(user))
 		return
 	else if(finished)

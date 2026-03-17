@@ -9,7 +9,8 @@ import { createLogger } from 'tgui/logging';
 import { Tooltip } from 'tgui-core/components';
 import { EventEmitter } from 'tgui-core/events';
 import { classes } from 'tgui-core/react';
-
+import { store } from '../events/store';
+import { scrollTrackingAtom } from './atoms';
 import { exportToDisk } from './chatExport';
 import {
   IMAGE_RETRY_DELAY,
@@ -20,6 +21,7 @@ import {
   MESSAGE_TYPE_UNKNOWN,
   MESSAGE_TYPES,
 } from './constants';
+import { createMessageNode } from './messageNode';
 import {
   adminPageOnly,
   canPageAcceptType,
@@ -30,7 +32,7 @@ import {
   typeIsImportant,
 } from './model';
 import { highlightNode, linkifyNode } from './replaceInTextNode';
-import type { message, Page } from './types';
+import type { Page, SerializedMessage } from './types';
 
 const logger = createLogger('chatRenderer');
 
@@ -50,62 +52,41 @@ export const TGUI_CHAT_ATTRIBUTES_TO_PROPS = {
   content: 'content',
 };
 
-const findNearestScrollableParent = (startingNode: HTMLElement) => {
-  const body = document.body;
-  let node = startingNode;
-  while (node && node !== body) {
-    // This definitely has a vertical scrollbar, because it reduces
-    // scrollWidth of the element. Might not work if element uses
-    // overflow: hidden.
-    if (node.scrollWidth < node.offsetWidth) {
-      return node;
-    }
-    node = node.parentNode as HTMLElement;
-  }
-  return window;
-};
-
-const createHighlightNode = (text: string, color: string): HTMLElement => {
+function createHighlightNode(text: string, color: string): HTMLElement {
   const node = document.createElement('span');
   node.className = 'Chat__highlight';
-  node.setAttribute('style', 'background-color:' + color);
+  node.setAttribute('style', `background-color:${color}`);
   node.textContent = text;
   return node;
-};
+}
 
-export const createMessageNode = (): HTMLElement => {
-  const node = document.createElement('div');
-  node.className = 'ChatMessage';
-  return node;
-};
-
-const interleaveMessage = (
+function interleaveMessage(
   node: HTMLElement,
   interleave: boolean,
   color: string,
-): HTMLElement => {
+): HTMLElement {
   if (interleave) {
-    node.setAttribute('style', 'background-color:' + color);
+    node.setAttribute('style', `background-color:${color}`);
     node.setAttribute('display', 'block');
   } else {
     node.removeAttribute('style');
     node.removeAttribute('display');
   }
   return node;
-};
+}
 
-const stripNewLineFlood = (text: string): string => {
+function stripNewLineFlood(text: string): string {
   text = text.replace(/((\n)\2{2})\2+/g, '$1');
   return text;
-};
+}
 
-const createReconnectedNode = (): HTMLElement => {
+function createReconnectedNode(): HTMLElement {
   const node = document.createElement('div');
   node.className = 'Chat__reconnected';
   return node;
-};
+}
 
-const getChatTimestamp = (message: message): string => {
+function getChatTimestamp(message: SerializedMessage): string {
   let stamp = '';
   if (message.createdAt) {
     const dateTime = new Date(message.createdAt);
@@ -118,9 +99,9 @@ const getChatTimestamp = (message: message): string => {
       ']&nbsp;';
   }
   return stamp;
-};
+}
 
-const handleImageError = (e: ErrorEvent) => {
+function handleImageError(e: ErrorEvent) {
   setTimeout(() => {
     /** @type {HTMLImageElement} */
     const node = e.target as HTMLImageElement;
@@ -135,15 +116,15 @@ const handleImageError = (e: ErrorEvent) => {
     }
     const src = node.src;
     node.src = '';
-    node.src = src + '#' + attempts;
+    node.src = `${src}#${attempts}`;
     node.setAttribute('data-reload-n', (attempts + 1).toString());
   }, IMAGE_RETRY_DELAY);
-};
+}
 
 /**
  * Assigns a "times-repeated" badge to the message.
  */
-const updateMessageBadge = (message: message) => {
+function updateMessageBadge(message: SerializedMessage) {
   const { node, times } = message;
   if (!node || !times || typeof node === 'string') {
     // Nothing to update
@@ -159,15 +140,15 @@ const updateMessageBadge = (message: message) => {
   if (!foundBadge) {
     node.appendChild(badge);
   }
-};
+}
 
 class ChatRenderer {
   loaded: boolean;
   rootNode: HTMLElement | null;
-  queue: message[];
-  messages: message[];
-  archivedMessages: message[];
-  visibleMessages: message[];
+  queue: SerializedMessage[];
+  messages: SerializedMessage[];
+  archivedMessages: SerializedMessage[];
+  visibleMessages: SerializedMessage[];
   page: Page | null;
   events: EventEmitter;
   prependTimestamps: boolean;
@@ -178,7 +159,7 @@ class ChatRenderer {
   logLimit: number;
   logEnable: boolean;
   roundId: null | number;
-  storedTypes: Record<string, string>;
+  storedTypes: Record<string, boolean>;
   interleave: boolean;
   interleaveEnabled: boolean;
   interleaveColor: string;
@@ -189,19 +170,21 @@ class ChatRenderer {
   ensureScrollTracking: () => void;
   highlightParsers:
     | {
-        highlightWords: string;
+        highlightWords: string[];
         highlightRegex: RegExp;
         highlightColor: string;
         highlightWholeMessage: boolean;
-        highlightBlacklist: string;
+        highlightBlacklist: boolean;
         blacklistregex: RegExp;
       }[]
     | null;
   databaseBackendEnabled: boolean;
+  lastScrollHeight: number;
+  ttsVoice: string;
+  ttsCategories: Record<string, boolean>;
+
   constructor() {
-    /** @type {HTMLElement} */
     this.loaded = false;
-    /** @type {HTMLElement} */
     this.rootNode = null;
     this.queue = [];
     this.messages = [];
@@ -224,26 +207,23 @@ class ChatRenderer {
     this.hideImportantInAdminTab = false;
     this.databaseBackendEnabled = false;
     // Scroll handler
-    /** @type {HTMLElement} */
     this.scrollNode = null;
     this.scrollTracking = true;
-    this.handleScroll = (type) => {
+    this.lastScrollHeight = 0;
+    this.handleScroll = (evt) => {
       const node = this.scrollNode;
-      if (node) {
-        const height = node.scrollHeight;
-        const bottom = node.scrollTop + node.offsetHeight;
-        const scrollTracking =
-          Math.abs(height - bottom) < SCROLL_TRACKING_TOLERANCE;
-        if (scrollTracking !== this.scrollTracking) {
-          this.scrollTracking = scrollTracking;
-          this.events.emit('scrollTrackingChanged', scrollTracking);
-          logger.debug('tracking', this.scrollTracking);
-        }
+      if (!node) {
+        return;
       }
-    };
-    this.ensureScrollTracking = () => {
-      if (this.scrollTracking) {
-        this.scrollToBottom();
+      const height = node.scrollHeight;
+      const bottom = node.scrollTop + node.offsetHeight;
+      const scrollTracking =
+        Math.abs(height - bottom) < SCROLL_TRACKING_TOLERANCE ||
+        this.lastScrollHeight === 0;
+      if (scrollTracking !== this.scrollTracking) {
+        this.scrollTracking = scrollTracking;
+        store.set(scrollTrackingAtom, scrollTracking);
+        logger.debug('tracking', this.scrollTracking);
       }
     };
     // Periodic message pruning
@@ -263,18 +243,8 @@ class ChatRenderer {
     else {
       this.rootNode = node;
     }
-    // Find scrollable parent
-    if (this.rootNode) {
-      this.scrollNode = findNearestScrollableParent(
-        this.rootNode,
-      ) as HTMLElement;
-    }
-    if (this.scrollNode) {
-      this.scrollNode.addEventListener('scroll', this.handleScroll);
-    }
-    setTimeout(() => {
-      this.scrollToBottom();
-    });
+    // Attempts to find the scroll node on mount
+    this.tryFindScrollable();
     // Flush the queue
     this.tryFlushQueue();
   }
@@ -288,6 +258,11 @@ class ChatRenderer {
     if (this.isReady() && this.queue.length > 0) {
       this.processBatch(this.queue, { doArchive: doArchive });
       this.queue = [];
+      // In case we had no vaclid scroll node before
+      this.tryFindScrollable();
+      setTimeout(() => {
+        this.scrollToBottom();
+      });
     }
   }
 
@@ -304,7 +279,7 @@ class ChatRenderer {
     if (!highlightSettings) {
       return;
     }
-    highlightSettings.map((id) => {
+    highlightSettings.forEach((id) => {
       const setting = highlightSettingById[id];
       const text = setting.highlightText;
       const blacklist = setting.blacklistText;
@@ -315,6 +290,8 @@ class ChatRenderer {
       const matchCase = setting.matchCase;
       const allowedRegex = /^[a-zа-яё0-9_\-$/^[\s\]\\]+$/gi;
       const regexEscapeCharacters = /[!#$%^&*)(+=.<>{}[\]:;'"|~`_\-\\/]/g;
+      // Reset lastIndex so it does not mess up the next word
+      allowedRegex.lastIndex = 0;
       const lines = String(text)
         .split(',')
         .map((str) => str.trim())
@@ -324,9 +301,7 @@ class ChatRenderer {
             str &&
             str.length > 1 &&
             // Must be alphanumeric (with some punctuation)
-            allowedRegex.test(str) &&
-            // Reset lastIndex so it does not mess up the next word
-            ((allowedRegex.lastIndex = 0) || true),
+            allowedRegex.test(str),
         );
       let highlightWords;
       let highlightRegex;
@@ -334,6 +309,8 @@ class ChatRenderer {
       if (lines.length === 0) {
         return;
       }
+      // Reset lastIndex so it does not mess up the next word
+      allowedRegex.lastIndex = 0;
       const blacklistLines = String(blacklist)
         .split(',')
         .map((str) => str.trim())
@@ -343,14 +320,11 @@ class ChatRenderer {
             str &&
             str.length > 1 &&
             // Must be alphanumeric (with some punctuation)
-            allowedRegex.test(str) &&
-            // Reset lastIndex so it does not mess up the next word
-            ((allowedRegex.lastIndex = 0) || true),
+            allowedRegex.test(str),
         );
-      let blacklistWords;
       let blacklistregex;
       if (highlightBlacklist && blacklistLines.length > 0) {
-        let blacklistRegexExpressions: string[] = [];
+        const blacklistRegexExpressions: string[] = [];
         for (let line of blacklistLines) {
           // Regex expression syntax is /[exp]/
           if (line.charAt(0) === '/' && line.charAt(line.length - 1) === '/') {
@@ -361,29 +335,24 @@ class ChatRenderer {
             }
             blacklistRegexExpressions.push(expr);
           } else {
-            // Lazy init
-            if (!blacklistWords) {
-              blacklistWords = [];
-            }
             // We're not going to let regex characters fuck up our RegEx operation.
             line = line.replace(regexEscapeCharacters, '\\$&');
 
-            blacklistWords.push('^\\s*' + line);
-            blacklistWords.push('^\\[\\d+:\\d+\\]\\s*' + line);
+            blacklistRegexExpressions.push(`^${line}`);
           }
         }
-        const regexStrBL = blacklistWords.join('|');
+        const regexStrBL = blacklistRegexExpressions.join('|');
         const flagsBL = 'i';
         // We wrap this in a try-catch to ensure that broken regex doesn't break
         // the entire chat.
         try {
-          blacklistregex = new RegExp('(' + regexStrBL + ')', flagsBL);
+          blacklistregex = new RegExp(`(${regexStrBL})`, flagsBL);
         } catch {
           // We just reset it if it's invalid.
           blacklistregex = null;
         }
       }
-      let regexExpressions: string[] = [];
+      const regexExpressions: string[] = [];
       // Organize each highlight entry into regex expressions and words
       for (let line of lines) {
         // Regex expression syntax is /[exp]/
@@ -406,13 +375,13 @@ class ChatRenderer {
         }
       }
       const regexStr = regexExpressions.join('|');
-      const flags = 'g' + (matchCase ? '' : 'i');
+      const flags = `g${matchCase ? '' : 'i'}`;
       // We wrap this in a try-catch to ensure that broken regex doesn't break
       // the entire chat.
       try {
         // setting regex overrides matchword
         if (regexStr) {
-          highlightRegex = new RegExp('(' + regexStr + ')', flags);
+          highlightRegex = new RegExp(`(${regexStr})`, flags);
         } else {
           const pattern = `${matchWord ? '\\b' : ''}(${highlightWords.join(
             '|',
@@ -446,19 +415,27 @@ class ChatRenderer {
     }
   }
 
+  tryFindScrollable() {
+    // Find scrollable parent
+    this.scrollNode = document.getElementById('chat-pane');
+    this.scrollNode?.addEventListener('scroll', this.handleScroll);
+  }
+
   setVisualChatLimits(
     visibleMessageLimit: number,
     combineMessageLimit: number,
     combineIntervalLimit: number,
     logEnable: boolean,
     logLimit: number,
-    storedTypes: Record<string, string>,
+    storedTypes: Record<string, boolean>,
     roundId: number | null,
     prependTimestamps: boolean,
     hideImportantInAdminTab: boolean,
     interleaveEnabled: boolean,
     interleaveColor: string,
     databaseBackendEnabled: boolean,
+    ttsVoice: string,
+    ttsCategories: Record<string, boolean>,
   ) {
     this.visibleMessageLimit = visibleMessageLimit;
     this.combineMessageLimit = combineMessageLimit;
@@ -472,6 +449,8 @@ class ChatRenderer {
     this.interleaveEnabled = interleaveEnabled;
     this.interleaveColor = interleaveColor;
     this.databaseBackendEnabled = databaseBackendEnabled;
+    this.ttsVoice = ttsVoice;
+    this.ttsCategories = ttsCategories;
   }
 
   changePage(page: Page) {
@@ -489,7 +468,7 @@ class ChatRenderer {
     // Re-add message nodes
     const fragment = document.createDocumentFragment();
     let node;
-    for (let message of this.messages) {
+    for (const message of this.messages) {
       if (
         canPageAcceptType(page, message.type) &&
         !(
@@ -515,7 +494,7 @@ class ChatRenderer {
     }
   }
 
-  getCombinableMessage(predicate: message) {
+  getCombinableMessage(predicate: SerializedMessage) {
     const now = Date.now();
     const len = this.visibleMessages.length;
     const from = len - 1;
@@ -537,8 +516,22 @@ class ChatRenderer {
     return null;
   }
 
+  tryTTS(message: SerializedMessage, node: HTMLElement) {
+    if (this.ttsCategories[message.type]) {
+      const utterance = new SpeechSynthesisUtterance(node.innerText);
+
+      const voice = window.speechSynthesis
+        .getVoices()
+        .find((val) => val.name === this.ttsVoice);
+      utterance.voice = voice || null;
+
+      window.speechSynthesis.speak(utterance);
+    }
+  }
+
+  // eslint-disable-next-line complexity
   processBatch(
-    batch: message[],
+    batch: SerializedMessage[],
     options: {
       prepend?: boolean;
       notifyListeners?: boolean;
@@ -556,11 +549,15 @@ class ChatRenderer {
       }
       return;
     }
+    // Store last scroll position
+    if (this.scrollNode) {
+      this.lastScrollHeight = this.scrollNode.scrollHeight;
+    }
     // Insert messages
     const fragment = document.createDocumentFragment();
     const countByType = {};
     let node;
-    for (let payload of batch) {
+    for (const payload of batch) {
       const message = createMessage(payload);
       // Combine messages
       const combinable = this.getCombinableMessage(message);
@@ -602,7 +599,7 @@ class ChatRenderer {
           const childNode = nodes[i];
           const targetName = childNode.getAttribute('data-component');
           // Let's pull out the attibute info we need
-          let outputProps = {};
+          const outputProps = {};
           for (let j = 0; j < childNode.attributes.length; j++) {
             const attribute = childNode.attributes[j];
 
@@ -613,9 +610,9 @@ class ChatRenderer {
               working_value = true;
             } else if (working_value === '$false') {
               working_value = false;
-            } else if (!isNaN(working_value)) {
+            } else if (!Number.isNaN(working_value)) {
               const parsed_float = parseFloat(working_value);
-              if (!isNaN(parsed_float)) {
+              if (!Number.isNaN(parsed_float)) {
                 working_value = parsed_float;
               }
             }
@@ -633,24 +630,27 @@ class ChatRenderer {
 
           const reactRoot = createRoot(childNode);
 
-          /* eslint-disable react/no-danger */
           reactRoot.render(
             <Element {...outputProps}>
+              {/** biome-ignore lint/security/noDangerouslySetInnerHtml: Chat rendere */}
               <span dangerouslySetInnerHTML={oldHtml} />
             </Element>,
-            childNode,
           );
-          /* eslint-enable react/no-danger */
         }
 
         // Highlight text
         if (!message.avoidHighlighting && this.highlightParsers) {
           this.highlightParsers.map((parser) => {
+            const ourUser = node.getElementsByClassName('name');
+            const isEmote = node.getElementsByClassName('emote');
             if (
               !(
                 parser.highlightBlacklist &&
                 parser.blacklistregex &&
-                parser.blacklistregex.test(node.textContent)
+                ((ourUser.length > 0 &&
+                  parser.blacklistregex.test(ourUser[0].textContent)) ||
+                  (isEmote.length > 0 &&
+                    parser.blacklistregex.test(isEmote[0].textContent)))
               )
             ) {
               const highlighted = highlightNode(
@@ -663,6 +663,7 @@ class ChatRenderer {
                 node.className += ' ChatMessage--highlighted';
               }
             }
+            return undefined;
           });
         }
         // Linkify text
@@ -695,6 +696,13 @@ class ChatRenderer {
       countByType[message.type] += 1;
       // TODO: Detect duplicates
       this.messages.push(message);
+
+      // TTS
+      // Only TTS on new messages
+      if (doArchive) {
+        this.tryTTS(message, node);
+      }
+
       if (
         doArchive &&
         this.logEnable &&
@@ -807,7 +815,7 @@ class ChatRenderer {
     const fromIndex = Math.max(0, this.messages.length - rebuildLimit);
     const messages = this.messages.slice(fromIndex);
     // Remove existing nodes
-    for (let message of messages) {
+    for (const message of messages) {
       message.node = undefined;
     }
     // Fast clear of the root node
@@ -862,7 +870,7 @@ class ChatRenderer {
       for (let i = 0; i < cssRules.length; i++) {
         const rule = cssRules[i];
         if (rule && typeof rule.cssText === 'string') {
-          cssText += rule.cssText + '\n';
+          cssText += `${rule.cssText}\n`;
         }
       }
     }
@@ -880,7 +888,7 @@ class ChatRenderer {
     } else {
       // Fetch from chat storage
       let messagesHtml = '';
-      let tmpMsgArray: message[] = [];
+      let tmpMsgArray: SerializedMessage[] = [];
       if (startLine || endLine) {
         if (!endLine) {
           tmpMsgArray = this.archivedMessages.slice(startLine);
@@ -897,10 +905,10 @@ class ChatRenderer {
       }
 
       // for (let message of this.visibleMessages) { // TODO: Actually having a better message archiving maybe for exports?
-      for (let message of tmpMsgArray) {
+      for (const message of tmpMsgArray) {
         // Filter messages according to active tab for export
         if (this.page && canPageAcceptType(this.page, message.type)) {
-          messagesHtml += message.html + '\n';
+          messagesHtml += `${message.html}\n`;
         }
         // if (message.node) {
         //  messagesHtml += message.node.outerHTML + '\n';
@@ -943,18 +951,11 @@ class ChatRenderer {
   }
 }
 
-type ChatWindow = Window &
-  typeof globalThis & {
-    __chatRenderer__: ChatRenderer;
-  };
-
 // Make chat renderer global so that we can continue using the same
 // instance after hot code replacement.
 
-const chatWindow = window as ChatWindow;
-if (!chatWindow.__chatRenderer__) {
-  chatWindow.__chatRenderer__ = new ChatRenderer();
+if (!window.__chatRenderer__) {
+  window.__chatRenderer__ = new ChatRenderer();
 }
 
-/** @type {ChatRenderer} */
-export const chatRenderer = chatWindow.__chatRenderer__;
+export const chatRenderer: ChatRenderer = window.__chatRenderer__;

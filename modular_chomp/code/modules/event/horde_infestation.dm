@@ -10,7 +10,7 @@
 /datum/event/horde_infestation/setup()
 	announceWhen = rand(announceWhen, announceWhen + 60)
 
-	for(var/obj/machinery/atmospherics/unary/vent_pump/temp_vent in machines) //Gathering together all possible areas to spawn mobs.
+	for(var/obj/machinery/atmospherics/unary/vent_pump/temp_vent in GLOB.machines) //Gathering together all possible areas to spawn mobs.
 		//CHOMPEdit: Added a couple areas to the exclusion.
 		var/area/in_area = get_area(temp_vent)
 		if(in_area.flag_check(AREA_FORBID_EVENTS))
@@ -20,26 +20,26 @@
 				vents += temp_vent
 
 	if(prob(50)) //50/50 chance on spiders or metroids.
-		log_debug("Hord event, spiders selected.")
+		log_game("Hord event, spiders selected.")
 		spawncount = rand(4 * severity, 10 * severity)
-		sent_spiders_to_station = 0
+		GLOB.sent_spiders_to_station = 0
 		spiders = TRUE
 
 	else
-		log_debug("Horde event, metroids selected.")
+		log_game("Horde event, metroids selected.")
 		spawncount = rand(2 * severity, 4 * severity)
 		metroids = TRUE
 
 
 /datum/event/horde_infestation/announce()
 	if(spiders) //Horrible way of doing this
-		command_announcement.Announce("Unidentified lifesigns detected coming aboard [station_name()]. Secure any exterior access, including ducting and ventilation.", "Lifesign Alert", new_sound = 'sound/AI/aliens.ogg')
+		GLOB.command_announcement.Announce("Unidentified lifesigns detected coming aboard [station_name()]. Secure any exterior access, including ducting and ventilation.", "Lifesign Alert", new_sound = 'sound/AI/aliens.ogg')
 	if(metroids) //Horrible way of doing this
-		command_announcement.Announce("High-energy lifeforms detected coming aboard [station_name()]. All crew members, stay alert, and listen to security instructions.", "Lifesign Alert", new_sound = 'sound/misc/alarm1.ogg')
+		GLOB.command_announcement.Announce("High-energy lifeforms detected coming aboard [station_name()]. All crew members, stay alert, and listen to security instructions.", "Lifesign Alert", new_sound = 'sound/misc/alarm1.ogg')
 
 /datum/event/horde_infestation/start()
 	if(spiders)
-		for(var/obj/machinery/atmospherics/unary/vent_pump/temp_vent in machines)
+		for(var/obj/machinery/atmospherics/unary/vent_pump/temp_vent in GLOB.machines)
 			//CHOMPEdit: Added a couple areas to the exclusion. Also made this actually work.
 			var/area/in_area = get_area(temp_vent)
 			if(in_area.flag_check(AREA_FORBID_EVENTS))
@@ -95,4 +95,4 @@
 			area_names |= metroid_area.name
 		if(area_names.len)
 			var/english_list = english_list(area_names)
-			command_announcement.Announce("Sensors have narrowed down remaining lifeforms to the following areas: [english_list]", "Lifesign Alert")
+			GLOB.command_announcement.Announce("Sensors have narrowed down remaining lifeforms to the following areas: [english_list]", "Lifesign Alert")

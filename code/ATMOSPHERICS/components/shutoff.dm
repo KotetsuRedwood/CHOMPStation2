@@ -26,7 +26,7 @@ GLOBAL_LIST_EMPTY(shutoff_valves)
 
 /obj/machinery/atmospherics/valve/shutoff/Destroy()
 	GLOB.shutoff_valves -= src
-	..()
+	. = ..()
 
 /obj/machinery/atmospherics/valve/shutoff/attack_ai(mob/user as mob)
 	return src.attack_hand(user)
@@ -39,7 +39,7 @@ GLOBAL_LIST_EMPTY(shutoff_valves)
 	return TRUE
 
 // Alt+Click now toggles the open/close function, when the autoseal is disabled
-/obj/machinery/atmospherics/valve/shutoff/AltClick(var/mob/user)
+/obj/machinery/atmospherics/valve/shutoff/click_alt(var/mob/user)
 	if(isliving(user))
 		if(close_on_leaks)
 			to_chat(user, "You try to manually [open ? "close" : "open"] the valve, but it [open ? "opens" : "closes"] automatically again.")
@@ -58,8 +58,8 @@ GLOBAL_LIST_EMPTY(shutoff_valves)
 
 	if(close_on_leaks)
 		if(open && (network_node1.leaks.len || network_node2.leaks.len))
-			find_leaks() // If we can see the leak, then this will find it, close the valve, and cut off that network
-						 // If we cannot see the leak, then this will not close the valve, and any valves that can see the leak will cut it off from us
+			find_leaks()	// If we can see the leak, then this will find it, close the valve, and cut off that network
+							// If we cannot see the leak, then this will not close the valve, and any valves that can see the leak will cut it off from us
 		else if(!open && !network_node1.leaks.len && !network_node2.leaks.len)
 			open()
 	return

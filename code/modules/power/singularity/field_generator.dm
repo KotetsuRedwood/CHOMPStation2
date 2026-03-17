@@ -1,16 +1,16 @@
 //This file was auto-corrected by findeclaration.exe on 25.5.2012 20:42:33
 
 
-/*
-field_generator power level display
-   The icon used for the field_generator need to have 'num_power_levels' number of icon states
-   named 'Field_Gen +p[num]' where 'num' ranges from 1 to 'num_power_levels'
-
-   The power level is displayed using overlays. The current displayed power level is stored in 'powerlevel'.
-   The overlay in use and the powerlevel variable must be kept in sync.  A powerlevel equal to 0 means that
-   no power level overlay is currently in the overlays list.
-   -Aygar
-*/
+/**
+ * field_generator power level display
+ * The icon used for the field_generator need to have 'num_power_levels' number of icon states
+ * named 'Field_Gen +p[num]' where 'num' ranges from 1 to 'num_power_levels'
+ *
+ * The power level is displayed using overlays. The current displayed power level is stored in 'powerlevel'.
+ * The overlay in use and the powerlevel variable must be kept in sync.  A powerlevel equal to 0 means that
+ * no power level overlay is currently in the overlays list.
+ * -Aygar
+ */
 
 #define field_generator_max_power 250000
 /obj/machinery/field_generator
@@ -68,11 +68,11 @@ field_generator power level display
 	return
 
 
-/obj/machinery/field_generator/New()
-	..()
+/obj/machinery/field_generator/Initialize(mapload)
+	. = ..()
 	fields = list()
 	connected_gens = list()
-	return
+	AddElement(/datum/element/climbable)
 
 /obj/machinery/field_generator/process()
 	if(Varedit_start == 1)
@@ -147,7 +147,7 @@ field_generator power level display
 					user.visible_message("[user.name] starts to weld the [src.name] to the floor.", \
 						"You start to weld the [src] to the floor.", \
 						"You hear welding")
-					if (do_after(user,20 * WT.toolspeed))
+					if (do_after(user, 2 SECONDS * WT.toolspeed, target = src))
 						if(!src || !WT.isOn()) return
 						state = 2
 						to_chat(user, "You weld the field generator to the floor.")
@@ -159,7 +159,7 @@ field_generator power level display
 					user.visible_message("[user.name] starts to cut the [src.name] free from the floor.", \
 						"You start to cut the [src] free from the floor.", \
 						"You hear welding")
-					if (do_after(user,20 * WT.toolspeed))
+					if (do_after(user, 2 SECONDS * WT.toolspeed, target = src))
 						if(!src || !WT.isOn()) return
 						state = 1
 						to_chat(user, "You cut the [src] free from the floor.")
@@ -170,8 +170,8 @@ field_generator power level display
 		return
 
 
-/obj/machinery/field_generator/emp_act()
-	return 0
+/obj/machinery/field_generator/emp_act(severity, recursive)
+	return FALSE
 
 /obj/machinery/field_generator/bullet_act(var/obj/item/projectile/Proj)
 	if(istype(Proj, /obj/item/projectile/beam))
@@ -348,12 +348,12 @@ field_generator power level display
 	//I want to avoid using global variables.
 	spawn(1)
 		var/temp = 1 //stops spam
-		for(var/obj/singularity/O in machines)
+		for(var/obj/singularity/O in GLOB.machines)
 			if(O.last_warning && temp)
 				if((world.time - O.last_warning) > 50) //to stop message-spam
 					temp = 0
 					admin_chat_message(message = "SINGUL/TESLOOSE!", color = "#FF2222") //VOREStation Add
-					message_admins("A singulo exists and a containment field has failed.",1)
+					message_admins("A singulo exists and a containment field has failed.")
 					investigate_log("has " + span_red("failed") + " whilst a singulo exists.","singulo")
 					log_game("FIELDGEN([x],[y],[z]) Containment failed while singulo/tesla exists.")
 			O.last_warning = world.time

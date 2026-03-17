@@ -11,9 +11,6 @@
 	item_state = "book15"
 	author = "Engineering Encyclopedia"		 // Who wrote the thing, can be changed by pen or PC. It is not automatically assigned
 	title = "Particle Accelerator User's Guide"
-
-/obj/item/book/manual/engineering_particle_accelerator/New()
-	..()
 	dat = {"<html>
 				<head>
 				<style>
@@ -59,9 +56,7 @@
 	item_state = "book15"
 	author = "Central Engineering Division"
 	title = "Supermatter Engine Operating Manual"
-
-/obj/item/book/manual/supermatter_engine/New()
-	..()			//CHOMPEdit Start - Updated Supermatter Engine Manual
+	//CHOMPEdit Start - Updated Supermatter Engine Manual
 	dat = {"<html>
 				<head>
 				<style>
@@ -216,10 +211,7 @@
 	item_state = "book15"
 	author = "Central Engineering Division"
 	title = "R-UST Operating Manual"
-
-//R-UST guide Re-Writen by Gozulio to reflect how the R-UST actually operates. (CHOMPedit, re-written again :3 By Foxglove)
-/obj/item/book/manual/rust_engine/New()
-	..()
+	//R-UST guide Re-Writen by Gozulio to reflect how the R-UST actually operates. (CHOMPedit, re-written again :3 By Foxglove)
 	dat = {"<html>
 				<head>
 				<style>
@@ -262,17 +254,17 @@
 				<li> Once the CO<sup>2</sup> canister is empty, unwrench it and replace it with a second canister and wrench it down in the original canister's place. The hot-loop requires two canisters of CO<sup>2</sup> to remain stable and safe. <i>Once the hot-loop is set up, you may power down the <b>intake</b> pipe, located directly <ins>south</ins> of the intake connector port</i>.</li>
 				<li> While not <i>required</i> there is an omni-filter you can set-up and power on <mark>just north</mark> of the reactor shroud. It can be used to filter gas out of reactor, it is not required, however, and can be safely ignored for standard basic set-up of TEG and R-UST alike. </li>
 				</ol>
-                <br>
+				<br>
 				<h2>R-UST STANDARD STARTUP PROCEDURE</h2>
-                <h1>The Engine Control Room and what to know.</h1>
-                <li> <b><ins>Gyrotron Controller</ins></b> <em>This is the terminal located on the far <mark>west</mark> and controls the gyrotron. This device can be viewed as the catalyst that causes the reaction within the core and must remain turned on <b>only during use</b></em>. </li>
-                <li> <b><ins>Fuel Injector Control</b></ins> <em>This is the terminal <mark>adjacent</mark> to the gyrotron controller, it controls the injectors that pump fuel into the reactor core chamber and must remained turned on <b>only when in use <ins>and</ins> with the projection field powered and active</b></em>. </li>
-                <li> <b><ins>R-UST Core Monitoring</ins></b> <em>This is the terminal in the <mark>middle</mark> of the room. It gives you information about the status of the reactor, the core chamber, and the reaction going on within the R-UST</em>.</li>
-                <li> <b><ins>Engine Cooling Control</ins></b> <em>This is the terminal directly <mark>in front of you</mark> when you walk into the engine control room. This terminal controls the cooling pumps and systems within the R-UST core</em>. </li>
-                <li> <b><ins>Shroud Controls</ins></b> <em>There are two buttons that control and cycle the monitoring room shroud and the reactor core shroud. These are located <mark>on the sides</mark> of the monitoring room. The reactor shroud should be left open during setup. And the monitoring room shroud should be left shut <b>after</b> setup is complete</em>. </li>
-                <li> <b><ins>Deuterium</ins></b> <em>The standard set-up for your R-UST reaction is Deuterium-Dueterium. Go to the fuel storage chamber <mark>east</mark> of the reactor shroud and ensure you have two rods on hand for set-up. You may safely grab <b>two</b> of these rods now and insert them into the two <mark>southern</mark> fuel injectors. If you do, skip the first step below</em>.</li>
-                <br>
-                <ol>
+				<h1>The Engine Control Room and what to know.</h1>
+				<li> <b><ins>Gyrotron Controller</ins></b> <em>This is the terminal located on the far <mark>west</mark> and controls the gyrotron. This device can be viewed as the catalyst that causes the reaction within the core and must remain turned on <b>only during use</b></em>. </li>
+				<li> <b><ins>Fuel Injector Control</b></ins> <em>This is the terminal <mark>adjacent</mark> to the gyrotron controller, it controls the injectors that pump fuel into the reactor core chamber and must remained turned on <b>only when in use <ins>and</ins> with the projection field powered and active</b></em>. </li>
+				<li> <b><ins>R-UST Core Monitoring</ins></b> <em>This is the terminal in the <mark>middle</mark> of the room. It gives you information about the status of the reactor, the core chamber, and the reaction going on within the R-UST</em>.</li>
+				<li> <b><ins>Engine Cooling Control</ins></b> <em>This is the terminal directly <mark>in front of you</mark> when you walk into the engine control room. This terminal controls the cooling pumps and systems within the R-UST core</em>. </li>
+				<li> <b><ins>Shroud Controls</ins></b> <em>There are two buttons that control and cycle the monitoring room shroud and the reactor core shroud. These are located <mark>on the sides</mark> of the monitoring room. The reactor shroud should be left open during setup. And the monitoring room shroud should be left shut <b>after</b> setup is complete</em>. </li>
+				<li> <b><ins>Deuterium</ins></b> <em>The standard set-up for your R-UST reaction is Deuterium-Dueterium. Go to the fuel storage chamber <mark>east</mark> of the reactor shroud and ensure you have two rods on hand for set-up. You may safely grab <b>two</b> of these rods now and insert them into the two <mark>southern</mark> fuel injectors. If you do, skip the first step below</em>.</li>
+				<br>
+				<ol>
 				<li> Collect two (2) deuterium fuel rods from the fuel storage chamber and socket them into any two fuel injectors. <i>It is adviced to use the two <mark>southern</mark> injectors to allow for easier visual checks from the engine control room.</i> </li>
 				<li> Assuming the room and controls are powered open both the reactor shroud and the control room shroud. If the room is not powered (which you can check by looking at the R-UST Core Monitor and seeing if the buttons are greyed out or not, if they are grey it does not have enough power). If it is unpowered or otherwise does not have sufficient power see <ins>ADDITIONAL INFORMATION <strong>1.</strong></ins> below.</li>
 				<li> Now, please ensure everyone in the engine control room is wearing full radiation protection gear, ensure the control room door will not be opened during set-up to prevent radiation leakage. </li>
@@ -1728,3 +1720,80 @@
 				</body>
 			</html>
 				"}
+
+
+// Chemical Refinery
+/obj/item/book/manual/chem_refinery
+	name = "Chemical Refinery Basic Operations"
+	icon_state ="bookrefinery"
+	item_state = "book15"
+	author = "Engineering Encyclopedia"
+	title = "Chemical Refinery Basic Operations"
+
+	dat = {"<html>
+				<head>
+					<style>
+					h1 {font-size: 18px; margin: 15px 0px 5px;}
+					h2 {font-size: 15px; margin: 15px 0px 5px;}
+					li {margin: 2px 0px 2px 15px;}
+					ul {margin: 5px; padding: 0px;}
+					ol {margin: 5px; padding: 0px 15px;}
+					body {font-size: 13px; font-family: Verdana;}
+					</style>
+				</head>
+				<body>
+					<h1>OPERATING MANUAL FOR MK 1 INDUSTRIAL REAGENT REFINERY EQUIPMENT</h1>
+					<br>
+					<h2>OPERATING PRINCIPLES</h2>
+					<p>The chemical refinery is not a single machine, but instead many machines connected together to perform the complex, multi-step, reactions needed for production of high value industrial reagents for export from the station.</p>
+					<p>Unlike a traditional chemistry department where reagents are created at small scales for local use; A chemical refinery is often dedicated to one or two types of reagents, produced at massive quantities. Each cargo train tanker will need to be filled full of a single reagent to be properly sold by cargo.</p>
+					<p>To achieve this, the refinery has many unique machines, each with a role to play. Multiple of the same type of machine will often be needed. As reagents often need many steps to filter and react them to their final forms.</p>
+					<br>
+					<h2>MACHINERY OVERVIEW</h2>
+					<p>In order of importance in refinery operations:</p>
+					<h3>Pipes:</h3>
+					<p>Pipes form the inexpensive backbone of reagent transfer in a refinery, and connect more complex modules of a refinery together. Pipes do not require power to transport reagents, but do so only in one direction. The red pipe marks an input connection from another machine. Arrows are also pressed into the hull of the pipe to indicate flow.</p>
+
+					<h3>Filters:</h3>
+					<p>Similar to pipes, a filter allows reagents to flow from one machine to the next. With a red pipe as input. Once reagents are present in a filter, one of them may be chosen. Once chosen the reagent will be filtered to the purple marked outlet on the filter's side. The filter will not move any reagents if no filtered reagent is selected. It can also be configured to filter out nothing, or everything, if the filter is being used as a way divert flow or purge upstream machinery.</p>
+
+					<h3>Hubs:</h3>
+					<p>Hubs are an automatic quick connect solution to pumping reagents from the refinery into cargo train tankers. Once a tanker is moved onto a hub's pad, it will begin filling or draining after a small delay. A hub's mode of operation depends entirely on if a machine's output points into it, or not. If a machine's output points into a hub, it will fill cargo tankers on the pad. If the hub connects to a machine's input instead, it will drain cargo tankers into that machine.</p>
+
+					<h3>Grinders:</h3>
+					<p>Solid materials such as metal sheets, ores, and plants may be ground down for use in the refinery. Though this method of reagent production is generally slower, and requires manual input. The grinder only has a single output.</p>
+
+					<h3>Vats:</h3>
+					<p>Vats are your primary reagent storage tanks. They hold large volumes of reagents. Like any part of the refinery, once reagents are flowing inside them, they can react with other reagents. Separation, filtering, and careful mixing is critical for the construction of a seamlessly operating refinery. Vats only have a single output, all other sides are considered inputs.</p>
+
+					<h3>Reactors:</h3>
+					<p>Reactors are the most complex machine in the refinery. It is capable of distilling reagents that require complex atmospheric conditions. A reactor only has a single output, all other sides are considered inputs. Reagents inside a reactor are separated into internal pressurized tanks, and only react during the machine's distillation cycle. The reactor will automatically shift between pumping and distilling once it detects chemical input. The results will often require filtering and reprocessing, as the input reagents are used to flush the reaction chamber each cycle.</p>
+					<p>Reactors are compatible with portable atmospherics pads, and may be anchored on top of one to automatically connect it to a gas network. The gas network will provide the specific pressure and temperature required for the reaction within the machine. Many reactions require specific conditions to progress, and some input reagents may have different reactions depending on temperature and gas composition. Consult a trained chemist for insights on enhancing your refinery layout.</p>
+
+					<h3>Sintering Furnaces:</h3>
+					<p>Sintering is the process of heating a material under high pressure, causing it to weld together into a cohesive form. Unfortunately, this can only be done with pure materials, as the correctly mixed ratios required for proper alloy production are not possible. Only base materials such as iron, gold, or silver may be formed. Though some reagents may produce other results. It is inadvisable to attempt sintering on flammable or explosive reagents.</p>
+
+					<h3>Pumps:</h3>
+					<p>Pumps allow for the high volume exchange of reagents from one machine to another, but they are also useful for their multiple hose connectors. Allowing you to pump reagents from any other hose connector equipped tool. With this feature, they can serve as the input connection for long distance fracking networks.</p>
+
+					<h3>Mixers:</h3>
+					<p>While not required for reagents to react together, a mixing vat will allow you to easily control the portion of reagents mixed. Mixers will take input from three directions, and output in the last direction. The mixing arm will stop at each input, and will not proceed until it has recieved the reagents.</p>
+					<p>Using a pump, the amount of reagents transfered can be configured much more finely compared to handling reactions in vats. A mixer will refuse to take inputs if it cannot fully empty itself on a complete rotation. The rotation direction may be swapped at any time.</p>
+
+					<h3>Fluid Pumps:</h3>
+					<p>While not directly a refinery machine, they serve a core function outside of the refinery. Fluid pumps will extract eroded ores from bodies of water near mineral rich deposits. Discussion of high value ores with an experienced miner is recommended. Ores must remain intact near a body of water to be collected by the pump.</p>
+					<p>Fluid pumps operate on an internal power cell, protected behind a water proof panel. A crowbar is handy for opening it. Hoses can be connected to a fluid pump, allowing it to connect to long distance tube networks.</p>
+					<p>Rarely, large cracks can be found underground, these complex networks of micro fractures can be pumped and drained repeatedly to expand them, and extract the dissolved ores deep within the ground. This process is described as fracking.</p>
+
+					<h3>Pump Relay:</h3>
+					<p>The location of external fluid pumps are often very far away from the chemical refinery they are destined for. Pump relays allow two input hoses, and one output hose. Active as a passive, no power required pump. Using the pressure of the other pumps at the head of the network. Pump relays may be spaced far apart, unlike refinery piping, saving crews time and expensive parts.</p>
+
+					<h3>Waste Processors:</h3>
+					<p>Many reagents have little use in huge quantities, such as water from a pumped river. This waste reagent may be disposed of quickly in a waste processor. Shredding it to an atomic level and dispersing it through nearby bluespace. Similar to what happens to opens dropped out of a shuttles bluespace shielding during flight.</p>
+
+					<br>
+					<h2>OPERATIONAL GOALS</h2>
+					<p>With the provided knowledge, anything is possible with the right reagents and machines. Reagents produced by the refinery are intended for sale from the station's cargo department. Reagents must be sold pure, and in a full cargo tanker. Each reagent has a different value and purpose on the market. For methods of reagent production, consult a trained chemist, or one of our trusted exonet partners; Such as BINGLE.</p>
+				</body>
+			</html>
+			"}

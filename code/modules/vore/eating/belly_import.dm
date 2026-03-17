@@ -1,55 +1,50 @@
-/datum/vore_look/proc/import_belly(mob/host)
-	var/panel_choice = tgui_input_list(host, "Belly Import", "Pick an option", list("Import all bellies from VRDB","Import one belly from VRDB"))
-	if(!panel_choice) return
-	var/pickOne = FALSE
-	if(panel_choice == "Import one belly from VRDB")
-		pickOne = TRUE
-	var/input_file = input(host,"Please choose a valid VRDB file to import from.","Belly Import") as file
-	var/input_data
-	try
-		input_data = json_decode(file2text(input_file))
-	catch(var/exception/e)
-		tgui_alert_async(host, "The supplied file contains errors: [e]", "Error!")
-		return FALSE
+/datum/vore_look/import_panel/proc/open_import_panel(mob/user)
+	tgui_interact(user)
 
-	if(!islist(input_data))
-		tgui_alert_async(host, "The supplied file was not a valid VRDB file.", "Error!")
-		return FALSE
+/datum/vore_look/import_panel/tgui_interact(mob/user, datum/tgui/ui)
+	ui = SStgui.try_update_ui(user, src, ui)
+	if(!ui)
+		ui = new(user, src, "VorePanelImport", "Vore Import Panel")
+		ui.open()
 
+/datum/vore_look/import_panel/tgui_act(action, list/params, datum/tgui/ui, datum/tgui_state/state)
+	if(..())
+		return TRUE
+
+	switch(action)
+		if("import_soulcatcher")
+			import_soulcatcher(host, params["data"])
+		if("import_bellies")
+			import_belly(ui.user, params["data"])
+
+/datum/vore_look/import_panel/proc/import_belly(mob/host, list/input_data)
 	var/list/valid_names = list()
 	var/list/valid_lists = list()
 	var/list/updated = list()
 
 	for(var/list/raw_list in input_data)
-		if(length(valid_names) >= BELLIES_MAX) break
-		if(!islist(raw_list)) continue
-		if(!istext(raw_list["name"])) continue
-		if(length(raw_list["name"]) > BELLIES_NAME_MAX || length(raw_list["name"]) < BELLIES_NAME_MIN) continue
-		if(raw_list["name"] in valid_names) continue
+		if(length(valid_names) >= BELLIES_MAX)
+			break
+		if(!islist(raw_list))
+			continue
+		if(!istext(raw_list["name"]))
+			continue
+		if(length(raw_list["name"]) > BELLIES_NAME_MAX || length(raw_list["name"]) < BELLIES_NAME_MIN)
+			continue
+		if(raw_list["name"] in valid_names)
+			continue
 		for(var/obj/belly/B in host.vore_organs)
 			if(lowertext(B.name) == lowertext(raw_list["name"]))
 				updated += raw_list["name"]
 				break
-		if(!pickOne && length(host.vore_organs)+length(valid_names)-length(updated) >= BELLIES_MAX) continue
+		if(length(host.vore_organs)+length(valid_names)-length(updated) >= BELLIES_MAX)
+			continue
 		valid_names += raw_list["name"]
 		valid_lists += list(raw_list)
 
 	if(length(valid_names) == 0)
 		tgui_alert_async(host, "The supplied VRDB file does not contain any valid bellies.", "Error!")
 		return FALSE
-
-	if(pickOne)
-		var/picked = tgui_input_list(host, "Belly Import", "Which belly?", valid_names)
-		if(!picked) return
-		for(var/B in valid_lists)
-			if(lowertext(picked) == lowertext(B["name"]))
-				valid_names = list(picked)
-				valid_lists = list(B)
-				break
-		if(picked in updated)
-			updated = list(picked)
-		else
-			updated = list()
 
 	var/list/alert_msg = list()
 	if(length(valid_names)-length(updated) > 0)
@@ -68,8 +63,11 @@
 				break
 		if(!new_belly && length(host.vore_organs) < BELLIES_MAX)
 			new_belly = new(host)
-			new_belly.name = belly_data["name"]
+			new_belly.name = html_encode(belly_data["name"])
 		if(!new_belly) continue
+
+		if(istext(belly_data["display_name"]))
+			new_belly.display_name = html_encode(belly_data["display_name"])
 
 		// Controls
 		if(istext(belly_data["mode"]))
@@ -91,14 +89,13 @@
 
 		if(islist(belly_data["addons"]))
 			new_belly.mode_flags = 0
-			new_belly.slow_digestion = FALSE // Not implemented on virgo -> CHOMPEnable
-			new_belly.speedy_mob_processing = FALSE // Not implemented on virgo -> CHOMPEnable
+			new_belly.slow_digestion = FALSE
+			new_belly.speedy_mob_processing = FALSE
 			STOP_PROCESSING(SSbellies, new_belly)
-			STOP_PROCESSING(SSobj, new_belly) // Not implemented on virgo -> CHOMPEnable
+			STOP_PROCESSING(SSobj, new_belly)
 			START_PROCESSING(SSbellies, new_belly)
 			for(var/addon in belly_data["addons"])
 				new_belly.mode_flags += new_belly.mode_flag_list[addon]
-				// Not implemented on virgo -> CHOMPEnable Start
 				switch(addon)
 					if("Slow Body Digestion")
 						new_belly.slow_digestion = TRUE
@@ -106,7 +103,6 @@
 						new_belly.speedy_mob_processing = TRUE
 						STOP_PROCESSING(SSbellies, new_belly)
 						START_PROCESSING(SSobj, new_belly)
-				//CHOMPEnable End
 
 		// Descriptions
 		if(istext(belly_data["desc"]))
@@ -138,264 +134,278 @@
 				new_belly.release_verb = new_release_verb
 
 		if(islist(belly_data["digest_messages_prey"]))
-			var/new_digest_messages_prey = sanitize(jointext(belly_data["digest_messages_prey"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_digest_messages_prey = sanitize(jointext(belly_data["digest_messages_prey"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_digest_messages_prey)
-				new_belly.set_messages(new_digest_messages_prey,"dmp", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_digest_messages_prey,DIGEST_PREY, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["digest_messages_owner"]))
-			var/new_digest_messages_owner = sanitize(jointext(belly_data["digest_messages_owner"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_digest_messages_owner = sanitize(jointext(belly_data["digest_messages_owner"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_digest_messages_owner)
-				new_belly.set_messages(new_digest_messages_owner,"dmo", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_digest_messages_owner,DIGEST_OWNER, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["absorb_messages_prey"]))
-			var/new_absorb_messages_prey = sanitize(jointext(belly_data["absorb_messages_prey"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_absorb_messages_prey = sanitize(jointext(belly_data["absorb_messages_prey"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_absorb_messages_prey)
-				new_belly.set_messages(new_absorb_messages_prey,"amp", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_absorb_messages_prey,ABSORB_PREY, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["absorb_messages_owner"]))
-			var/new_absorb_messages_owner = sanitize(jointext(belly_data["absorb_messages_owner"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_absorb_messages_owner = sanitize(jointext(belly_data["absorb_messages_owner"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_absorb_messages_owner)
-				new_belly.set_messages(new_absorb_messages_owner,"amo", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_absorb_messages_owner,ABSORB_OWNER, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["unabsorb_messages_prey"]))
-			var/new_unabsorb_messages_prey = sanitize(jointext(belly_data["unabsorb_messages_prey"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_unabsorb_messages_prey = sanitize(jointext(belly_data["unabsorb_messages_prey"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_unabsorb_messages_prey)
-				new_belly.set_messages(new_unabsorb_messages_prey,"uamp", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_unabsorb_messages_prey,UNABSORBS_PREY, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["unabsorb_messages_owner"]))
-			var/new_unabsorb_messages_owner = sanitize(jointext(belly_data["unabsorb_messages_owner"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_unabsorb_messages_owner = sanitize(jointext(belly_data["unabsorb_messages_owner"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_unabsorb_messages_owner)
-				new_belly.set_messages(new_unabsorb_messages_owner,"uamo", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_unabsorb_messages_owner,UNABSORBS_OWNER, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["struggle_messages_outside"]))
-			var/new_struggle_messages_outside = sanitize(jointext(belly_data["struggle_messages_outside"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_struggle_messages_outside = sanitize(jointext(belly_data["struggle_messages_outside"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_struggle_messages_outside)
-				new_belly.set_messages(new_struggle_messages_outside,"smo", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_struggle_messages_outside,STRUGGLE_OUTSIDE, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["struggle_messages_inside"]))
-			var/new_struggle_messages_inside = sanitize(jointext(belly_data["struggle_messages_inside"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_struggle_messages_inside = sanitize(jointext(belly_data["struggle_messages_inside"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_struggle_messages_inside)
-				new_belly.set_messages(new_struggle_messages_inside,"smi", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_struggle_messages_inside,STRUGGLE_INSIDE, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["absorbed_struggle_messages_outside"]))
-			var/new_absorbed_struggle_messages_outside = sanitize(jointext(belly_data["absorbed_struggle_messages_outside"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_absorbed_struggle_messages_outside = sanitize(jointext(belly_data["absorbed_struggle_messages_outside"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_absorbed_struggle_messages_outside)
-				new_belly.set_messages(new_absorbed_struggle_messages_outside,"asmo", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_absorbed_struggle_messages_outside,ABSORBED_STRUGGLE_OUSIDE, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["absorbed_struggle_messages_inside"]))
-			var/new_absorbed_struggle_messages_inside = sanitize(jointext(belly_data["absorbed_struggle_messages_inside"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_absorbed_struggle_messages_inside = sanitize(jointext(belly_data["absorbed_struggle_messages_inside"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_absorbed_struggle_messages_inside)
-				new_belly.set_messages(new_absorbed_struggle_messages_inside,"asmi", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_absorbed_struggle_messages_inside,ABSORBED_STRUGGLE_INSIDE, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["escape_attempt_messages_prey"]))
-			var/new_escape_attempt_messages_prey = sanitize(jointext(belly_data["escape_attempt_messages_prey"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_escape_attempt_messages_prey = sanitize(jointext(belly_data["escape_attempt_messages_prey"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_escape_attempt_messages_prey)
-				new_belly.set_messages(new_escape_attempt_messages_prey,"escap", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_escape_attempt_messages_prey,ESCAPE_ATTEMPT_PREY, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["escape_attempt_messages_owner"]))
-			var/new_escape_attempt_messages_owner = sanitize(jointext(belly_data["escape_attempt_messages_owner"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_escape_attempt_messages_owner = sanitize(jointext(belly_data["escape_attempt_messages_owner"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_escape_attempt_messages_owner)
-				new_belly.set_messages(new_escape_attempt_messages_owner,"escao", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_escape_attempt_messages_owner,ESCAPE_ATTEMPT_OWNER, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["escape_messages_prey"]))
-			var/new_escape_messages_prey = sanitize(jointext(belly_data["escape_messages_prey"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_escape_messages_prey = sanitize(jointext(belly_data["escape_messages_prey"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_escape_messages_prey)
-				new_belly.set_messages(new_escape_messages_prey,"escp", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_escape_messages_prey,ESCAPE_PREY, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["escape_messages_owner"]))
-			var/new_escape_messages_owner = sanitize(jointext(belly_data["escape_messages_owner"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_escape_messages_owner = sanitize(jointext(belly_data["escape_messages_owner"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_escape_messages_owner)
-				new_belly.set_messages(new_escape_messages_owner,"esco", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_escape_messages_owner,ESCAPE_OWNER, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["escape_messages_outside"]))
-			var/new_escape_messages_outside = sanitize(jointext(belly_data["escape_messages_outside"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_escape_messages_outside = sanitize(jointext(belly_data["escape_messages_outside"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_escape_messages_outside)
-				new_belly.set_messages(new_escape_messages_outside,"escout", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_escape_messages_outside,ESCAPE_OUTSIDE, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["escape_item_messages_prey"]))
-			var/new_escape_item_messages_prey = sanitize(jointext(belly_data["escape_item_messages_prey"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_escape_item_messages_prey = sanitize(jointext(belly_data["escape_item_messages_prey"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_escape_item_messages_prey)
-				new_belly.set_messages(new_escape_item_messages_prey,"escip", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_escape_item_messages_prey,ESCAPE_ITEM_PREY, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["escape_item_messages_owner"]))
-			var/new_escape_item_messages_owner = sanitize(jointext(belly_data["escape_item_messages_owner"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_escape_item_messages_owner = sanitize(jointext(belly_data["escape_item_messages_owner"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_escape_item_messages_owner)
-				new_belly.set_messages(new_escape_item_messages_owner,"escio", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_escape_item_messages_owner,ESCAPE_ITEM_OWNER, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["escape_item_messages_outside"]))
-			var/new_escape_item_messages_outside = sanitize(jointext(belly_data["escape_item_messages_outside"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_escape_item_messages_outside = sanitize(jointext(belly_data["escape_item_messages_outside"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_escape_item_messages_outside)
-				new_belly.set_messages(new_escape_item_messages_outside,"esciout", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_escape_item_messages_outside,ESCAPE_ITEM_OUTSIDE, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["escape_fail_messages_prey"]))
-			var/new_escape_fail_messages_prey = sanitize(jointext(belly_data["escape_fail_messages_prey"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_escape_fail_messages_prey = sanitize(jointext(belly_data["escape_fail_messages_prey"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_escape_fail_messages_prey)
-				new_belly.set_messages(new_escape_fail_messages_prey,"escfp", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_escape_fail_messages_prey,ESCAPE_FAIL_PREY, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["escape_fail_messages_owner"]))
-			var/new_escape_fail_messages_owner = sanitize(jointext(belly_data["escape_fail_messages_owner"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_escape_fail_messages_owner = sanitize(jointext(belly_data["escape_fail_messages_owner"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_escape_fail_messages_owner)
-				new_belly.set_messages(new_escape_fail_messages_owner,"escfo", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_escape_fail_messages_owner,ESCAPE_FAIL_OWNER, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["escape_attempt_absorbed_messages_prey"]))
-			var/new_escape_attempt_absorbed_messages_prey = sanitize(jointext(belly_data["escape_attempt_absorbed_messages_prey"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_escape_attempt_absorbed_messages_prey = sanitize(jointext(belly_data["escape_attempt_absorbed_messages_prey"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_escape_attempt_absorbed_messages_prey)
-				new_belly.set_messages(new_escape_attempt_absorbed_messages_prey,"aescap", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_escape_attempt_absorbed_messages_prey,ABSORBED_ESCAPE_ATTEMPT_PREY, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["escape_attempt_absorbed_messages_owner"]))
-			var/new_escape_attempt_absorbed_messages_owner = sanitize(jointext(belly_data["escape_attempt_absorbed_messages_owner"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_escape_attempt_absorbed_messages_owner = sanitize(jointext(belly_data["escape_attempt_absorbed_messages_owner"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_escape_attempt_absorbed_messages_owner)
-				new_belly.set_messages(new_escape_attempt_absorbed_messages_owner,"aescao", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_escape_attempt_absorbed_messages_owner,ABSORBED_ESCAPE_ATTEMPT_OWNER, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["escape_absorbed_messages_prey"]))
-			var/new_escape_absorbed_messages_prey = sanitize(jointext(belly_data["escape_absorbed_messages_prey"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_escape_absorbed_messages_prey = sanitize(jointext(belly_data["escape_absorbed_messages_prey"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_escape_absorbed_messages_prey)
-				new_belly.set_messages(new_escape_absorbed_messages_prey,"aescp", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_escape_absorbed_messages_prey,ABSORBED_ESCAPE_PREY, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["escape_absorbed_messages_owner"]))
-			var/new_escape_absorbed_messages_owner = sanitize(jointext(belly_data["escape_absorbed_messages_owner"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_escape_absorbed_messages_owner = sanitize(jointext(belly_data["escape_absorbed_messages_owner"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_escape_absorbed_messages_owner)
-				new_belly.set_messages(new_escape_absorbed_messages_owner,"aesco", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_escape_absorbed_messages_owner,ABSORBED_ESCAPE_OWNER, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["escape_absorbed_messages_outside"]))
-			var/new_escape_absorbed_messages_outside = sanitize(jointext(belly_data["escape_absorbed_messages_outside"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_escape_absorbed_messages_outside = sanitize(jointext(belly_data["escape_absorbed_messages_outside"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_escape_absorbed_messages_outside)
-				new_belly.set_messages(new_escape_absorbed_messages_outside,"aescout", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_escape_absorbed_messages_outside,ABSORBED_ESCAPE_OUTSIDE, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["escape_fail_absorbed_messages_prey"]))
-			var/new_escape_fail_absorbed_messages_prey = sanitize(jointext(belly_data["escape_fail_absorbed_messages_prey"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_escape_fail_absorbed_messages_prey = sanitize(jointext(belly_data["escape_fail_absorbed_messages_prey"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_escape_fail_absorbed_messages_prey)
-				new_belly.set_messages(new_escape_fail_absorbed_messages_prey,"aescfp", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_escape_fail_absorbed_messages_prey,ABSORBED_ESCAPE_FAIL_PREY, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["escape_fail_absorbed_messages_owner"]))
-			var/new_escape_fail_absorbed_messages_owner = sanitize(jointext(belly_data["escape_fail_absorbed_messages_owner"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_escape_fail_absorbed_messages_owner = sanitize(jointext(belly_data["escape_fail_absorbed_messages_owner"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_escape_fail_absorbed_messages_owner)
-				new_belly.set_messages(new_escape_fail_absorbed_messages_owner,"aescfo", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_escape_fail_absorbed_messages_owner,ABSORBED_ESCAPE_FAIL_OWNER, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["primary_transfer_messages_prey"]))
-			var/new_primary_transfer_messages_prey = sanitize(jointext(belly_data["primary_transfer_messages_prey"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_primary_transfer_messages_prey = sanitize(jointext(belly_data["primary_transfer_messages_prey"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_primary_transfer_messages_prey)
-				new_belly.set_messages(new_primary_transfer_messages_prey,"trnspp", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_primary_transfer_messages_prey,PRIMARY_TRANSFER_PREY, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["primary_transfer_messages_owner"]))
-			var/new_primary_transfer_messages_owner = sanitize(jointext(belly_data["primary_transfer_messages_owner"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_primary_transfer_messages_owner = sanitize(jointext(belly_data["primary_transfer_messages_owner"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_primary_transfer_messages_owner)
-				new_belly.set_messages(new_primary_transfer_messages_owner,"trnspo", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_primary_transfer_messages_owner,PRIMARY_TRANSFER_OWNER, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["secondary_transfer_messages_prey"]))
-			var/new_secondary_transfer_messages_prey = sanitize(jointext(belly_data["secondary_transfer_messages_prey"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_secondary_transfer_messages_prey = sanitize(jointext(belly_data["secondary_transfer_messages_prey"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_secondary_transfer_messages_prey)
-				new_belly.set_messages(new_secondary_transfer_messages_prey,"trnssp", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_secondary_transfer_messages_prey,SECONDARY_TRANSFER_PREY, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["secondary_transfer_messages_owner"]))
-			var/new_secondary_transfer_messages_owner = sanitize(jointext(belly_data["secondary_transfer_messages_owner"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_secondary_transfer_messages_owner = sanitize(jointext(belly_data["secondary_transfer_messages_owner"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_secondary_transfer_messages_owner)
-				new_belly.set_messages(new_secondary_transfer_messages_owner,"trnsso", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_secondary_transfer_messages_owner,SECONDARY_TRANSFER_OWNER, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["primary_autotransfer_messages_prey"]))
-			var/new_primary_autotransfer_messages_prey = sanitize(jointext(belly_data["primary_autotransfer_messages_prey"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_primary_autotransfer_messages_prey = sanitize(jointext(belly_data["primary_autotransfer_messages_prey"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_primary_autotransfer_messages_prey)
-				new_belly.set_messages(new_primary_autotransfer_messages_prey,"atrnspp", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_primary_autotransfer_messages_prey,PRIMARY_AUTO_TRANSFER_PREY, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["primary_autotransfer_messages_owner"]))
-			var/new_primary_autotransfer_messages_owner = sanitize(jointext(belly_data["primary_autotransfer_messages_owner"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_primary_autotransfer_messages_owner = sanitize(jointext(belly_data["primary_autotransfer_messages_owner"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_primary_autotransfer_messages_owner)
-				new_belly.set_messages(new_primary_autotransfer_messages_owner,"atrnspo", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_primary_autotransfer_messages_owner,PRIMARY_AUTO_TRANSFER_OWNER, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["secondary_autotransfer_messages_prey"]))
-			var/new_secondary_autotransfer_messages_prey = sanitize(jointext(belly_data["secondary_autotransfer_messages_prey"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_secondary_autotransfer_messages_prey = sanitize(jointext(belly_data["secondary_autotransfer_messages_prey"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_secondary_autotransfer_messages_prey)
-				new_belly.set_messages(new_secondary_autotransfer_messages_prey,"atrnssp", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_secondary_autotransfer_messages_prey,SECONDARY_AUTO_TRANSFER_PREY, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["secondary_autotransfer_messages_owner"]))
-			var/new_secondary_autotransfer_messages_owner = sanitize(jointext(belly_data["secondary_autotransfer_messages_owner"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_secondary_autotransfer_messages_owner = sanitize(jointext(belly_data["secondary_autotransfer_messages_owner"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_secondary_autotransfer_messages_owner)
-				new_belly.set_messages(new_secondary_autotransfer_messages_owner,"atrnsso", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_secondary_autotransfer_messages_owner,SECONDARY_AUTO_TRANSFER_OWNER, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["digest_chance_messages_prey"]))
-			var/new_digest_chance_messages_prey = sanitize(jointext(belly_data["digest_chance_messages_prey"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_digest_chance_messages_prey = sanitize(jointext(belly_data["digest_chance_messages_prey"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_digest_chance_messages_prey)
-				new_belly.set_messages(new_digest_chance_messages_prey,"stmodp", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_digest_chance_messages_prey,DIGEST_CHANCE_PREY, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["digest_chance_messages_owner"]))
-			var/new_digest_chance_messages_owner = sanitize(jointext(belly_data["digest_chance_messages_owner"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_digest_chance_messages_owner = sanitize(jointext(belly_data["digest_chance_messages_owner"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_digest_chance_messages_owner)
-				new_belly.set_messages(new_digest_chance_messages_owner,"stmodo", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_digest_chance_messages_owner,DIGEST_CHANCE_OWNER, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["absorb_chance_messages_prey"]))
-			var/new_absorb_chance_messages_prey = sanitize(jointext(belly_data["absorb_chance_messages_prey"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_absorb_chance_messages_prey = sanitize(jointext(belly_data["absorb_chance_messages_prey"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_absorb_chance_messages_prey)
-				new_belly.set_messages(new_absorb_chance_messages_prey,"stmoap", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_absorb_chance_messages_prey,ABSORB_CHANCE_PREY, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["absorb_chance_messages_owner"]))
-			var/new_absorb_chance_messages_owner = sanitize(jointext(belly_data["absorb_chance_messages_owner"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_absorb_chance_messages_owner = sanitize(jointext(belly_data["absorb_chance_messages_owner"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_absorb_chance_messages_owner)
-				new_belly.set_messages(new_absorb_chance_messages_owner,"stmoao", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_absorb_chance_messages_owner,ABSORB_CHANCE_OWNER, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["examine_messages"]))
-			var/new_examine_messages = sanitize(jointext(belly_data["examine_messages"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_examine_messages = sanitize(jointext(belly_data["examine_messages"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_examine_messages)
-				new_belly.set_messages(new_examine_messages,"em", limit = MAX_MESSAGE_LEN / 2)
+				new_belly.set_messages(new_examine_messages,EXAMINES, limit = BELLIES_EXAMINE_MAX)
 
 		if(islist(belly_data["examine_messages_absorbed"]))
-			var/new_examine_messages_absorbed = sanitize(jointext(belly_data["examine_messages_absorbed"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_examine_messages_absorbed = sanitize(jointext(belly_data["examine_messages_absorbed"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_examine_messages_absorbed)
-				new_belly.set_messages(new_examine_messages_absorbed,"ema", limit = MAX_MESSAGE_LEN / 2)
+				new_belly.set_messages(new_examine_messages_absorbed,EXAMINES_ABSORBED, limit = BELLIES_EXAMINE_MAX)
 
 		if(islist(belly_data["emotes_digest"]))
-			var/new_emotes_digest = sanitize(jointext(belly_data["emotes_digest"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_emotes_digest = sanitize(jointext(belly_data["emotes_digest"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_emotes_digest)
-				new_belly.set_messages(new_emotes_digest,"im_digest", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_emotes_digest,BELLY_MODE_DIGEST, limit = BELLIES_MESSAGE_MAX)
+
+		if(islist(belly_data["trash_eater_in"]))
+			var/new_trash_eater_in = sanitize(jointext(belly_data["trash_eater_in"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
+			if(new_trash_eater_in)
+				new_belly.set_messages(new_trash_eater_in ,BELLY_TRASH_EATER_IN, limit = BELLIES_EXAMINE_MAX)
+
+		if(islist(belly_data["trash_eater_out"]))
+			var/new_trash_eater_out = sanitize(jointext(belly_data["trash_eater_out"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
+			if(new_trash_eater_out)
+				new_belly.set_messages(new_trash_eater_out,BELLY_TRASH_EATER_OUT, limit = BELLIES_EXAMINE_MAX)
 
 		if(islist(belly_data["emotes_hold"]))
-			var/new_emotes_hold = sanitize(jointext(belly_data["emotes_hold"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_emotes_hold = sanitize(jointext(belly_data["emotes_hold"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_emotes_hold)
-				new_belly.set_messages(new_emotes_hold,"im_hold", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_emotes_hold,BELLY_MODE_HOLD, limit = BELLIES_IDLE_MAX)
 
 		if(islist(belly_data["emotes_holdabsorbed"]))
-			var/new_emotes_holdabsorbed = sanitize(jointext(belly_data["emotes_holdabsorbed"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_emotes_holdabsorbed = sanitize(jointext(belly_data["emotes_holdabsorbed"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_emotes_holdabsorbed)
-				new_belly.set_messages(new_emotes_holdabsorbed,"im_holdabsorbed", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_emotes_holdabsorbed,BELLY_MODE_HOLD_ABSORB, limit = BELLIES_IDLE_MAX)
 
 		if(islist(belly_data["emotes_absorb"]))
-			var/new_emotes_absorb = sanitize(jointext(belly_data["emotes_absorb"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_emotes_absorb = sanitize(jointext(belly_data["emotes_absorb"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_emotes_absorb)
-				new_belly.set_messages(new_emotes_absorb,"im_absorb", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_emotes_absorb,BELLY_MODE_ABSORB, limit = BELLIES_IDLE_MAX)
 
 		if(islist(belly_data["emotes_heal"]))
-			var/new_emotes_heal = sanitize(jointext(belly_data["emotes_heal"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_emotes_heal = sanitize(jointext(belly_data["emotes_heal"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_emotes_heal)
-				new_belly.set_messages(new_emotes_heal,"im_heal", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_emotes_heal,BELLY_MODE_HEAL, limit = BELLIES_IDLE_MAX)
 
 		if(islist(belly_data["emotes_drain"]))
-			var/new_emotes_drain = sanitize(jointext(belly_data["emotes_drain"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_emotes_drain = sanitize(jointext(belly_data["emotes_drain"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_emotes_drain)
-				new_belly.set_messages(new_emotes_drain,"im_drain", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_emotes_drain,BELLY_MODE_DRAIN, limit = BELLIES_IDLE_MAX)
 
 		if(islist(belly_data["emotes_steal"]))
-			var/new_emotes_steal = sanitize(jointext(belly_data["emotes_steal"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_emotes_steal = sanitize(jointext(belly_data["emotes_steal"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_emotes_steal)
-				new_belly.set_messages(new_emotes_steal,"im_steal", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_emotes_steal,BELLY_MODE_STEAL, limit = BELLIES_IDLE_MAX)
 
 		if(islist(belly_data["emotes_egg"]))
-			var/new_emotes_egg = sanitize(jointext(belly_data["emotes_egg"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_emotes_egg = sanitize(jointext(belly_data["emotes_egg"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_emotes_egg)
-				new_belly.set_messages(new_emotes_egg,"im_egg", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_emotes_egg,BELLY_MODE_EGG, limit = BELLIES_IDLE_MAX)
 
 		if(islist(belly_data["emotes_shrink"]))
-			var/new_emotes_shrink = sanitize(jointext(belly_data["emotes_shrink"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_emotes_shrink = sanitize(jointext(belly_data["emotes_shrink"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_emotes_shrink)
-				new_belly.set_messages(new_emotes_shrink,"im_shrink", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_emotes_shrink,BELLY_MODE_SHRINK, limit = BELLIES_IDLE_MAX)
 
 		if(islist(belly_data["emotes_grow"]))
-			var/new_emotes_grow = sanitize(jointext(belly_data["emotes_grow"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_emotes_grow = sanitize(jointext(belly_data["emotes_grow"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_emotes_grow)
-				new_belly.set_messages(new_emotes_grow,"im_grow", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_emotes_grow,BELLY_MODE_GROW, limit = BELLIES_IDLE_MAX)
 
 		if(islist(belly_data["emotes_unabsorb"]))
-			var/new_emotes_unabsorb = sanitize(jointext(belly_data["emotes_unabsorb"],"\n\n"),MAX_MESSAGE_LEN * 1.5,0,0,0)
+			var/new_emotes_unabsorb = sanitize(jointext(belly_data["emotes_unabsorb"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_emotes_unabsorb)
-				new_belly.set_messages(new_emotes_unabsorb,"im_unabsorb", limit = MAX_MESSAGE_LEN / 4)
+				new_belly.set_messages(new_emotes_unabsorb,BELLY_MODE_UNABSORB, limit = BELLIES_IDLE_MAX)
+
+		if(isnum(belly_data["displayed_message_flags"]))
+			new_belly.displayed_message_flags = NONE
+			new_belly.toggle_displayed_message_flags(belly_data["displayed_message_flags"])
 
 		// Options
 		if(isnum(belly_data["can_taste"]))
@@ -405,14 +415,12 @@
 			if(new_can_taste == 1)
 				new_belly.can_taste = TRUE
 
-		// Not implemented on virgo -> CHOMPEnable Start
 		if(isnum(belly_data["is_feedable"]))
 			var/new_is_feedable = belly_data["is_feedable"]
 			if(new_is_feedable == 0)
 				new_belly.is_feedable = FALSE
 			if(new_is_feedable == 1)
 				new_belly.is_feedable = TRUE
-		// CHOMPEnable End
 
 		if(isnum(belly_data["contaminates"]))
 			var/new_contaminates = belly_data["contaminates"]
@@ -424,13 +432,13 @@
 		if(istext(belly_data["contamination_flavor"]))
 			var/new_contamination_flavor = sanitize(belly_data["contamination_flavor"],MAX_MESSAGE_LEN,0,0,0)
 			if(new_contamination_flavor)
-				if(new_contamination_flavor in contamination_flavors)
+				if(new_contamination_flavor in GLOB.contamination_flavors)
 					new_belly.contamination_flavor = new_contamination_flavor
 
 		if(istext(belly_data["contamination_color"]))
 			var/new_contamination_color = sanitize(belly_data["contamination_color"],MAX_MESSAGE_LEN,0,0,0)
 			if(new_contamination_color)
-				if(new_contamination_color in contamination_colors)
+				if(new_contamination_color in GLOB.contamination_colors)
 					new_belly.contamination_color = new_contamination_color
 
 		if(isnum(belly_data["nutrition_percent"]))
@@ -469,33 +477,36 @@
 			var/new_emote_time = belly_data["emote_time"]
 			new_belly.emote_time = CLAMP(new_emote_time, 60, 600)
 
-		new_belly.set_zero_digestion_damage() // Not implemented on virgo; CHOMPEnale needed for importing a belly to overwrite an existing belly; otherwise pre-existing values throw off the unused digestion damage.
+		new_belly.set_zero_digestion_damage() // Needed for importing a belly to overwrite an existing belly; otherwise pre-existing values throw off the unused digestion damage.
 
 		if(isnum(belly_data["digest_brute"]))
 			var/new_digest_brute = belly_data["digest_brute"]
-			new_belly.digest_brute = CLAMP(new_digest_brute, 0, new_belly.get_unused_digestion_damage()) // CHOMP Edit; clamped to unused damage instead of 6
+			new_belly.digest_brute = CLAMP(new_digest_brute, 0, new_belly.get_unused_digestion_damage())
 
 		if(isnum(belly_data["digest_burn"]))
 			var/new_digest_burn = belly_data["digest_burn"]
-			new_belly.digest_burn = CLAMP(new_digest_burn, 0, new_belly.get_unused_digestion_damage()) // CHOMP Edit; clamped to unused damage instead of 6
+			new_belly.digest_burn = CLAMP(new_digest_burn, 0, new_belly.get_unused_digestion_damage())
 
 		if(isnum(belly_data["digest_oxy"]))
 			var/new_digest_oxy = belly_data["digest_oxy"]
-			new_belly.digest_oxy = CLAMP(new_digest_oxy, 0, new_belly.get_unused_digestion_damage()) // CHOMP Edit; clamped to unused damage instead of 12
+			new_belly.digest_oxy = CLAMP(new_digest_oxy, 0, new_belly.get_unused_digestion_damage())
 
 		if(isnum(belly_data["digest_tox"]))
 			var/new_digest_tox = belly_data["digest_tox"]
-			new_belly.digest_tox = CLAMP(new_digest_tox, 0, new_belly.get_unused_digestion_damage()) // CHOMP Edit; clamped to unused damage instead of 6
+			new_belly.digest_tox = CLAMP(new_digest_tox, 0, new_belly.get_unused_digestion_damage())
 
 		if(isnum(belly_data["digest_clone"]))
 			var/new_digest_clone = belly_data["digest_clone"]
-			new_belly.digest_clone = CLAMP(new_digest_clone, 0, new_belly.get_unused_digestion_damage()) // CHOMP Edit; clamped to unused damage instead of 6
+			new_belly.digest_clone = CLAMP(new_digest_clone, 0, new_belly.get_unused_digestion_damage())
+
+		if(isnum(belly_data["bellytemperature"]))
+			var/new_bellytemperature = belly_data["bellytemperature"]
+			new_belly.bellytemperature = CLAMP(new_bellytemperature, T0C, 473.15)
 
 		if(isnum(belly_data["shrink_grow_size"]))
 			var/new_shrink_grow_size = belly_data["shrink_grow_size"]
 			new_belly.shrink_grow_size = CLAMP(new_shrink_grow_size, 0.25, 2)
 
-		// Not implemented on virgo -> CHOMPEnable Start
 		if(isnum(belly_data["vorespawn_blacklist"]))
 			var/new_vorespawn_blacklist = belly_data["vorespawn_blacklist"]
 			if(new_vorespawn_blacklist == 0)
@@ -516,15 +527,13 @@
 				new_vorespawn_absorbed |= VS_FLAG_ABSORB_YES
 				new_vorespawn_absorbed |= VS_FLAG_ABSORB_PREY
 			new_belly.vorespawn_absorbed = new_vorespawn_absorbed
-		// CHOMPEnable End
 
 		if(istext(belly_data["egg_type"]))
 			var/new_egg_type = sanitize(belly_data["egg_type"],MAX_MESSAGE_LEN,0,0,0)
 			if(new_egg_type)
-				if(new_egg_type in global_vore_egg_types)
+				if(new_egg_type in GLOB.global_vore_egg_types)
 					new_belly.egg_type = new_egg_type
 
-		// Not implemented on virgo -> CHOMPEnable Start
 		if(istext(belly_data["egg_name"]))
 			var/new_egg_name = html_encode(belly_data["egg_name"])
 			if(new_egg_name)
@@ -546,6 +555,13 @@
 			if(new_recycling == 1)
 				new_belly.recycling = TRUE
 
+		if(isnum(belly_data["temperature_damage"]))
+			var/new_temp_damage = belly_data["temperature_damage"]
+			if(new_temp_damage == 0)
+				new_belly.temperature_damage = FALSE
+			if(new_temp_damage == 1)
+				new_belly.temperature_damage = TRUE
+
 		if(isnum(belly_data["storing_nutrition"]))
 			var/new_storing_nutrition = belly_data["storing_nutrition"]
 			if(new_storing_nutrition == 0)
@@ -566,7 +582,6 @@
 				new_belly.item_digest_logs = FALSE
 			if(new_item_digest_logs == 1)
 				new_belly.item_digest_logs = TRUE
-			// CHOMPEnable End
 
 		if(istext(belly_data["selective_preference"]))
 			var/new_selective_preference = belly_data["selective_preference"]
@@ -575,14 +590,24 @@
 			if(new_selective_preference == "Absorb")
 				new_belly.selective_preference = DM_ABSORB
 
-		// Not implemented on virgo -> CHOMPEnable Start
 		if(isnum(belly_data["private_struggle"]))
 			var/new_private_struggle = belly_data["private_struggle"]
 			if(new_private_struggle == 0)
 				new_belly.private_struggle = FALSE
 			if(new_private_struggle == 1)
 				new_belly.private_struggle = TRUE
-			// CHOMPEnable End
+
+		if(isnum(belly_data["absorbedrename_enabled"]))
+			var/new_absorbedrename_enabled = belly_data["absorbedrename_enabled"]
+			if(new_absorbedrename_enabled == 0)
+				new_belly.absorbedrename_enabled = FALSE
+			if(new_absorbedrename_enabled == 1)
+				new_belly.absorbedrename_enabled = TRUE
+
+		if(istext(belly_data["absorbedrename_name"]))
+			var/new_absorbedrename_name = sanitize(belly_data["absorbedrename_name"],MAX_MESSAGE_LEN,0,0,0)
+			if(new_absorbedrename_name)
+				new_belly.absorbedrename_name = new_absorbedrename_name
 
 		if(istext(belly_data["eating_privacy_local"]))
 			var/new_eating_privacy_local = html_encode(belly_data["eating_privacy_local"])
@@ -612,33 +637,32 @@
 				new_belly.fancy_vore = TRUE
 
 		if(new_belly.fancy_vore)
-			if(!(new_belly.vore_sound in fancy_vore_sounds))
+			if(!(new_belly.vore_sound in GLOB.fancy_vore_sounds))
 				new_belly.vore_sound = "Gulp"
-			if(!(new_belly.release_sound in fancy_vore_sounds))
+			if(!(new_belly.release_sound in GLOB.fancy_vore_sounds))
 				new_belly.release_sound = "Splatter"
 		else
-			if(!(new_belly.vore_sound in classic_vore_sounds))
+			if(!(new_belly.vore_sound in GLOB.classic_vore_sounds))
 				new_belly.vore_sound = "Gulp"
-			if(!(new_belly.release_sound in classic_vore_sounds))
+			if(!(new_belly.release_sound in GLOB.classic_vore_sounds))
 				new_belly.release_sound = "Splatter"
 
 		if(istext(belly_data["vore_sound"]))
 			var/new_vore_sound = sanitize(belly_data["vore_sound"],MAX_MESSAGE_LEN,0,0,0)
 			if(new_vore_sound)
-				if (new_belly.fancy_vore && (new_vore_sound in fancy_vore_sounds))
+				if (new_belly.fancy_vore && (new_vore_sound in GLOB.fancy_vore_sounds))
 					new_belly.vore_sound = new_vore_sound
-				if (!new_belly.fancy_vore && (new_vore_sound in classic_vore_sounds))
+				if (!new_belly.fancy_vore && (new_vore_sound in GLOB.classic_vore_sounds))
 					new_belly.vore_sound = new_vore_sound
 
 		if(istext(belly_data["release_sound"]))
 			var/new_release_sound = sanitize(belly_data["release_sound"],MAX_MESSAGE_LEN,0,0,0)
 			if(new_release_sound)
-				if (new_belly.fancy_vore && (new_release_sound in fancy_release_sounds))
+				if (new_belly.fancy_vore && (new_release_sound in GLOB.fancy_release_sounds))
 					new_belly.release_sound = new_release_sound
-				if (!new_belly.fancy_vore && (new_release_sound in classic_release_sounds))
+				if (!new_belly.fancy_vore && (new_release_sound in GLOB.classic_release_sounds))
 					new_belly.release_sound = new_release_sound
 
-		// Not implemented on virgo -> CHOMPEnable Start
 		if(isnum(belly_data["sound_volume"]))
 			var/new_sound_volume = belly_data["sound_volume"]
 			new_belly.sound_volume = sanitize_integer(new_sound_volume, 0, 100, initial(new_belly.sound_volume))
@@ -646,7 +670,6 @@
 		if(isnum(belly_data["noise_freq"]))
 			var/new_noise_freq = belly_data["noise_freq"]
 			new_belly.noise_freq = sanitize_integer(new_noise_freq, MIN_VOICE_FREQ, MAX_VOICE_FREQ, initial(new_belly.noise_freq))
-		// CHOMPEnable End
 
 		// Visuals
 		if(isnum(belly_data["affects_vore_sprites"]))
@@ -721,12 +744,12 @@
 		if(istext(belly_data["undergarment_chosen"]))
 			var/new_undergarment_chosen = sanitize(belly_data["undergarment_chosen"],MAX_MESSAGE_LEN,0,0,0)
 			if(new_undergarment_chosen)
-				for(var/datum/category_group/underwear/U in global_underwear.categories)
+				for(var/datum/category_group/underwear/U in GLOB.global_underwear.categories)
 					if(lowertext(U.name) == lowertext(new_undergarment_chosen))
 						new_belly.undergarment_chosen = U.name
 						break
 
-		var/datum/category_group/underwear/UWC = global_underwear.categories_by_name[new_belly.undergarment_chosen]
+		var/datum/category_group/underwear/UWC = GLOB.global_underwear.categories_by_name[new_belly.undergarment_chosen]
 		var/invalid_if_none = TRUE
 		for(var/datum/category_item/underwear/U in UWC.items)
 			if(lowertext(U.name) == lowertext(new_belly.undergarment_if_none))
@@ -750,7 +773,7 @@
 		if(istext(belly_data["tail_to_change_to"]))
 			var/new_tail_to_change_to = sanitize(belly_data["tail_to_change_to"],MAX_MESSAGE_LEN,0,0,0)
 			if(new_tail_to_change_to)
-				if (new_tail_to_change_to in tail_styles_list)
+				if (new_tail_to_change_to in GLOB.tail_styles_list)
 					new_belly.tail_to_change_to = new_tail_to_change_to
 
 		if(istext(belly_data["tail_colouration"]))
@@ -769,7 +792,6 @@
 			var/new_belly_fullscreen_color = sanitize_hexcolor(belly_data["belly_fullscreen_color"],new_belly.belly_fullscreen_color)
 			new_belly.belly_fullscreen_color = new_belly_fullscreen_color
 
-		// CHOMPEdit Start
 		if(istext(belly_data["belly_fullscreen_color2"]))
 			var/new_belly_fullscreen_color2 = sanitize_hexcolor(belly_data["belly_fullscreen_color2"],new_belly.belly_fullscreen_color2)
 			new_belly.belly_fullscreen_color2 = new_belly_fullscreen_color2
@@ -783,9 +805,7 @@
 		else if(istext(belly_data["belly_fullscreen_color_trinary"])) // Inter server support between virgo and chomp!
 			var/new_belly_fullscreen_color3 = sanitize_hexcolor(belly_data["belly_fullscreen_color_trinary"],new_belly.belly_fullscreen_color3)
 			new_belly.belly_fullscreen_color3 = new_belly_fullscreen_color3
-		// CHOMPEdit End
 
-		// Not implemented on virgo -> CHOMPEnable Start
 		if(istext(belly_data["belly_fullscreen_color4"]))
 			var/new_belly_fullscreen_color4 = sanitize_hexcolor(belly_data["belly_fullscreen_color4"],new_belly.belly_fullscreen_color4)
 			new_belly.belly_fullscreen_color4 = new_belly_fullscreen_color4
@@ -793,7 +813,6 @@
 		if(istext(belly_data["belly_fullscreen_alpha"]))
 			var/new_belly_fullscreen_alpha = sanitize_integer(belly_data["belly_fullscreen_alpha"],0,255,initial(new_belly.belly_fullscreen_alpha))
 			new_belly.belly_fullscreen_alpha = new_belly_fullscreen_alpha
-		// CHOMPEnable End
 
 		if(isnum(belly_data["colorization_enabled"]))
 			var/new_colorization_enabled = belly_data["colorization_enabled"]
@@ -809,12 +828,9 @@
 			if(new_disable_hud == 1)
 				new_belly.disable_hud = TRUE
 
-		var/possible_fullscreens = icon_states('modular_chomp/icons/mob/screen_full_vore_ch.dmi') // CHOMPEdit
+		var/possible_fullscreens = icon_states_fast('icons/mob/vore_fullscreens/ui_lists/screen_full_vore_list_base.dmi')
 		if(!new_belly.colorization_enabled)
-			possible_fullscreens = icon_states('icons/mob/screen_full_vore.dmi')
-			possible_fullscreens -= "a_synth_flesh_mono"
-			possible_fullscreens -= "a_synth_flesh_mono_hole"
-			possible_fullscreens -= "a_anim_belly"
+			possible_fullscreens = icon_states_fast('icons/mob/vore_fullscreens/ui_lists/screen_full_vore.dmi')
 		if(!(new_belly.belly_fullscreen in possible_fullscreens))
 			new_belly.belly_fullscreen = ""
 
@@ -828,9 +844,11 @@
 		if(isnum(belly_data["escapable"]))
 			var/new_escapable = belly_data["escapable"]
 			if(new_escapable == 0)
-				new_belly.escapable = FALSE
+				new_belly.escapable = B_ESCAPABLE_NONE
 			if(new_escapable == 1)
-				new_belly.escapable = TRUE
+				new_belly.escapable = B_ESCAPABLE_DEFAULT
+			if(new_escapable == 2)
+				new_belly.escapable = B_ESCAPABLE_INTENT
 
 		if(isnum(belly_data["escapechance"]))
 			var/new_escapechance = belly_data["escapechance"]
@@ -877,7 +895,6 @@
 				if(new_transferlocation_secondary == new_belly.name)
 					new_belly.transferlocation_secondary = null
 
-		// Not implemented on virgo -> CHOMPEnable Start
 		if(islist(belly_data["autotransfer_whitelist"]))
 			new_belly.autotransfer_whitelist = 0
 			for(var/at_flag in belly_data["autotransfer_whitelist"])
@@ -888,6 +905,16 @@
 			for(var/at_flag in belly_data["autotransfer_blacklist"])
 				new_belly.autotransfer_blacklist += new_belly.autotransfer_flags_list[at_flag]
 
+		if(islist(belly_data["autotransfer_whitelist_items"]))
+			new_belly.autotransfer_whitelist_items = 0
+			for(var/at_flag in belly_data["autotransfer_whitelist_items"])
+				new_belly.autotransfer_whitelist_items += new_belly.autotransfer_flags_list_items[at_flag]
+
+		if(islist(belly_data["autotransfer_blacklist_items"]))
+			new_belly.autotransfer_blacklist_items = 0
+			for(var/at_flag in belly_data["autotransfer_blacklist_items"])
+				new_belly.autotransfer_blacklist_items += new_belly.autotransfer_flags_list_items[at_flag]
+
 		if(islist(belly_data["autotransfer_secondary_whitelist"]))
 			new_belly.autotransfer_secondary_whitelist = 0
 			for(var/at_flag in belly_data["autotransfer_secondary_whitelist"])
@@ -897,7 +924,16 @@
 			new_belly.autotransfer_secondary_blacklist = 0
 			for(var/at_flag in belly_data["autotransfer_secondary_blacklist"])
 				new_belly.autotransfer_secondary_blacklist += new_belly.autotransfer_flags_list[at_flag]
-		// CHOMPEnable End
+
+		if(islist(belly_data["autotransfer_secondary_whitelist_items"]))
+			new_belly.autotransfer_secondary_whitelist_items = 0
+			for(var/at_flag in belly_data["autotransfer_secondary_whitelist_items"])
+				new_belly.autotransfer_secondary_whitelist_items += new_belly.autotransfer_flags_list_items[at_flag]
+
+		if(islist(belly_data["autotransfer_secondary_blacklist_items"]))
+			new_belly.autotransfer_secondary_blacklist_items = 0
+			for(var/at_flag in belly_data["autotransfer_secondary_blacklist_items"])
+				new_belly.autotransfer_secondary_blacklist_items += new_belly.autotransfer_flags_list_items[at_flag]
 
 		if(isnum(belly_data["absorbchance"]))
 			var/new_absorbchance = belly_data["absorbchance"]
@@ -907,14 +943,12 @@
 			var/new_digestchance = belly_data["digestchance"]
 			new_belly.digestchance = sanitize_integer(new_digestchance, 0, 100, initial(new_belly.digestchance))
 
-		// Not implemented on virgo -> CHOMPEnable Start
 		if(isnum(belly_data["autotransfer_enabled"]))
 			var/new_autotransfer_enabled = belly_data["autotransfer_enabled"]
 			if(new_autotransfer_enabled == 0)
 				new_belly.autotransfer_enabled = FALSE
 			if(new_autotransfer_enabled == 1)
 				new_belly.autotransfer_enabled = TRUE
-		// CHOMPEnable End
 
 		if(isnum(belly_data["autotransferwait"]))
 			var/new_autotransferwait = belly_data["autotransferwait"]
@@ -936,7 +970,6 @@
 				if(new_autotransferlocation == new_belly.name)
 					new_belly.autotransferlocation = null
 
-		// Not implemented on virgo -> CHOMPEnable Start
 		if(islist(belly_data["autotransferextralocation"]))
 			var/new_autotransferextralocation = belly_data["autotransferextralocation"]
 			if(new_autotransferextralocation)
@@ -989,6 +1022,10 @@
 				new_belly.show_liquids = FALSE
 			if(new_show_liquids == 1)
 				new_belly.show_liquids = TRUE
+
+		if(isnum(belly_data["reagent_gen_cost_limit"]))
+			var/new_reagent_gen_cost_limit = belly_data["reagent_gen_cost_limit"]
+			new_belly.reagent_gen_cost_limit = sanitize_integer(new_reagent_gen_cost_limit, 0, 100, initial(new_belly.reagent_gen_cost_limit))
 
 		if(isnum(belly_data["reagentbellymode"]))
 			var/new_reagentbellymode = belly_data["reagentbellymode"]
@@ -1148,34 +1185,33 @@
 				new_belly.liquid_fullness5_messages = TRUE
 
 		if(islist(belly_data["fullness1_messages"]))
-			var/new_fullness1_messages = sanitize(jointext(belly_data["fullness1_messages"],"\n\n"),MAX_MESSAGE_LEN,0,0,0)
+			var/new_fullness1_messages = sanitize(jointext(belly_data["fullness1_messages"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_fullness1_messages)
-				new_belly.set_reagent_messages(new_fullness1_messages,"full1")
+				new_belly.set_messages(new_fullness1_messages,BELLY_LIQUID_MESSAGE1, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["fullness2_messages"]))
-			var/new_fullness2_messages = sanitize(jointext(belly_data["fullness2_messages"],"\n\n"),MAX_MESSAGE_LEN,0,0,0)
+			var/new_fullness2_messages = sanitize(jointext(belly_data["fullness2_messages"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_fullness2_messages)
-				new_belly.set_reagent_messages(new_fullness2_messages,"full2")
+				new_belly.set_messages(new_fullness2_messages,BELLY_LIQUID_MESSAGE2, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["fullness3_messages"]))
-			var/new_fullness3_messages = sanitize(jointext(belly_data["fullness3_messages"],"\n\n"),MAX_MESSAGE_LEN,0,0,0)
+			var/new_fullness3_messages = sanitize(jointext(belly_data["fullness3_messages"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_fullness3_messages)
-				new_belly.set_reagent_messages(new_fullness3_messages,"full3")
+				new_belly.set_messages(new_fullness3_messages,BELLY_LIQUID_MESSAGE3, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["fullness4_messages"]))
-			var/new_fullness4_messages = sanitize(jointext(belly_data["fullness4_messages"],"\n\n"),MAX_MESSAGE_LEN,0,0,0)
+			var/new_fullness4_messages = sanitize(jointext(belly_data["fullness4_messages"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_fullness4_messages)
-				new_belly.set_reagent_messages(new_fullness4_messages,"full4")
+				new_belly.set_messages(new_fullness4_messages,BELLY_LIQUID_MESSAGE4, limit = BELLIES_MESSAGE_MAX)
 
 		if(islist(belly_data["fullness5_messages"]))
-			var/new_fullness5_messages = sanitize(jointext(belly_data["fullness5_messages"],"\n\n"),MAX_MESSAGE_LEN,0,0,0)
+			var/new_fullness5_messages = sanitize(jointext(belly_data["fullness5_messages"],"\n\n"),BELLIES_MESSAGE_COMBINED,0,0,0)
 			if(new_fullness5_messages)
-				new_belly.set_reagent_messages(new_fullness5_messages,"full5")
-		// CHOMPEnable End
+				new_belly.set_messages(new_fullness5_messages,BELLY_LIQUID_MESSAGE5, limit = BELLIES_MESSAGE_MAX)
 
 		// After import updates
 		new_belly.items_preserved.Cut()
-		new_belly.update_internal_overlay() // Signal not implemented! CHOMPEnable
+		new_belly.update_internal_overlay()
 
 	host.handle_belly_update()
 	host.updateVRPanel()

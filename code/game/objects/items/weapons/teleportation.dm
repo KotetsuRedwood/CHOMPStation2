@@ -13,7 +13,7 @@
 	icon = 'icons/obj/device.dmi'
 	icon_state = "locator"
 	var/temp = null
-	var/frequency = 1451
+	var/frequency = TRACK_IMP_FREQ
 	var/broadcasting = null
 	var/listening = 1.0
 	w_class = ITEMSIZE_SMALL
@@ -25,7 +25,10 @@
 	pickup_sound = 'sound/items/pickup/device.ogg'
 	drop_sound = 'sound/items/drop/device.ogg'
 
-/obj/item/locator/attack_self(mob/user as mob)
+/obj/item/locator/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	user.set_machine(src)
 	var/dat
 	if (src.temp)
@@ -79,8 +82,8 @@ Frequency:
 							src.temp += "[W.code]-[dir2text(get_dir(sr, tr))]-[direct]<BR>"
 
 				src.temp += span_bold("Extraneous Signals:") + "<BR>"
-				for (var/obj/item/implant/tracking/W in GLOB.all_tracking_implants) // CHOMPEdit
-					if (!W.implanted || !(istype(W.loc,/obj/item/organ/external) || ismob(W.loc) || W.malfunction))
+				for (var/obj/item/implant/tracking/W in GLOB.all_tracking_implants)
+					if (!W.implanted || !(istype(W.loc,/obj/item/organ/external) || ismob(W.loc) || W.malfunction) || is_vore_jammed(W))
 						continue
 
 					var/turf/tr = get_turf(W)
@@ -132,19 +135,22 @@ Frequency:
 	matter = list(MAT_STEEL = 10000)
 	preserve_item = 1
 
-/obj/item/hand_tele/attack_self(mob/user as mob)
+/obj/item/hand_tele/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	var/turf/current_location = get_turf(user)//What turf is the user on?
 	if(!current_location || (current_location.z in using_map.admin_levels) || current_location.block_tele)//If turf was not found or they're on z level 2 or >7 which does not currently exist.
 		to_chat(user, span_notice("\The [src] is malfunctioning."))
 		return
 	var/list/L = list(  )
-	for(var/obj/machinery/teleport/hub/R in machines)
+	for(var/obj/machinery/teleport/hub/R in GLOB.machines)
 		var/obj/machinery/computer/teleporter/com
 		var/obj/machinery/teleport/station/station
-		for(var/direction in cardinal)
+		for(var/direction in GLOB.cardinal)
 			station = locate(/obj/machinery/teleport/station, get_step(R, direction))
 			if(station)
-				for(direction in cardinal)
+				for(direction in GLOB.cardinal)
 					com = locate(/obj/machinery/computer/teleporter, get_step(station, direction))
 					if(com)
 						break

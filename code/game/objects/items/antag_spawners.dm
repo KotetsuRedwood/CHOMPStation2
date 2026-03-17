@@ -4,9 +4,10 @@
 	var/ghost_query_type = null
 	var/searching = FALSE
 	var/datum/effect/effect/system/spark_spread/sparks
+	var/datum/ghost_query/Q //This is used so we can unregister ourself.
 
-/obj/item/antag_spawner/New()
-	..()
+/obj/item/antag_spawner/Initialize(mapload)
+	. = ..()
 	sparks = new /datum/effect/effect/system/spark_spread()
 	sparks.set_up(5, 0, src)
 	sparks.attach(loc)
@@ -28,13 +29,19 @@
 		return // Already searching.
 	searching = TRUE
 
-	var/datum/ghost_query/Q = new ghost_query_type()
-	var/list/winner = Q.query()
-	if(winner.len)
-		var/mob/observer/dead/D = winner[1]
+	Q = new ghost_query_type()
+	RegisterSignal(Q, COMSIG_GHOST_QUERY_COMPLETE, PROC_REF(get_winner))
+	Q.query()
+
+/obj/item/antag_spawner/proc/get_winner()
+	SIGNAL_HANDLER
+	if(Q && Q.candidates.len)
+		var/mob/observer/dead/D = Q.candidates[1]
 		spawn_antag(D.client, get_turf(src))
 	else
 		reset_search()
+	UnregisterSignal(Q, COMSIG_GHOST_QUERY_COMPLETE)
+	QDEL_NULL(Q) //get rid of the query
 	return
 
 /obj/item/antag_spawner/proc/reset_search()
@@ -49,6 +56,9 @@
 	ghost_query_type = /datum/ghost_query/apprentice
 
 /obj/item/antag_spawner/technomancer_apprentice/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	to_chat(user, span_notice("Teleporter attempting to lock on to your apprentice."))
 	request_player()
 
@@ -74,13 +84,13 @@
 	to_chat(H, span_infoplain(span_bold("It would be wise to speak to your master, and learn what their plans are for today.")))
 
 	spawn(1)
-		technomancers.add_antagonist(H.mind, 0, 1, 0, 0, 0)
+		GLOB.technomancers.add_antagonist(H.mind, 0, 1, 0, 0, 0)
 		equip_antag(H)
 		used = 1
 		qdel(src)
 
 /obj/item/antag_spawner/technomancer_apprentice/equip_antag(mob/technomancer_mob)
-	var/datum/antagonist/technomancer/antag_datum = all_antag_types[MODE_TECHNOMANCER]
+	var/datum/antagonist/technomancer/antag_datum = GLOB.all_antag_types[MODE_TECHNOMANCER]
 	antag_datum.equip_apprentice(technomancer_mob)
 
 
@@ -95,6 +105,9 @@
 	var/drone_type = null
 
 /obj/item/antag_spawner/syndicate_drone/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	to_chat(user, span_notice("Teleporter attempting to lock on to an available unit."))
 	request_player()
 
@@ -120,7 +133,7 @@
 	R.key = C.key
 
 	spawn(1)
-		mercs.add_antagonist(R.mind, FALSE, TRUE, FALSE, FALSE, FALSE)
+		GLOB.mercs.add_antagonist(R.mind, FALSE, TRUE, FALSE, FALSE, FALSE)
 		//add_antagonist(var/datum/mind/player, var/ignore_role, var/do_not_equip, var/move_to_spawn, var/do_not_announce, var/preserve_appearance)
 		qdel(src)
 

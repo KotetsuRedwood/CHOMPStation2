@@ -16,6 +16,7 @@
 	density = FALSE
 	circuit = /obj/item/circuitboard/timeclock
 	clicksound = null
+	flags = WALL_ITEM
 	var/channel = "Common" //Radio channel to announce on
 
 	var/obj/item/card/id/card // Inserted Id card
@@ -55,7 +56,7 @@
 		if(!card && user.unEquip(I))
 			I.forceMove(src)
 			card = I
-			playsound(src, 'modular_chomp/sound/effects/insert_id_card.ogg', 75, 0)  // CHOMPEdit: Timeclock beepboop. TODO: Make clocks delay reading the card for ~3 seconds to line up with quiet boops
+			playsound(src, 'sound/effects/insert_id_card.ogg', 75, 0)  // CHOMPEdit: Timeclock beepboop. TODO: Make clocks delay reading the card for ~3 seconds to line up with quiet boops
 			SStgui.update_uis(src)
 			update_icon()
 		else if(card)
@@ -66,7 +67,6 @@
 /obj/machinery/computer/timeclock/attack_hand(var/mob/user as mob)
 	if(..())
 		return
-	user.set_machine(src)
 	tgui_interact(user)
 
 /obj/machinery/computer/timeclock/tgui_interact(mob/user, datum/tgui/ui)
@@ -93,7 +93,7 @@
 		data["card"] = "[card]"
 		data["assignment"] = card.assignment
 		data["card_cooldown"] = getCooldown()
-		var/datum/job/job = job_master.GetJob(card.rank)
+		var/datum/job/job = GLOB.job_master.GetJob(card.rank)
 		if(job)
 			data["job_datum"] = list(
 				"title" = job.title,
@@ -121,13 +121,13 @@
 			if(card)
 				ui.user.put_in_hands(card)
 				card = null
-				playsound(src, 'modular_chomp/sound/effects/remove_id_card.ogg', 75, 0) // CHOMPEdit: Timeclock beepboop. TODO: Make clocks delay reading the card for ~3 seconds to line up with quiet boops
+				playsound(src, 'sound/effects/remove_id_card.ogg', 75, 0) // CHOMPEdit: Timeclock beepboop. TODO: Make clocks delay reading the card for ~3 seconds to line up with quiet boops
 			else
 				var/obj/item/I = ui.user.get_active_hand()
 				if (istype(I, /obj/item/card/id) && ui.user.unEquip(I))
 					I.forceMove(src)
 					card = I
-					playsound(src, 'modular_chomp/sound/effects/insert_id_card.ogg', 75, 0)  // CHOMPEdit: Timeclock beepboop. TODO: Make clocks delay reading the card for ~3 seconds to line up with quiet boops
+					playsound(src, 'sound/effects/insert_id_card.ogg', 75, 0)  // CHOMPEdit: Timeclock beepboop. TODO: Make clocks delay reading the card for ~3 seconds to line up with quiet boops
 			update_icon()
 			return TRUE
 		if("switch-to-onduty-rank")
@@ -136,7 +136,7 @@
 					makeOnDuty(params["switch-to-onduty-rank"], params["switch-to-onduty-assignment"], ui.user)
 					ui.user.put_in_hands(card)
 					card = null
-					playsound(src, 'modular_chomp/sound/effects/remove_id_card.ogg', 75, 0)  // CHOMPEdit: Timeclock beepboop. TODO: Make clocks delay reading the card for ~3 seconds to line up with quiet boops
+					playsound(src, 'sound/effects/remove_id_card.ogg', 75, 0)  // CHOMPEdit: Timeclock beepboop. TODO: Make clocks delay reading the card for ~3 seconds to line up with quiet boops
 			update_icon()
 			return TRUE
 		if("switch-to-offduty")
@@ -145,13 +145,13 @@
 					makeOffDuty(ui.user)
 					ui.user.put_in_hands(card)
 					card = null
-					playsound(src, 'modular_chomp/sound/effects/remove_id_card.ogg', 75, 0)  // CHOMPEdit: Timeclock beepboop. TODO: Make clocks delay reading the card for ~3 seconds to line up with quiet boops
+					playsound(src, 'sound/effects/remove_id_card.ogg', 75, 0)  // CHOMPEdit: Timeclock beepboop. TODO: Make clocks delay reading the card for ~3 seconds to line up with quiet boops
 			update_icon()
 			return TRUE
 
 /obj/machinery/computer/timeclock/proc/getOpenOnDutyJobs(var/mob/user, var/department)
 	var/list/available_jobs = list()
-	for(var/datum/job/job in job_master.occupations)
+	for(var/datum/job/job in GLOB.job_master.occupations)
 		if(isOpenOnDutyJob(user, department, job))
 			available_jobs[job.title] = list(job.title)
 			if(job.alt_titles)
@@ -162,18 +162,18 @@
 
 /obj/machinery/computer/timeclock/proc/isOpenOnDutyJob(var/mob/user, var/department, var/datum/job/job)
 	return job \
-		   && job.is_position_available() \
-		   && !job.whitelist_only \
-		   && !jobban_isbanned(user,job.title) \
-		   && job.player_old_enough(user.client) \
-		   && job.player_has_enough_playtime(user.client) \
-		   && job.pto_type == department \
-		   && !job.disallow_jobhop \
-		   && job.timeoff_factor > 0
+		&& job.is_position_available() \
+		&& !job.whitelist_only \
+		&& !jobban_isbanned(user,job.title) \
+		&& job.player_old_enough(user.client) \
+		&& job.player_has_enough_playtime(user.client) \
+		&& job.pto_type == department \
+		&& !job.disallow_jobhop \
+		&& job.timeoff_factor > 0
 
 /obj/machinery/computer/timeclock/proc/makeOnDuty(var/newrank, var/newassignment, var/mob/user)
-	var/datum/job/oldjob = job_master.GetJob(card.rank)
-	var/datum/job/newjob = job_master.GetJob(newrank)
+	var/datum/job/oldjob = GLOB.job_master.GetJob(card.rank)
+	var/datum/job/newjob = GLOB.job_master.GetJob(newrank)
 	if(!oldjob || !isOpenOnDutyJob(user, oldjob.pto_type, newjob))
 		return
 	if(newassignment != newjob.title && !(newassignment in newjob.alt_titles))
@@ -193,9 +193,9 @@
 		card.rank = newjob.title
 		card.assignment = newassignment
 		card.name = text("[card.registered_name]'s ID Card ([card.assignment])")
-		data_core.manifest_modify(card.registered_name, card.assignment, card.rank)
+		GLOB.data_core.manifest_modify(card.registered_name, card.assignment, card.rank)
 		card.last_job_switch = world.time
-		callHook("reassign_employee", list(card))
+		SEND_GLOBAL_SIGNAL(COMSIG_GLOB_REASSIGN_EMPLOYEE_IDCARD, card)
 		newjob.current_positions++
 		var/mob/living/carbon/human/H = user
 		H.mind.assigned_role = card.rank
@@ -204,12 +204,12 @@
 	return
 
 /obj/machinery/computer/timeclock/proc/makeOffDuty(var/mob/user)
-	var/datum/job/foundjob = job_master.GetJob(card.rank)
+	var/datum/job/foundjob = GLOB.job_master.GetJob(card.rank)
 	if(!foundjob)
 		return
 	var/new_dept = foundjob.pto_type || PTO_CIVILIAN
 	var/datum/job/ptojob = null
-	for(var/datum/job/job in job_master.occupations)
+	for(var/datum/job/job in GLOB.job_master.occupations)
 		if(job.pto_type == new_dept && job.timeoff_factor < 0)
 			ptojob = job
 			break
@@ -219,9 +219,9 @@
 		card.rank = ptojob.title
 		card.assignment = ptojob.title
 		card.name = text("[card.registered_name]'s ID Card ([card.assignment])")
-		data_core.manifest_modify(card.registered_name, card.assignment, card.rank)
+		GLOB.data_core.manifest_modify(card.registered_name, card.assignment, card.rank)
 		card.last_job_switch = world.time
-		callHook("reassign_employee", list(card))
+		SEND_GLOBAL_SIGNAL(COMSIG_GLOB_REASSIGN_EMPLOYEE_IDCARD, card)
 		var/mob/living/carbon/human/H = user
 		H.mind.assigned_role = ptojob.title
 		H.mind.role_alt_title = ptojob.title
@@ -266,8 +266,15 @@ CHOMPedit end. */
 /obj/item/card/id
 	var/last_job_switch
 
-/obj/item/card/id/New()
-	.=..()
+	///Var for attack_self chain
+	var/special_handling = FALSE
+
+	///Var for event IDs
+	var/can_configure = FALSE
+	var/configured = FALSE
+
+/obj/item/card/id/Initialize(mapload)
+	. = ..()
 	last_job_switch = world.time
 
 //

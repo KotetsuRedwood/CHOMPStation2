@@ -39,7 +39,7 @@
 	var/mob/living/carbon/human/H = holder.wearer
 	to_chat(H,span_notice("You activate the P.A.T. module."))
 	H.AddComponent(/datum/component/recursive_move)
-	RegisterSignal(H, COMSIG_OBSERVER_MOVED, /obj/item/rig_module/pat_module/proc/boop)
+	RegisterSignal(H, COMSIG_MOVABLE_ATTEMPTED_MOVE, /obj/item/rig_module/pat_module/proc/boop)
 
 /obj/item/rig_module/pat_module/deactivate()
 	if(!..())
@@ -47,9 +47,10 @@
 
 	var/mob/living/carbon/human/H = holder.wearer
 	to_chat(H,span_notice("Your disable the P.A.T. module."))
-	UnregisterSignal(H, COMSIG_OBSERVER_MOVED)
+	UnregisterSignal(H, COMSIG_MOVABLE_ATTEMPTED_MOVE)
 
 /obj/item/rig_module/pat_module/proc/boop(var/mob/living/carbon/human/user,var/turf/To,var/turf/Tn)
+	SIGNAL_HANDLER
 	if(!istype(user) || !istype(To) || !istype(Tn))
 		deactivate() //They were picked up or something, or put themselves in a locker, who knows. Just turn off.
 		return
@@ -79,11 +80,11 @@
 		return 0
 
 	H.visible_message(span_warning("[H] begins overriding the airlock!"),span_notice("You begin overriding the airlock!"))
-	if(do_after(H,6 SECONDS,A) && A.density)
+	if(do_after(H, 6 SECONDS, target = A) && A.density)
 		A.open()
 
 	var/username = FindNameFromID(H) || "Unknown"
 	var/message = "[username] has overridden [A] (airlock) in \the [get_area(A)] at [A.x],[A.y],[A.z] with \the [src]."
-	global_announcer.autosay(message, "Security Subsystem", "Command")
-	global_announcer.autosay(message, "Security Subsystem", "Security")
+	GLOB.global_announcer.autosay(message, "Security Subsystem", "Command")
+	GLOB.global_announcer.autosay(message, "Security Subsystem", "Security")
 	return 1

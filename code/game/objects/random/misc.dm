@@ -759,7 +759,6 @@
 				/obj/item/toy/plushie/tabby_cat,
 				/obj/item/toy/plushie/tuxedo_cat,
 				/obj/item/toy/plushie/white_cat,
-				//VOREStation Add Start
 				/obj/item/toy/plushie/lizardplushie,
 				/obj/item/toy/plushie/lizardplushie/kobold,
 //				/obj/item/toy/plushie/lizardplushie/resh, //CHOMPedit
@@ -773,6 +772,8 @@
 				/obj/item/toy/plushie/otter,
 				/obj/item/toy/plushie/vox,
 				/obj/item/toy/plushie/shark,
+				/obj/item/toy/plushie/tinytin,
+				/obj/item/toy/plushie/tinytin_sec,
 				pick(list(/obj/item/toy/plushie/borgplushie/drake/sec,
 							/obj/item/toy/plushie/borgplushie/drake/med,
 							/obj/item/toy/plushie/borgplushie/drake/sci,
@@ -788,16 +789,16 @@
 				/obj/item/toy/plushie/teshari/y_yw,
 				//YawnWider Add End
 				//CHOMPStation Add Start
-				/obj/item/toy/plushie/red_dragon,
-				/obj/item/toy/plushie/green_dragon,
-				/obj/item/toy/plushie/purple_dragon,
-				/obj/item/toy/plushie/white_eastdragon,
-				/obj/item/toy/plushie/red_eastdragon,
-				/obj/item/toy/plushie/green_eastdragon,
-				/obj/item/toy/plushie/gold_eastdragon,
 				/obj/item/toy/plushie/teppi,
-				/obj/item/toy/plushie/teppi/alt)
+				/obj/item/toy/plushie/teppi/alt,
 				//CHOMPStation Add End
+				pick(list(/obj/item/toy/plushie/dragon,
+							/obj/item/toy/plushie/dragon/green,
+							/obj/item/toy/plushie/dragon/purple,
+							/obj/item/toy/plushie/dragon/red_east,
+							/obj/item/toy/plushie/dragon/green_east,
+							/obj/item/toy/plushie/dragon/white_east,
+							/obj/item/toy/plushie/dragon/gold_east)))
 
 /obj/random/plushielarge
 	name = "random large plushie"
@@ -819,7 +820,7 @@
 
 /obj/random/toy/item_to_spawn()
 	return pick(/obj/item/toy/bosunwhistle,
-				/obj/item/toy/plushie/therapy/red,
+				/obj/item/toy/plushie/therapy,
 				/obj/item/toy/plushie/therapy/purple,
 				/obj/item/toy/plushie/therapy/blue,
 				/obj/item/toy/plushie/therapy/yellow,
@@ -1150,6 +1151,7 @@
 		prob(10);/obj/item/clothing/under/hyperfiber/bluespace,
 		prob(20);/obj/item/implant/sizecontrol,
 		prob(2);/obj/item/storage/bag/ore/holding,
+		prob(2);/obj/item/storage/bag/sheetsnatcher/holding,
 		prob(2);/obj/item/storage/backpack/holding,
 		prob(2);/obj/item/storage/backpack/holding/duffle,
 		prob(2);/obj/item/storage/bag/trash/holding,
@@ -1201,3 +1203,12 @@
 		/obj/item/universal_translator/limited/echosong,
 		/obj/item/universal_translator/limited/akhani,
 		/obj/item/universal_translator/limited/alai)
+
+/obj/random/anomaly_core
+	name = "Random anomaly core"
+	desc = "This is a random single anomaly core."
+	icon = 'icons/obj/devices/tool.dmi'
+	icon_state = "neutralyzer"
+
+/obj/random/anomaly_core/item_to_spawn()
+	return pick(subtypesof(/obj/item/assembly/signaler/anomaly))

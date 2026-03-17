@@ -4,7 +4,7 @@
 	icon_state = "scell"
 	organ_tag = O_CELL
 	parent_organ = BP_TORSO
-	vital = 1
+	vital = TRUE
 	var/defib_timer = 1 // This sits in the brain organ slot, but is not a brain.
 
 /obj/item/organ/internal/cell/Initialize(mapload, internal)
@@ -18,9 +18,9 @@
 		owner.set_stat(CONSCIOUS)
 		owner.visible_message(span_danger("\The [owner] twitches visibly!"))
 
-/obj/item/organ/internal/cell/emp_act(severity)
+/obj/item/organ/internal/cell/emp_act(severity, recursive)
 	..()
-	owner.adjust_nutrition(-rand(10 / severity, 50 / severity))
+	owner?.adjust_nutrition(-rand(10 / severity, 50 / severity))
 
 /obj/item/organ/internal/cell/machine/handle_organ_proc_special()
 	..()
@@ -34,7 +34,7 @@
 	name = "brain interface"
 	organ_tag = O_BRAIN
 	parent_organ = BP_HEAD
-	vital = 1
+	vital = TRUE
 	var/brain_type = /obj/item/mmi
 	var/obj/item/mmi/stored_mmi
 	robotic = ORGAN_ASSISTED
@@ -48,7 +48,7 @@
 
 /obj/item/organ/internal/mmi_holder/Initialize(mapload, var/internal, var/obj/item/mmi/installed)
 	. = ..(mapload, internal)
-	if(!ishuman(loc) || istype(loc, /mob/living/carbon/human/dummy/mannequin))
+	if(!ishuman(loc) || ismannequin(loc))
 		return
 	if(installed)
 		stored_mmi = installed
@@ -57,7 +57,6 @@
 	return INITIALIZE_HINT_LATELOAD
 
 /obj/item/organ/internal/mmi_holder/LateInitialize()
-	. = ..()
 	update_from_mmi()
 
 // This sits in the brain organ slot, but is not a brain. Posibrains and dronecores aren't brains either.
@@ -92,8 +91,8 @@
 
 	if(owner && owner.stat == DEAD)
 		owner.set_stat(CONSCIOUS)
-		dead_mob_list -= owner
-		living_mob_list |= owner
+		GLOB.dead_mob_list -= owner
+		GLOB.living_mob_list |= owner
 		owner.visible_message(span_danger("\The [owner] twitches visibly!"))
 
 /obj/item/organ/internal/mmi_holder/removed(var/mob/living/user)
@@ -103,6 +102,7 @@
 		stored_mmi.forceMove(drop_location())
 		if(owner.mind)
 			owner.mind.transfer_to(stored_mmi.brainmob)
+			stored_mmi.brainmob.reset_perspective()
 	..()
 
 	var/mob/living/holder_mob = loc
@@ -110,9 +110,9 @@
 		holder_mob.drop_from_inventory(src)
 	qdel(src)
 
-/obj/item/organ/internal/mmi_holder/emp_act(severity)
-	// ..() // VOREStation Edit - Don't take damage
-	owner?.adjustToxLoss(rand(6/severity, 12/severity))
+/obj/item/organ/internal/mmi_holder/emp_act(severity, recursive)
+	if(stored_mmi)
+		stored_mmi.emp_act(severity, recursive)
 
 /obj/item/organ/internal/mmi_holder/posibrain
 	name = "positronic brain interface"

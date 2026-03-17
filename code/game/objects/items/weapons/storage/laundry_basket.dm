@@ -24,9 +24,9 @@
 /obj/item/storage/laundry_basket/attack_hand(mob/living/user as mob)
 	if(ishuman(user))
 		var/mob/living/carbon/human/H = user
-		var/obj/item/organ/external/temp = H.get_organ("r_hand")
+		var/obj/item/organ/external/temp = H.get_organ(BP_R_HAND)
 		if (user.hand)
-			temp = H.get_organ("l_hand")
+			temp = H.get_organ(BP_L_HAND)
 		if(!temp)
 			to_chat(user, span_warning("You need two hands to pick this up!"))
 			return
@@ -34,11 +34,6 @@
 	if(user.get_inactive_hand())
 		to_chat(user, span_warning("You need your other hand to be empty"))
 		return
-	return ..()
-
-/obj/item/storage/laundry_basket/attack_self(mob/user as mob)
-	var/turf/T = get_turf(user)
-	to_chat(user, span_notice("You dump the [src]'s contents onto \the [T]."))
 	return ..()
 
 /obj/item/storage/laundry_basket/pickup(mob/user)

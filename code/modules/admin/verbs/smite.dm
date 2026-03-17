@@ -1,4 +1,4 @@
-/client/proc/smite(var/mob/living/carbon/human/target in player_list)
+/client/proc/smite(var/mob/living/carbon/human/target in GLOB.player_list)
 	set name = "Smite"
 	set desc = "Abuse a player with various 'special treatments' from a list."
 	set category = "Fun.Do Not"
@@ -36,7 +36,7 @@
 
 		if(SMITE_SPONTANEOUSCOMBUSTION)
 			target.adjust_fire_stacks(10)
-			target.IgniteMob()
+			target.ignite_mob()
 			target.visible_message(span_danger("[target] bursts into flames!"))
 
 		if(SMITE_LIGHTNINGBOLT)
@@ -54,7 +54,7 @@
 			var/turf/Ts //Turf for shadekin
 
 			//Try to find nondense turf
-			for(var/direction in cardinal)
+			for(var/direction in GLOB.cardinal)
 				var/turf/T = get_step(target,direction)
 				if(T && !T.density)
 					Ts = T //Found shadekin spawn turf
@@ -64,8 +64,7 @@
 			var/mob/living/simple_mob/shadekin/red/shadekin = new(Ts)
 			//Abuse of shadekin
 			shadekin.real_name = shadekin.name
-			shadekin.voremob_loaded = TRUE
-			shadekin.init_vore()
+			shadekin.init_vore(TRUE)
 			shadekin.ability_flags |= 0x1
 			shadekin.phase_shift()
 			shadekin.ai_holder.give_target(target)
@@ -118,13 +117,12 @@
 			target.transforming = TRUE //Cheap hack to stop them from moving
 			var/mob/living/simple_mob/shadekin/shadekin = new kin_type(Tt)
 			shadekin.real_name = shadekin.name
-			shadekin.voremob_loaded = TRUE
-			shadekin.init_vore()
+			shadekin.init_vore(TRUE)
 			shadekin.can_be_drop_pred = TRUE
 			shadekin.dir = SOUTH
 			shadekin.ability_flags |= 0x1
 			shadekin.phase_shift() //Homf
-			shadekin.energy = initial(shadekin.energy)
+			shadekin.comp.dark_energy = initial(shadekin.comp.dark_energy)
 			//For fun
 			sleep(1 SECOND)
 			shadekin.dir = WEST
@@ -159,7 +157,7 @@
 
 		if(SMITE_AD_SPAM)
 			if(target.client)
-				target.client.create_fake_ad_popup_multiple(/obj/screen/popup/default, 15)
+				target.client.create_fake_ad_popup_multiple(/atom/movable/screen/popup/default, 15)
 
 		if(SMITE_TERROR)
 			if(ishuman(target))
@@ -213,8 +211,11 @@
 	if(!istype(target))
 		return
 
+	var/real_user = user ? user : usr
+	var/user_name = real_user ? key_name(real_user) : "Remotely (Discord)"
+
 	to_chat(target,"You've been hit by bluespace artillery!")
-	log_and_message_admins("has been hit by Bluespace Artillery fired by [key_name(user ? user : usr)]", target)
+	log_and_message_admins("has been hit by Bluespace Artillery fired by [user_name]", target)
 
 	target.setMoveCooldown(2 SECONDS)
 
@@ -233,7 +234,7 @@
 		target.Weaken(20)
 		target.stuttering = 20
 
-var/redspace_abduction_z
+GLOBAL_VAR(redspace_abduction_z)
 
 /area/redspace_abduction
 	name = "Another Time And Place"
@@ -241,11 +242,11 @@ var/redspace_abduction_z
 	dynamic_lighting = FALSE
 
 /proc/redspace_abduction(mob/living/target, user)
-	if(redspace_abduction_z < 0)
+	if(GLOB.redspace_abduction_z < 0)
 		to_chat(user,span_warning("The abduction z-level is already being created. Please wait."))
 		return
-	if(!redspace_abduction_z)
-		redspace_abduction_z = -1
+	if(!GLOB.redspace_abduction_z)
+		GLOB.redspace_abduction_z = -1
 		to_chat(user,span_warning("This is the first use of the verb this shift, it will take a minute to configure the abduction z-level. It will be z[world.maxz+1]."))
 		var/z = ++world.maxz
 		world.max_z_changed()
@@ -256,7 +257,7 @@ var/redspace_abduction_z
 				T.ChangeTurf(/turf/unsimulated/fake_space)
 				T.plane = -100
 				CHECK_TICK
-		redspace_abduction_z = z
+		GLOB.redspace_abduction_z = z
 
 	if(!target || !user)
 		return
@@ -275,7 +276,7 @@ var/redspace_abduction_z
 	for(var/x = llc_x to llc_x+size_of_square)
 		for(var/y = llc_y to llc_y+size_of_square)
 			var/turf/T_src = locate(x,y,target.z)
-			var/turf/T_dest = locate(x,y,redspace_abduction_z)
+			var/turf/T_dest = locate(x,y,GLOB.redspace_abduction_z)
 			T_dest.vis_contents.Cut()
 			T_dest.vis_contents += T_src
 			T_dest.density = T_src.density
@@ -286,7 +287,7 @@ var/redspace_abduction_z
 	for(var/x = llc_x to llc_x+1) //Left
 		for(var/y = llc_y to llc_y+size_of_square)
 			if(prob(50))
-				var/turf/T = locate(x,y,redspace_abduction_z)
+				var/turf/T = locate(x,y,GLOB.redspace_abduction_z)
 				T.density = FALSE
 				T.opacity = FALSE
 				T.vis_contents.Cut()
@@ -294,7 +295,7 @@ var/redspace_abduction_z
 	for(var/x = llc_x+size_of_square-1 to llc_x+size_of_square) //Right
 		for(var/y = llc_y to llc_y+size_of_square)
 			if(prob(50))
-				var/turf/T = locate(x,y,redspace_abduction_z)
+				var/turf/T = locate(x,y,GLOB.redspace_abduction_z)
 				T.density = FALSE
 				T.opacity = FALSE
 				T.vis_contents.Cut()
@@ -302,7 +303,7 @@ var/redspace_abduction_z
 	for(var/x = llc_x to llc_x+size_of_square) //Top
 		for(var/y = llc_y+size_of_square-1 to llc_y+size_of_square)
 			if(prob(50))
-				var/turf/T = locate(x,y,redspace_abduction_z)
+				var/turf/T = locate(x,y,GLOB.redspace_abduction_z)
 				T.density = FALSE
 				T.opacity = FALSE
 				T.vis_contents.Cut()
@@ -310,14 +311,14 @@ var/redspace_abduction_z
 	for(var/x = llc_x to llc_x+size_of_square) //Bottom
 		for(var/y = llc_y to llc_y+1)
 			if(prob(50))
-				var/turf/T = locate(x,y,redspace_abduction_z)
+				var/turf/T = locate(x,y,GLOB.redspace_abduction_z)
 				T.density = FALSE
 				T.opacity = FALSE
 				T.vis_contents.Cut()
 
-	target.forceMove(locate(target.x,target.y,redspace_abduction_z))
+	target.forceMove(locate(target.x,target.y,GLOB.redspace_abduction_z))
 	to_chat(target,span_danger("The tug relaxes, but everything around you looks... slightly off."))
-	to_chat(user,span_notice("The mob has been moved. ([admin_jump_link(target,usr.client.holder)])"))
+	to_chat(user, span_notice("The mob has been moved. ([admin_jump_link(target, check_rights_for(usr.client, R_HOLDER))])"))
 
 	target.transforming = FALSE
 
@@ -350,7 +351,7 @@ var/redspace_abduction_z
 	var/tip = pick(bad_tips)
 	to_chat(target, "<span class='notice' style='font: small-caps bold large monospace!important'>Tip of the day:</span><br><span class='notice'>[tip]</span>")
 
-	var/obj/screen/loader = new(target)
+	var/atom/movable/screen/loader = new(target)
 	loader.name = "Autosaving..."
 	loader.desc = "A disc icon that represents your game autosaving. Please wait."
 	loader.icon = 'icons/obj/discs_vr.dmi'

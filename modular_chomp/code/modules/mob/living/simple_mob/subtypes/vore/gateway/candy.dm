@@ -1,4 +1,4 @@
- //Cataloguer things
+//Cataloguer things
 /datum/category_item/catalogue/fauna/livingcandy
 	name = "Living Candy"
 	desc = "Upon investigation of the strange creatures, a mix of \
@@ -57,10 +57,8 @@
 /mob/living/simple_mob/vore/candy/bluecabold/MouseDrop_T(mob/living/M, mob/living/user)
 	return
 
-/mob/living/simple_mob/vore/candy/bluecabold/init_vore()
-	if(!voremob_loaded)
-		return
-	.=..()
+/mob/living/simple_mob/vore/candy/bluecabold/load_default_bellies()
+	. = ..()
 	var/obj/belly/B = vore_selected
 	B.name = "stomach"
 	B.desc = "The fearsome predator gets a firm grip upon you, before dunking you into it's maw, then with a powerful swift gulp you're sent tumbling into it's stomach."
@@ -83,10 +81,8 @@
 /mob/living/simple_mob/vore/candy/redcabold/MouseDrop_T(mob/living/M, mob/living/user)
 	return
 
-/mob/living/simple_mob/vore/candy/redcabold/init_vore()
-	if(!voremob_loaded)
-		return
-	.=..()
+/mob/living/simple_mob/vore/candy/redcabold/load_default_bellies()
+	. = ..()
 	var/obj/belly/B = vore_selected
 	B.name = "stomach"
 	B.desc = "The fearsome predator gets a firm grip upon you, before dunking you into it's maw, then with a powerful swift gulp you're sent tumbling into it's stomach."
@@ -109,10 +105,8 @@
 /mob/living/simple_mob/vore/candy/yellowcabold/MouseDrop_T(mob/living/M, mob/living/user)
 	return
 
-/mob/living/simple_mob/vore/candy/yellowcabold/init_vore()
-	if(!voremob_loaded)
-		return
-	.=..()
+/mob/living/simple_mob/vore/candy/yellowcabold/load_default_bellies()
+	. = ..()
 	var/obj/belly/B = vore_selected
 	B.name = "stomach"
 	B.desc = "The fearsome predator gets a firm grip upon you, before dunking you into it's maw, then with a powerful swift gulp you're sent tumbling into it's stomach."
@@ -135,10 +129,8 @@
 /mob/living/simple_mob/vore/candy/orangecabold/MouseDrop_T(mob/living/M, mob/living/user)
 	return
 
-/mob/living/simple_mob/vore/candy/orangecabold/init_vore()
-	if(!voremob_loaded)
-		return
-	.=..()
+/mob/living/simple_mob/vore/candy/orangecabold/load_default_bellies()
+	. = ..()
 	var/obj/belly/B = vore_selected
 	B.name = "stomach"
 	B.desc = "The fearsome predator gets a firm grip upon you, before dunking you into it's maw, then with a powerful swift gulp you're sent tumbling into it's stomach."
@@ -161,10 +153,8 @@
 /mob/living/simple_mob/vore/candy/purplecabold/MouseDrop_T(mob/living/M, mob/living/user)
 	return
 
-/mob/living/simple_mob/vore/candy/purplecabold/init_vore()
-	if(!voremob_loaded)
-		return
-	.=..()
+/mob/living/simple_mob/vore/candy/purplecabold/load_default_bellies()
+	. = ..()
 	var/obj/belly/B = vore_selected
 	B.name = "stomach"
 	B.desc = "The fearsome predator gets a firm grip upon you, before dunking you into it's maw, then with a powerful swift gulp you're sent tumbling into it's stomach."
@@ -187,10 +177,8 @@
 /mob/living/simple_mob/vore/candy/marshmellowserpent/MouseDrop_T(mob/living/M, mob/living/user)
 	return
 
-/mob/living/simple_mob/vore/candy/marshmellowserpent/init_vore()
-	if(!voremob_loaded)
-		return
-	.=..()
+/mob/living/simple_mob/vore/candy/marshmellowserpent/load_default_bellies()
+	. = ..()
 	var/obj/belly/B = vore_selected
 	B.name = "stomach"
 	B.desc = "The fearsome predator gets a firm grip upon you, before dunking you into it's maw, then with a powerful swift gulp you're sent tumbling into it's stomach."
@@ -451,9 +439,9 @@
 /mob/living/simple_mob/vore/candy/ouroboros/bullet_act(var/obj/item/projectile/Proj)
 	if(prob(50))
 		new /obj/random/mob/candycritter (src.loc)
-		return
+		..()
 	else
-		return
+		..()
 
 /mob/living/simple_mob/vore/candy/ouroboros/do_special_attack(atom/A)
 	switch(a_intent)
@@ -689,10 +677,8 @@
 /mob/living/simple_mob/vore/candy/worm/MouseDrop_T(mob/living/M, mob/living/user)
 	return
 
-/mob/living/simple_mob/vore/candy/worm/redcabold/init_vore()
-	if(!voremob_loaded)
-		return
-	.=..()
+/mob/living/simple_mob/vore/candy/worm/redcabold/load_default_bellies()
+	. = ..()
 	var/obj/belly/B = vore_selected
 	B.name = "stomach"
 	B.desc = "The fearsome predator gets a firm grip upon you, before dunking you into it's maw, then with a powerful swift gulp you're sent tumbling into it's stomach."
@@ -715,10 +701,8 @@
 /mob/living/simple_mob/vore/candy/peppermint/MouseDrop_T(mob/living/M, mob/living/user)
 	return
 
-/mob/living/simple_mob/vore/candy/peppermint/init_vore()
-	if(!voremob_loaded)
-		return
-	.=..()
+/mob/living/simple_mob/vore/candy/peppermint/load_default_bellies()
+	. = ..()
 	var/obj/belly/B = vore_selected
 	B.name = "stomach"
 	B.desc = "The fearsome predator gets a firm grip upon you, before dunking you into it's maw, then with a powerful swift gulp you're sent tumbling into it's stomach."

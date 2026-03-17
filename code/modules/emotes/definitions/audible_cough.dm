@@ -1,4 +1,4 @@
-/decl/emote/audible/cough
+/datum/decl/emote/audible/cough
 	key = "cough"
 	emote_message_1p = "You cough!"
 	emote_message_1p_target = "You cough on TARGET!"
@@ -12,10 +12,9 @@
 	emote_volume_synthetic = 50
 
 	conscious = FALSE
-// CHOMPEdit Start: Standardize Species Sounds
 	// emote_sound_synthetic = list()
 
-/decl/emote/audible/cough/get_emote_sound(var/atom/user)
+/datum/decl/emote/audible/cough/get_emote_sound(var/atom/user)
 	if(ishuman(user) && !check_synthetic(user))
 		var/mob/living/carbon/human/H = user
 		var/vol = H.species.cough_volume
@@ -36,5 +35,4 @@
 			"vol" = emote_volume,
 			"volchannel" = VOLUME_CHANNEL_SPECIES_SOUNDS
 		)
-// CHOMPEdit End
 	return ..()

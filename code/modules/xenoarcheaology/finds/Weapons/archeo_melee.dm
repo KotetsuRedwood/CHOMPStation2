@@ -68,6 +68,7 @@
 	if(stored_blood && last_touched && last_touched.stat != DEAD) //We have been activated (have some energy), an owner and they are alive. They are going to feel pain.
 		to_chat(last_touched, span_cult("You feel as though your mind is suddenly being torn apart at the seams as the [src] is destroyed!"))
 		last_touched.Paralyse(10)
+		last_touched.Sleeping(10)
 		last_touched.make_jittery(1000)
 		last_touched.eye_blurry += 10
 		last_touched.add_modifier(/datum/modifier/agonize, 30 SECONDS)
@@ -75,10 +76,12 @@
 		if(last_touched.loc)
 			conjure_animation(last_touched.loc)
 	visible_message(span_cult("\The [src] screeches as it's destroyed"))
-	lightning_strike(last_touched.loc, TRUE)
+	var/turf/T = get_turf(last_touched)
+	if(istype(T))
+		lightning_strike(T, TRUE)
 	playsound(src, 'sound/goonstation/spooky/creepyshriek.ogg', 100, 1, 75) //It plays VERY far.
 	last_touched = null //Get rid of the reference to our owner.
-	..()
+	. = ..()
 
 
 /obj/item/melee/artifact_blade/cultify()
@@ -87,7 +90,7 @@
 /obj/item/melee/artifact_blade/attack(mob/living/M, mob/living/user, var/target_zone)
 	if(M == user) //No accidentally hitting yourself and exploding.
 		return
-	var/zone = (user.hand ? "l_arm":"r_arm") //Which arm we're in!
+	var/zone = (user.hand ? BP_L_ARM:BP_R_ARM) //Which arm we're in!
 	var/prior_force = force
 	if(empowered)
 		force = force*2
@@ -102,7 +105,7 @@
 		to_chat(user, span_cult("An inexplicable force rips through your arm as it's engulfed in flames, tearing the sword from your grasp!"))
 		user.drop_from_inventory(src, user.loc)
 		user.Weaken(5)
-		throw_at(get_edge_target_turf(src,pick(alldirs)),rand(1,10),5)
+		throw_at(get_edge_target_turf(src,pick(GLOB.alldirs)),rand(1,10),5)
 		user.apply_damage(rand(force/2, force), BURN, zone, FALSE)
 		return
 
@@ -132,12 +135,12 @@
 	else if(istype(user, /mob/living/simple_mob/construct))
 		to_chat(user, span_cult("An inexplicable force rips through you, tearing the sword from your grasp!"))
 		user.drop_from_inventory(src, user.loc)
-		throw_at(get_edge_target_turf(src,pick(alldirs)),rand(1,10),5)
+		throw_at(get_edge_target_turf(src,pick(GLOB.alldirs)),rand(1,10),5)
 
 	else
 		to_chat(user, span_cult("The blade hisses, forcing itself from your manipulators. \The [src] will only allow mortals to wield it against foes, not kin."))
 		user.drop_from_inventory(src, user.loc)
-		throw_at(get_edge_target_turf(src,pick(alldirs)),rand(1,10),5)
+		throw_at(get_edge_target_turf(src,pick(GLOB.alldirs)),rand(1,10),5)
 
 	if(prob(10)) //During testing, this was set to 100% of the time to make sure it works... It went  from spooky to 'dear god make it stop'
 		var/spooky = pick('sound/effects/ghost.ogg', 'sound/effects/ghost2.ogg', 'sound/effects/Heart Beat.ogg', 'sound/effects/screech.ogg',\
@@ -158,8 +161,11 @@
 		last_touched = user
 		START_PROCESSING(SSobj, src)
 
-/obj/item/melee/artifact_blade/attack_self(mob/user as mob)
-	if(last_special > world.time - 120)
+/obj/item/melee/artifact_blade/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
+	if(last_special > world.time - 12 SECONDS)
 		to_chat(user, span_cult("The blade does not respond to your attempts, having recently performed an action!"))
 		return
 	last_special = world.time

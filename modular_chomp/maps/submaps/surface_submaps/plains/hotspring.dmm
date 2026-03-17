@@ -14,13 +14,6 @@
 /obj/random/trash_pile,
 /turf/simulated/floor/outdoors/grass/sif,
 /area/submap/hotspring)
-"f" = (
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/wood/sif,
-/area/submap/hotspring)
 "g" = (
 /turf/simulated/floor/outdoors/mud,
 /area/submap/hotspring)
@@ -59,12 +52,6 @@
 "m" = (
 /obj/effect/effect/steam,
 /turf/simulated/floor/water/hotspring,
-/area/submap/hotspring)
-"n" = (
-/obj/item/clothing/accessory/medal/fluff/rindeimos,
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/wood/sif,
 /area/submap/hotspring)
 "o" = (
 /obj/structure/table/woodentable,
@@ -178,7 +165,6 @@
 "U" = (
 /obj/structure/table/rack,
 /obj/item/clothing/under/swimsuit/striped,
-/obj/item/clothing/under/swimsuit/fluff/zara_uniform,
 /obj/item/clothing/under/swimsuit/stripper/stripper_pink,
 /turf/simulated/floor/wood/sif,
 /area/submap/hotspring)
@@ -252,7 +238,7 @@ a
 (4,1,1) = {"
 Y
 w
-n
+T
 Y
 X
 E
@@ -269,7 +255,7 @@ a
 (5,1,1) = {"
 Y
 j
-f
+T
 J
 g
 F

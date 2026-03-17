@@ -26,15 +26,18 @@
 	. = ..()
 	. += "[uses] uses remaining."
 
-/obj/item/disposable_teleporter/attack_self(mob/user as mob)
+/obj/item/disposable_teleporter/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	if(!uses)
 		to_chat(user, span_danger("\The [src] has ran out of uses, and is now useless to you!"))
 		return
 	else
-		var/area_wanted = tgui_input_list(user, "Area to teleport to", "Teleportation", teleportlocs)
+		var/area_wanted = tgui_input_list(user, "Area to teleport to", "Teleportation", GLOB.teleportlocs)
 		if(!area_wanted)
 			return
-		var/area/A = teleportlocs[area_wanted]
+		var/area/A = GLOB.teleportlocs[area_wanted]
 		if(!A)
 			return
 
@@ -57,7 +60,7 @@
 		//Copypasta
 		valid_turfs:
 			for(var/turf/simulated/T in A.contents)
-				if(T.density || istype(T, /turf/simulated/mineral)) //Don't blink to vacuum or a wall
+				if(T.density || ismineralturf(T)) //Don't blink to vacuum or a wall
 					continue
 				for(var/atom/movable/stuff in T.contents)
 					if(stuff.density)

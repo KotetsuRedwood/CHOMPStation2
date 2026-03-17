@@ -1,13 +1,12 @@
-import { BooleanLike } from 'tgui-core/react';
+import type { BooleanLike } from 'tgui-core/react';
 
 export type Data = {
-  zoomScale: number;
   isAI: BooleanLike;
   map_levels: number[];
-  crewmembers: crewmember[];
+  crewmembers: Crewmember[];
 };
 
-export type crewmember = {
+export type Crewmember = {
   sensor_type: number;
   name: string;
   rank: string;

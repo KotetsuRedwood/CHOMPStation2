@@ -8,15 +8,15 @@
 /obj/item/implant/integrated_circuit/islegal()
 	return TRUE
 
-/obj/item/implant/integrated_circuit/New()
-	..()
+/obj/item/implant/integrated_circuit/Initialize(mapload)
+	. = ..()
 	IC = new(src)
 	IC.implant = src
 
 /obj/item/implant/integrated_circuit/Destroy()
 	IC.implant = null
 	qdel(IC)
-	..()
+	. = ..()
 
 /obj/item/implant/integrated_circuit/get_data()
 	var/dat = {"
@@ -32,8 +32,8 @@
 	<b>Integrity:</b> Implant is not shielded from electromagnetic interference, otherwise it is independent of subject's status."}
 	return dat
 
-/obj/item/implant/integrated_circuit/emp_act(severity)
-	IC.emp_act(severity)
+/obj/item/implant/integrated_circuit/emp_act(severity, recursive)
+	IC.emp_act(severity, recursive)
 
 /obj/item/implant/integrated_circuit/examine(mob/user)
 	. = ..()
@@ -46,4 +46,7 @@
 		..()
 
 /obj/item/implant/integrated_circuit/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	IC.attack_self(user)

@@ -22,9 +22,10 @@
 			while(++i < 10)
 				// done here, because New() does all the setup for placing the organ...
 				// attempt to select a valid exterior organ that isn't synthetic!
-				parent_organ = pick(validBPspawns)
-				if(isliving(owner))
-					var/obj/item/organ/checklimb = owner.organs_by_name[parent_organ]
+				if(isliving(loc))
+					parent_organ = pick(validBPspawns)
+					var/mob/living/L = loc
+					var/obj/item/organ/checklimb = L.organs_by_name[parent_organ]
 					if(checklimb)
 						// valid limb, check if organic!
 						if(checklimb.status == 0 && checklimb.robotic < ORGAN_ROBOT)
@@ -38,7 +39,7 @@
 		// engineered ones don't do all of the above
 		if(force_location)
 			parent_organ = force_location
-		return ..(mapload, internal)
+	return ..(mapload, internal)
 
 /mob/living/carbon/human/proc/random_malignant_organ( var/allowtumors = TRUE, var/allowparasites = TRUE, var/allowengineered = TRUE)
 	// get a list of valid malignant organs and spawn one
@@ -66,7 +67,7 @@
 	|| species.name == SPECIES_PROTEAN \
 	|| species.name == SPECIES_REPLICANT)
 		return FALSE
-	if(mind && mind.changeling)
+	if(is_changeling(src))
 		return FALSE
 
 	var/obj/item/organ/internal/malignant/neworgan = new type_path( src, TRUE)
@@ -155,13 +156,13 @@
 			owner.AdjustWeakened(3 * base_mult)
 		if(prob(75))
 			owner.AdjustConfused(4 * base_mult)
-		var/obj/item/organ/O = owner.organs_by_name[parent_organ]
+		var/obj/item/organ/external/O = owner.organs_by_name[parent_organ]
 		if(damage >= min_broken_damage)
-			owner.custom_pain("<span class='warning'>You feel a painful sensation in your [O.name].</span>",damage,TRUE)
+			owner.custom_pain(span_warning("You feel a painful sensation in your [O.name]."),damage,TRUE)
 			owner.AdjustBlinded(6 * base_mult)
 			owner.adjustToxLoss(4 * base_mult)
 		else
-			owner.custom_pain("<span class='warning'>You feel a strange sensation in your [O.name].</span>",damage / 10,TRUE)
+			owner.custom_pain(span_warning("You feel a strange sensation in your [O.name]."),damage / 10,TRUE)
 
 /****************************************************
 				Tumor varients
@@ -250,14 +251,14 @@
 /obj/item/organ/internal/malignant/tumor/potato/attackby(obj/item/W as obj, mob/user as mob)
 	if(istype(W,/obj/item/material/knife))
 		new /obj/item/reagent_containers/food/snacks/rawsticks(get_turf(src))
-		to_chat(user, "<span class='notice'>You cut the mimetic potato.</span>")
+		to_chat(user, span_notice("You cut the mimetic potato."))
 		qdel(src)
 		return
 	if(istype(W, /obj/item/stack/cable_coil))
 		var/obj/item/stack/cable_coil/C = W
 		if(C.use(5))
 			//TODO: generalize this.
-			to_chat(user, "<span class='notice'>You add some cable to the [src.name] and slide it inside the battery casing.</span>")
+			to_chat(user, span_notice("You add some cable to the [src.name] and slide it inside the battery casing."))
 			var/obj/item/cell/potato/pocell = new /obj/item/cell/potato(get_turf(user))
 			if(src.loc == user && ishuman(user))
 				user.put_in_hands(pocell)
@@ -270,7 +271,7 @@
 
 
 
-
+/* CHOMPRemove Start- Disabled gib tumors
 // pinata makes you eventually explode into candy
 /obj/item/organ/internal/malignant/tumor/pinata
 	name = "pinata gland"
@@ -303,16 +304,16 @@
 			owner.Confuse(30)
 
 	if(prob(2))
-		var/obj/item/organ/O = owner.organs_by_name[parent_organ]
+		var/obj/item/organ/external/O = owner.organs_by_name[parent_organ]
 		if(stage_progress > 200)
-			owner.custom_pain("<span class='warning'>You feel bloated. The pain in your [O.name] is agonizing.</span>",20,TRUE)
-			owner.custom_emote(VISIBLE_MESSAGE, "winces slightly.")
+			owner.custom_pain(span_warning("You feel bloated. The pain in your [O.name] is agonizing."),20,TRUE)
+			owner.automatic_custom_emote(VISIBLE_MESSAGE, "winces slightly.", check_stat = TRUE)
 		else if(stage_progress > 100)
-			owner.custom_pain("<span class='warning'>You feel a pressure inside your [O.name].</span>",5,TRUE)
-			owner.custom_emote(VISIBLE_MESSAGE, "winces painfully.")
+			owner.custom_pain(span_warning("You feel a pressure inside your [O.name]."),5,TRUE)
+			owner.automatic_custom_emote(VISIBLE_MESSAGE, "winces painfully.", check_stat = TRUE)
 		else
-			owner.custom_pain("<span class='danger'>The pressure inside your [O.name] hurts.</span>",1,TRUE)
-			owner.custom_emote(VISIBLE_MESSAGE, "winces painfully.")
+			owner.custom_pain(span_danger("The pressure inside your [O.name] hurts."),1,TRUE)
+			owner.automatic_custom_emote(VISIBLE_MESSAGE, "winces painfully.", check_stat = TRUE)
 
 /obj/item/organ/internal/malignant/tumor/pinata/attackby(obj/item/W as obj, mob/user as mob)
 	if(can_puncture(W))
@@ -325,8 +326,7 @@
 	var/count = rand(20,30)
 	while(count-- > 0)
 		var/picker = pick(/obj/item/clothing/mask/chewable/candy/gum,/obj/item/clothing/mask/chewable/candy/lolli,/obj/item/reagent_containers/food/snacks/candy/gummy,/obj/item/reagent_containers/food/snacks/candy_corn)
-		var/obj/item/newcandy = new picker()
-		newcandy.loc = src.loc
+		new picker(loc)
 
 	var/turf/T = loc
 	if(owner)
@@ -345,7 +345,8 @@
 		T = get_turf(src)
 	new /obj/effect/decal/cleanable/confetti(T)
 	qdel(src)
-
+*/
+// CHOMPRemove End
 
 // Teleports you randomly, until it gets you killed
 /obj/item/organ/internal/malignant/tumor/bluespace
@@ -425,7 +426,7 @@
 		owner.bloodstr.add_reagent( "ethanol", stage * 2)
 		cooldown = rand(cooldownmin,cooldownmax)
 
-
+/* CHOMPRemove Start - Disable gib tumors
 // Prints money until you explode
 /obj/item/organ/internal/malignant/tumor/moneyorgan
 	name = "crypto-cache"
@@ -455,15 +456,15 @@
 		supply_conversion_value = initial(supply_conversion_value) + ((thalers * SSsupply.points_per_money))
 
 	if(prob(2))
-		var/obj/item/organ/O = owner.organs_by_name[parent_organ]
+		var/obj/item/organ/external/O = owner.organs_by_name[parent_organ]
 		if(thalers < 100)
 			pass()
 		else if(thalers < 500)
-			owner.custom_pain("<span class='warning'>You feel bloated.</span>",1,TRUE)
-			owner.custom_emote(VISIBLE_MESSAGE, "winces slightly.")
+			owner.custom_pain(span_warning("You feel bloated."),1,TRUE)
+			owner.automatic_custom_emote(VISIBLE_MESSAGE, "winces slightly.", check_stat = TRUE)
 		else if(thalers < 1000)
-			owner.custom_pain("<span class='warning'>You feel a pressure inside your [O.name].</span>",6,TRUE)
-			owner.custom_emote(VISIBLE_MESSAGE, "winces painfully.")
+			owner.custom_pain(span_warning("You feel a pressure inside your [O.name]."),6,TRUE)
+			owner.automatic_custom_emote(VISIBLE_MESSAGE, "winces painfully.", check_stat = TRUE)
 			if(prob(30))
 				owner.vomit()
 			else if(prob(30))
@@ -471,8 +472,8 @@
 			else
 				owner.Confuse(15)
 		else if(thalers < 5000)
-			owner.custom_pain("<span class='danger'>The pressure inside your [O.name] hurts.</span>",15,TRUE)
-			owner.custom_emote(VISIBLE_MESSAGE, "winces painfully.")
+			owner.custom_pain(span_danger("The pressure inside your [O.name] hurts."),15,TRUE)
+			owner.automatic_custom_emote(VISIBLE_MESSAGE, "winces painfully.", check_stat = TRUE)
 			owner.Weaken(3)
 			if(prob(30))
 				owner.Stun(10)
@@ -500,23 +501,26 @@
 	playsound(src, 'sound/effects/snap.ogg', 50, 1)
 
 	// place a ton of money at location, then delete organ!
+	var/turf/T = get_turf(src)
 	while(thalers > 1000)
 		thalers -= 1000
-		spawn_money(1000, src.loc)
+		spawn_money(1000, T)
 	while(thalers > 500)
 		thalers -= 500
-		spawn_money(500, src.loc)
+		spawn_money(500, T)
 	while(thalers > 50)
 		thalers -= 50
-		spawn_money(50, src.loc)
+		spawn_money(50, T)
 	while(thalers > 5)
 		thalers -= 5
-		spawn_money(5, src.loc)
+		spawn_money(5, T)
 	while(thalers > 1)
 		thalers -= 1
-		spawn_money(1, src.loc)
-	qdel(src)
+		spawn_money(1, T)
 
+	qdel(src)
+*/
+// CHOMPRemove End
 
 /****************************************************
 				Parasite varients
@@ -566,7 +570,7 @@
 							"Why does security wear red? So your blood stains won't get noticed!", \
 							"I got some space wind for ya!", \
 							"Honk ya mother!", \
-							"Nice medbay! Now where's the survivors, doc?", \
+							"Nice medbay! Now where's the survivors, Doc?", \
 							"What's that borgi? The captain fell down the well!? Quickly, to the bar!")
 		owner.say((prob(40) ? ";" : "") + "[pick(jokelist)]")
 	return prob(5) && growth < 3
@@ -708,7 +712,7 @@
 /obj/item/organ/internal/malignant/engineered/chemorgan
 	name = "chem organ DO NOT USE THIS"
 	var/chemid = null
-	var/deg_chance = 2
+	var/deg_chance = 0.1
 	var/deg_intensity = 1
 	var/side_effect_multiplier = 1
 
@@ -747,7 +751,7 @@
 	name = "tramoketic gland"
 	icon_state = "chem_tramadol"
 	chemid = REAGENT_ID_TRAMADOL
-	deg_chance = 3
+	deg_chance = 0.25
 	deg_intensity = 2
 	side_effect_multiplier = 1
 
@@ -780,7 +784,7 @@
 	name = "dexalic gland"
 	icon_state = "chem_dexa"
 	chemid = REAGENT_ID_DEXALIN
-	deg_chance = 5
+	deg_chance = 0.5
 	deg_intensity = 1
 	side_effect_multiplier = 2
 
@@ -803,6 +807,6 @@
 	name = "euphorian"
 	icon_state = "chem_bliss"
 	chemid = REAGENT_ID_BLISS
-	deg_chance = 5
+	deg_chance = 1
 	deg_intensity = 3
 	side_effect_multiplier = 2

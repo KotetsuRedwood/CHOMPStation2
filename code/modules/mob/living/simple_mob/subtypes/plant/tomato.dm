@@ -17,7 +17,7 @@
 	response_disarm = "pushes aside"
 	response_harm   = "smacks"
 
-	organ_names = /decl/mob_organ_names/tomato
+	organ_names = /datum/decl/mob_organ_names/tomato
 
 	harm_intent_damage = 5
 	melee_damage_upper = 15
@@ -29,8 +29,8 @@
 	meat_type = /obj/item/reagent_containers/food/snacks/tomatomeat
 	meat_amount = 4
 
-	can_be_drop_prey = FALSE //CHOMP Add
-	can_pain_emote = FALSE // CHOMPEdit: Can't feel pain and shouldn't take damage anyways, but, sanity
+	can_be_drop_prey = FALSE
+	can_pain_emote = FALSE
 
-/decl/mob_organ_names/tomato
+/datum/decl/mob_organ_names/tomato
 	hit_zones = list("flesh", "leaf", "mouth")

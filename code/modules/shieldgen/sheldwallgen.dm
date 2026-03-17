@@ -6,7 +6,7 @@
 		icon_state = "Shield_Gen"
 		anchored = FALSE
 		density = TRUE
-		req_access = list(access_engine_equip)
+		req_access = list(ACCESS_ENGINE_EQUIP)
 		var/active = 0
 		var/power = 0
 		var/state = 0
@@ -24,6 +24,10 @@
 		var/power_draw = 30000 //30 kW. How much power is drawn from powernet. Increase this to allow the generator to sustain longer shields, at the cost of more power draw.
 		var/max_stored_power = 50000 //50 kW
 		use_power = USE_POWER_OFF	//Draws directly from power net. Does not use APC power.
+
+/obj/machinery/shieldwallgen/Initialize(mapload)
+	. = ..()
+	AddElement(/datum/element/climbable)
 
 /obj/machinery/shieldwallgen/attack_hand(mob/user as mob)
 	if(state != 1)
@@ -46,7 +50,7 @@
 		for(var/dir in list(1,2,4,8)) src.cleanup(dir)
 	else
 		src.active = 1
-		icon_state = "Shield_Gen +a"
+		icon_state = "Shield_Gen_on"
 		user.visible_message("[user] turned the shield generator on.", \
 			"You turn on the shield generator.", \
 			"You hear heavy droning.")
@@ -151,8 +155,7 @@
 		var/field_dir = get_dir(T2,get_step(T2, NSEW))
 		T = get_step(T2, NSEW)
 		T2 = T
-		var/obj/machinery/shieldwall/CF = new/obj/machinery/shieldwall/(src, G) //(ref to this gen, ref to connected gen)
-		CF.loc = T
+		var/obj/machinery/shieldwall/CF = new/obj/machinery/shieldwall(T, src, G) //(ref to this gen, ref to connected gen)
 		CF.set_dir(field_dir)
 
 
@@ -210,7 +213,7 @@
 	src.cleanup(2)
 	src.cleanup(4)
 	src.cleanup(8)
-	..()
+	. = ..()
 
 /obj/machinery/shieldwallgen/bullet_act(var/obj/item/projectile/Proj)
 	storedpower -= 400 * Proj.get_structure_damage()
@@ -239,23 +242,23 @@
 		var/power_usage = 2500	//how much power it takes to sustain the shield
 		var/generate_power_usage = 7500	//how much power it takes to start up the shield
 
-/obj/machinery/shieldwall/New(var/obj/machinery/shieldwallgen/A, var/obj/machinery/shieldwallgen/B)
-	..()
+/obj/machinery/shieldwall/Initialize(mapload, var/obj/machinery/shieldwallgen/A, var/obj/machinery/shieldwallgen/B)
+	. = ..()
 	update_nearby_tiles()
 	src.gen_primary = A
 	src.gen_secondary = B
-	if(A && B && A.active && B.active)
+	if(istype(A) && istype(B) && A.active && B.active)
 		needs_power = 1
 		if(prob(50))
 			A.storedpower -= generate_power_usage
 		else
 			B.storedpower -= generate_power_usage
 	else
-		qdel(src) //need at least two generator posts
+		return INITIALIZE_HINT_QDEL
 
 /obj/machinery/shieldwall/Destroy()
 	update_nearby_tiles()
-	..()
+	. = ..()
 
 /obj/machinery/shieldwall/attack_hand(mob/user as mob)
 	return

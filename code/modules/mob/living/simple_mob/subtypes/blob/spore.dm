@@ -24,14 +24,13 @@
 	attack_sound = 'sound/effects/slime_squish.ogg'
 	say_list_type = /datum/say_list/spore
 
-	organ_names = /decl/mob_organ_names/spore
+	organ_names = /datum/decl/mob_organ_names/spore
 
 	var/mob/living/carbon/human/infested = null // The human this thing is totally not making into a zombie.
 	var/can_infest = FALSE
 	var/is_infesting = FALSE
 
-	can_pain_emote = FALSE // CHOMPEdit: Can't feel pain
-
+	can_pain_emote = FALSE
 /datum/say_list/spore
 	emote_see = list("sways", "inflates briefly")
 
@@ -95,7 +94,7 @@
 		if(overmind)
 			blob_head_overlay.color = overmind.blob_type.complementary_color
 		color = initial(color)//looks better.
-		add_overlay(blob_head_overlay, TRUE)
+		add_overlay(blob_head_overlay)
 
 /mob/living/simple_mob/blob/spore/handle_special()
 	..()
@@ -156,5 +155,5 @@
 		to_chat(src, span_notice("Your attack is assisted by [helpers] other spore\s."))
 	return damage_to_do
 
-/decl/mob_organ_names/spore
+/datum/decl/mob_organ_names/spore
 	hit_zones = list("sporangium", "stolon", "sporangiophore")

@@ -49,6 +49,8 @@
 		/datum/material/durasteel/hull,
 		/datum/material/titanium/hull,
 		/datum/material/morphium/hull,
+		/datum/material/plastitanium/hull,
+		/datum/material/gold/hull,
 		/datum/material/steel/holographic,
 		/datum/material/plastic/holographic,
 		/datum/material/wood/holographic,
@@ -84,10 +86,9 @@
 			additional_desc = "There appear to be [pick("dark","faintly glowing","pungent","bright")] [pick("red","purple","green","blue")] stains inside."
 		if(ARCHAEO_URN)
 			item_type = "urn"
-			new_item = new /obj/item/reagent_containers/glass/replenishing(src.loc)
+			new_item = new /obj/item/reagent_containers/glass/beaker(src.loc)
 			if(prob(33))
 				LAZYSET(new_item.origin_tech, TECH_ARCANE, 1)
-			new_item = new /obj/item/reagent_containers/glass/beaker(src.loc)
 			new_item.icon = 'icons/obj/xenoarchaeology.dmi'
 			new_item.icon_state = "urn[rand(1,2)]"
 			apply_image_decorations = TRUE
@@ -148,6 +149,7 @@
 			var/new_cuffs = pick(possible_object_paths)
 			new_item = new new_cuffs(src.loc)
 			additional_desc = "[pick("They appear to be for securing two things together","Looks kinky","Doesn't seem like a children's toy")]."
+
 		if(ARCHAEO_BEARTRAP)
 			item_type = "[pick("wicked","evil","byzantine","dangerous")] looking [pick("device","contraption","thing","trap")]"
 			apply_prefix = FALSE
@@ -160,6 +162,7 @@
 			additional_desc = "[pick("It looks like it could take a limb off",\
 			"Could be some kind of animal trap",\
 			"There appear to be [pick("dark red","dark purple","dark green","dark blue")] stains along part of it")]."
+
 		if(ARCHAEO_LIGHTER)
 			item_type = "[pick("cylinder","tank","chamber")]"
 			var/possible_object_paths = list()
@@ -168,6 +171,7 @@
 			new_item = new new_lighter(src.loc)
 			additional_desc = "There is a tiny device attached."
 			apply_image_decorations = TRUE
+
 		if(ARCHAEO_BOX)
 			item_type = "box"
 			new_item = new /obj/item/storage/box(src.loc)
@@ -180,6 +184,7 @@
 			if(prob(30))
 				LAZYSET(new_item.origin_tech, TECH_ARCANE, 1)
 				apply_image_decorations = TRUE
+
 		if(ARCHAEO_GASTANK)
 			item_type = "[pick("cylinder","tank","chamber")]"
 			var/possible_object_paths = list()
@@ -188,10 +193,12 @@
 			new_item = new new_tank(src.loc)
 			icon_state = pick("oxygen","oxygen_fr","oxygen_f","phoron","anesthetic")
 			additional_desc = "It [pick("gloops","sloshes")] slightly when you shake it."
+
 		if(ARCHAEO_TOOL)
 			item_type = "tool"
 			var/possible_object_paths = list()
 			possible_object_paths += subtypesof(/obj/item/tool)
+			possible_object_paths -= /obj/item/tool/screwdriver/test_driver
 			var/new_tool = pick(possible_object_paths)
 			new_item = new new_tool(src.loc)
 			new_item.color = rgb(rand(0,255),rand(0,255),rand(0,255))
@@ -199,6 +206,7 @@
 			additional_desc = "[pick("It doesn't look safe.",\
 			"You wonder what it was used for",\
 			"There appear to be [pick("dark red","dark purple","dark green","dark blue")] stains on it")]."
+
 		if(ARCHAEO_METAL)
 			apply_material_decorations = FALSE
 			var/possible_object_paths = list()
@@ -208,7 +216,7 @@
 			var/list/banned_sheet_materials = list(
 				// Include if you enable in the .dme /obj/item/stack/material/debug
 				)
-			var/new_metal = /obj/item/stack/material/supermatter
+			var/obj/item/stack/new_metal = /obj/item/stack/material/supermatter
 			for(var/x=1;x<=10;x++) //You got 10 chances to hit a metal that is NOT banned.
 				var/picked_metal = pick(possible_object_paths) //We select
 				if(picked_metal in banned_sheet_materials)
@@ -216,8 +224,10 @@
 				else
 					new_metal = picked_metal
 					break
-			new_item = new new_metal(src.loc)
-			new_item:amount = rand(5,45)
+			new_metal = new new_metal(src.loc)
+			new_metal.amount = rand(5,45)
+			new_item = new_metal
+
 		if(ARCHAEO_PEN)
 			var/new_pen = pick(/obj/item/pen, /obj/item/pen/blade/fountain, /obj/item/pen/reagent/sleepy) //There are WAY too many pen blade variants that it'd drown out the others in this list.
 			new_item = new new_pen(src.loc)
@@ -230,6 +240,7 @@
 				icon_state = "pen1"
 				LAZYSET(new_item.origin_tech, TECH_ARCANE, 1)
 				apply_image_decorations = TRUE
+
 		if(ARCHAEO_CRYSTAL)
 			if(prob(40))
 				become_anomalous = TRUE
@@ -257,6 +268,7 @@
 				new_item.name = "Redspace Gem"
 				new_item.desc = "A glowing stone made of what appears to be a pure chunk of redspace. It seems to have the power to transfer the consciousness of dead or nearly-dead humanoids into it."
 				LAZYSET(new_item.origin_tech, TECH_ARCANE, 2)
+
 		if(ARCHAEO_CULTBLADE)
 			//cultblade
 			apply_prefix = FALSE
@@ -264,17 +276,20 @@
 			additional_desc = "This sword emanates terrifying power"
 			apply_material_decorations = FALSE
 			apply_image_decorations = FALSE
+
 		if(ARCHAEO_TOME)
 			apply_prefix = FALSE
 			new_item = new /obj/item/book/tome(src.loc) //Also obtainable via library. Useless unless you're an ACTUAL cultist antag, but it looks SPOOOKY.
 			apply_material_decorations = FALSE
 			apply_image_decorations = FALSE
+
 		if(ARCHAEO_TELEBEACON)
 			new_item = new /obj/item/radio/beacon(src.loc)
 			talkative = FALSE
 			new_item.icon = 'icons/obj/xenoarchaeology.dmi'
 			new_item.icon_state = "unknown[rand(1,4)]"
 			new_item.desc = ""
+
 		if(ARCHAEO_CLAYMORE)
 			apply_prefix = FALSE
 			new_item = new /obj/item/material/sword(src.loc)
@@ -284,6 +299,7 @@
 			if(prob(30))
 				new_item.icon = 'icons/obj/xenoarchaeology.dmi'
 				new_item.icon_state = "blade1"
+
 		if(ARCHAEO_CULTROBES)
 			//arcane clothing
 			//Funnily enough, this was just helmets before I edited it, with no robes.
@@ -343,7 +359,7 @@
 			possible_laser_paths += /obj/item/projectile/ion
 			possible_laser_paths += subtypesof(/obj/item/projectile/energy/floramut)
 			// THE BLACKLIST
-			possible_laser_paths -= list(/obj/item/projectile/beam/pulse, /obj/item/projectile/beam/pulse/heavy)
+			// possible_laser_paths -= list(/obj/item/projectile/beam/pulse, /obj/item/projectile/beam/pulse/heavy, /obj/item/projectile/beam/final_option) //These are very very rare...Disabling the blacklist for now because the chance of finding them is so low that it feels like a nice treat when you DO find them. If it ends up being problemmatic, just reenable this line.
 			var/new_laser = pick(possible_laser_paths)
 			new_gun.projectile_type = new_laser
 			new_item = new_gun
@@ -442,11 +458,22 @@
 			possible_object_paths += subtypesof(/obj/item/organ/internal)
 
 			//BLACKLIST BELOW
-			possible_object_paths -= list(/obj/item/organ/internal/mmi_holder, /obj/item/organ/internal/stack/vox)
+			possible_object_paths -= list(	/obj/item/organ/internal/mmi_holder,
+											/obj/item/organ/internal/stack/vox,
+											/obj/item/organ/internal/malignant,
+											/obj/item/organ/internal/malignant/tumor,
+											/obj/item/organ/internal/malignant/parasite,
+											/obj/item/organ/internal/malignant/engineered,
+											/obj/item/organ/internal/malignant/engineered/chemorgan) // //CHOMP Edit: Add malignant organ basetypes to exclusions.
 			//BLACKLIST ABOVE
 
-			var/new_organ = pick(possible_object_paths)
+			var/obj/item/organ/internal/new_organ = pick(possible_object_paths)
 			new_item = new new_organ(src.loc)
+
+			//Code to prevent rejection.
+			new_organ = new_item
+			new_organ.can_reject = FALSE
+
 
 		if(ARCHAEO_REMAINS_ROBOT)
 			//robot remains
@@ -476,10 +503,17 @@
 			/obj/item/organ/internal/xenos/hivenode,
 			/obj/item/organ/internal/xenos/resinspinner)
 
-			var/new_vessel = pick(possible_plasma_vessel)
-			var/new_organ = pick(possible_organ)
+			var/obj/item/organ/internal/xenos/plasmavessel/new_vessel = pick(possible_plasma_vessel)
+			var/obj/item/organ/internal/xenos/new_organ = pick(possible_organ)
 			new_item = new new_vessel(src.loc)
 			secondary_item = new new_organ(src.loc)
+
+			//Code to prevent rejection.
+			new_vessel = new_item
+			new_organ = secondary_item
+			new_vessel.can_reject = FALSE
+			new_organ.can_reject = FALSE
+
 		if(ARCHAEO_GASMASK)
 			//gas mask
 			if(prob(50))
@@ -555,7 +589,7 @@
 			// Imperion circuit.
 			apply_prefix = FALSE
 			apply_image_decorations = FALSE
-			var/possible_circuits = subtypesof(/obj/item/circuitboard/mecha/imperion)
+			var/list/possible_circuits = subtypesof(/obj/item/circuitboard/mecha/imperion)
 			var/new_type = pick(possible_circuits)
 			new_item = new new_type(src.loc)
 			name = new_item.name
@@ -571,11 +605,15 @@
 			if(prob(25))
 				apply_material_decorations = FALSE
 			new_item = new /obj/item/telecube/randomized(src.loc)
+			secondary_item = new /obj/item/telecube/randomized(src.loc)
 			item_type = new_item.name
+			secondary_item_type = secondary_item.name
 
 		if(ARCHAEO_BATTERY)
 			// Battery!
-			var/new_path = pick(subtypesof(/obj/item/cell))
+			var/list/possible_paths = subtypesof(/obj/item/cell)
+			possible_paths -= /obj/item/cell/standin
+			var/new_path = pick(possible_paths)
 			new_item = new new_path(src.loc)
 			new_item.name = pick("cell", "battery", "device")
 
@@ -604,21 +642,14 @@
 			//However, in that case Initialize will set the maximum volume to the volume for us, so we don't need to do anything.
 			S.reagents?.maximum_volume = 15
 			item_type = new_item.name
-			//Taken from hydroponics/seed.dm...This should be a global list at some point and reworked in both places.
-			var/list/banned_chems = list(
-				REAGENT_ID_ADMINORDRAZINE,
-				REAGENT_ID_NUTRIMENT,
-				REAGENT_ID_MACROCILLIN,
-				REAGENT_ID_MICROCILLIN,
-				REAGENT_ID_NORMALCILLIN,
-				REAGENT_ID_MAGICDUST
-				)
 			var/additional_chems = 5 //5 random chems added to the syringe! 15u of RANDOM stuff! (I tried to keep this 30, but this was...Horribly bugged. There is no icon_state for 16-30, so the icon was invisible when filled.)
 			for(var/x=1;x<=additional_chems;x++)
 				var/new_chem = pick(SSchemistry.chemical_reagents)
-				if(new_chem in banned_chems)
+				var/list/currently_banned_chems = list()
+				currently_banned_chems += GLOB.obtainable_chemical_blacklist
+				if(new_chem in currently_banned_chems)
 					continue
-				banned_chems += new_chem
+				currently_banned_chems += new_chem
 				S.reagents.add_reagent(new_chem, 3)
 
 		if(ARCHAEO_RING)
@@ -642,6 +673,14 @@
 			new_item.name = pick("great-club","club","billyclub","mace","tenderizer","maul","bat")
 			item_type = new_item.name
 
+	//Safety. This catches items that either qdel upon init or return QDEL_HINT upon init. This prevents them from getting further down and crashing the server.
+	if(new_item && (QDELETED(new_item) || QDELING(new_item)))
+		stack_trace("[new_item] / [new_item.type] was excavated and immediately deleted upon init. This is a MAJOR PROBLEM. Please write a bug report or contact a maintainer so it can be blacklisted .")
+		return INITIALIZE_HINT_QDEL
+
+	if(secondary_item && (QDELETED(secondary_item) || QDELING(secondary_item)))
+		stack_trace("[secondary_item] / [secondary_item.type] was excavated and immediately deleted upon init. This is a MAJOR PROBLEM. Please write a bug report or contact a maintainer so it can be blacklisted.")
+		return INITIALIZE_HINT_QDEL
 
 	if(istype(new_item, /obj/item/material))
 		var/possible_object_paths = list()
@@ -837,6 +876,13 @@
 		if(become_anomalous)
 			new_item.become_anomalous()
 
+		//Add the component that allows for deconstruction for points.
+		new_item.AddComponent(
+			/datum/component/deconstructable_research, \
+			techweb_points = rand(20,60), \
+			techweb_point_type = TECHWEB_POINT_TYPE_GENERIC \
+			)
+
 		var/turf/simulated/mineral/T = get_turf(new_item)
 		if(istype(T))
 			T.last_find = new_item
@@ -850,8 +896,7 @@
 			if(become_anomalous)
 				secondary_item.become_anomalous()
 
-		qdel(src)
-		return
+		return INITIALIZE_HINT_QDEL
 
 	else if(talkative)
 		src.talking_atom = new(src)

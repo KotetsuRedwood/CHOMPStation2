@@ -102,7 +102,7 @@
 	// Simple Mobs.
 	else if(isanimal(M))
 		var/mob/living/simple_mob/SM = M
-		if(!(SM.mob_class & MOB_CLASS_SLIME|MOB_CLASS_ANIMAL)) // So you can't use this on Russians/syndies/hivebots/etc.
+		if(!(SM.mob_class & (MOB_CLASS_SLIME|MOB_CLASS_ANIMAL))) // So you can't use this on Russians/syndies/hivebots/etc.
 			to_chat(user, span_warning("\The [SM] only works on slimes and animals."))
 			return ..()
 		if(!AI.hostile)
@@ -115,7 +115,7 @@
 
 	playsound(src, 'sound/effects/bubbles.ogg', 50, 1)
 	AI.remove_target() // So hostile things stop attacking people even if not hostile anymore.
-	var/newname = copytext(sanitize(tgui_input_text(user, "Would you like to give \the [M] a name?", "Name your new pet", M.name, MAX_NAME_LEN)),1,MAX_NAME_LEN)
+	var/newname = copytext(tgui_input_text(user, "Would you like to give \the [M] a name?", "Name your new pet", M.name, MAX_NAME_LEN),1,MAX_NAME_LEN)
 
 	if(newname)
 		M.name = newname
@@ -189,7 +189,7 @@
 	if(!istype(M))
 		to_chat(user, span_warning("The agent only works on creatures!"))
 		return ..()
-	if(!(M.mob_class & MOB_CLASS_SLIME|MOB_CLASS_ANIMAL)) // So you can't use this on Russians/syndies/hivebots/etc.
+	if(!(M.mob_class & (MOB_CLASS_SLIME|MOB_CLASS_ANIMAL))) // So you can't use this on Russians/syndies/hivebots/etc.
 		to_chat(user, span_warning("\The [M] only works on slimes and animals."))
 		return ..()
 	if(M.stat == DEAD)
@@ -208,6 +208,9 @@
 	to_chat(M, span_notice("\The [user] feeds you \the [src], and feel that the others will regard you as an outsider now."))
 	M.faction = user.faction
 	AI.remove_target() // So hostile things stop attacking people even if not hostile anymore.
+	if(istype(M, /mob/living/simple_mob/slime))
+		var/mob/living/simple_mob/slime/slime = M
+		slime.update_mood() //Makes them drop-nomable.
 	playsound(src, 'sound/effects/bubbles.ogg', 50, 1)
 	qdel(src)
 
@@ -224,7 +227,7 @@
 	if(!istype(M))
 		to_chat(user, span_warning("The agent only works on creatures!"))
 		return ..()
-	if(!(M.mob_class & MOB_CLASS_SLIME|MOB_CLASS_ANIMAL)) // So you can't use this on Russians/syndies/hivebots/etc.
+	if(!(M.mob_class & (MOB_CLASS_SLIME|MOB_CLASS_ANIMAL))) // So you can't use this on Russians/syndies/hivebots/etc.
 		to_chat(user, span_warning("\The [M] only works on slimes and animals."))
 		return ..()
 	if(M.stat == DEAD)

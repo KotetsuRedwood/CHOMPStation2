@@ -5,6 +5,7 @@
 #define TRANSITIONEDGE 1 // Distance from edge to move to another z-level.
 
 // Invisibility constants. These should only be used for TRUE invisibility, AKA nothing living players touch
+#define INVISIBILITY_NONE                  0
 #define INVISIBILITY_LIGHTING             20
 #define INVISIBILITY_LEVEL_ONE            35
 #define INVISIBILITY_LEVEL_TWO            45
@@ -21,6 +22,7 @@
 #define SEE_INVISIBLE_OBSERVER            61
 
 #define SEE_INVISIBLE_MINIMUM 5
+#define INVISIBILITY_BADMIN 99 // Used for objects that badmins should see
 #define INVISIBILITY_MAXIMUM 100
 #define INVISIBILITY_ABSTRACT 101 //only used for abstract objects, things that are not really there.
 
@@ -80,13 +82,14 @@
 #define WAIT_FINISH  4
 #define DO_AUTOPILOT 5
 
-// Setting this much higher than 1024 could allow spammers to DOS the server easily.
-#define MAX_MESSAGE_LEN       4096 //CHOMPStation Edit - This is what it means to go even further byond
+#define MAX_MESSAGE_LEN       4096
+#define MAX_HUGE_MESSAGE_LEN  8192
 #define MAX_PAPER_MESSAGE_LEN 6144
 #define MAX_BOOK_MESSAGE_LEN  24576
 #define MAX_RECORD_LENGTH	  24576
 #define MAX_LNAME_LEN         64
 #define MAX_NAME_LEN          52
+#define MAX_KEYPAD_INPUT_LEN  256
 #define MAX_FEEDBACK_LENGTH      4096
 #define MAX_TEXTFILE_LENGTH 128000		// 512GQ file
 
@@ -115,13 +118,13 @@
 #define AREA_BLOCK_SUIT_SENSORS		0x800	// If suit sensors are blocked in the area.
 #define AREA_BLOCK_TRACKING			0x1000	// If camera tracking is blocked in the area.
 #define AREA_BLOCK_GHOST_SIGHT		0x2000	// If an area blocks sight for ghosts
+#define AREA_BLOCK_INSTANT_BUILDING	0x4000	// If an area blocks the usage of instant building creation items/mechanics such as shelter capsules
+#define AREA_ALWAYS_HAS_GRAVITY		0x8000	// If an area should always have gravity, even during events that would otherwise remove it.
 // The 0x800000 is blocked by INITIALIZED, do NOT use it!
 
-// CHOMPAdd Start/area
-#define PHASE_SHIELDED				0x100000 // A less rough way to prevent phase shifting without blocking access
-#define AREA_LIMIT_DARK_RESPITE		0x200000// Shadekin will die normally in those areas
-#define AREA_ALLOW_CLOCKOUT			0x400000 //The PDA timeclock app can only be used in these areas
-// CHOMPAdd End
+#define PHASE_SHIELDED				0x100000 // A less rough way to prevent phase shifting without blocking access //VOREStation Note: Not implemented on VS. Used downstream.
+#define AREA_LIMIT_DARK_RESPITE		0x200000 // Shadekin will die normally in those areas //VOREStation Note: Not implemented on VS. Used downstream.
+#define AREA_ALLOW_CLOCKOUT			0x400000 // The PDA timeclock app can only be used in these areas //VOREStation Note: Not implemented on VS. Used downstream.
 
 // OnTopic return values
 #define TOPIC_NOACTION 0
@@ -145,10 +148,10 @@
 #define WALL_CAN_OPEN 1
 #define WALL_OPENING 2
 
-#define BOMBCAP_DVSTN_RADIUS (max_explosion_range/4)
-#define BOMBCAP_HEAVY_RADIUS (max_explosion_range/2)
-#define BOMBCAP_LIGHT_RADIUS max_explosion_range
-#define BOMBCAP_FLASH_RADIUS (max_explosion_range*1.5)
+#define BOMBCAP_DVSTN_RADIUS (GLOB.max_explosion_range/4)
+#define BOMBCAP_HEAVY_RADIUS (GLOB.max_explosion_range/2)
+#define BOMBCAP_LIGHT_RADIUS GLOB.max_explosion_range
+#define BOMBCAP_FLASH_RADIUS (GLOB.max_explosion_range*1.5)
 									// NTNet module-configuration values. Do not change these. If you need to add another use larger number (5..6..7 etc)
 #define NTNET_SOFTWAREDOWNLOAD 1 	// Downloads of software from NTNet
 #define NTNET_PEERTOPEER 2			// P2P transfers of files between devices
@@ -215,9 +218,10 @@
 #define DEPARTMENT_RESEARCH			"Research"
 #define DEPARTMENT_CARGO			"Cargo"
 #define DEPARTMENT_CIVILIAN			"Civilian"
-#define DEPARTMENT_PLANET			"Exploration" //VOREStation Edit // I hate having this be here and not in a SC file. Hopefully someday the manifest can be rewritten to be map-agnostic.
+#define DEPARTMENT_PLANET			"Exploration" // I hate having this be here and not in a SC file. Hopefully someday the manifest can be rewritten to be map-agnostic.
 #define DEPARTMENT_SYNTHETIC		"Synthetic"
 
+#define DEPARTMENT_NONCREW			"Non crew"
 // These are mostly for the department guessing code and event system.
 #define DEPARTMENT_UNKNOWN			"Unknown"
 #define DEPARTMENT_EVERYONE			"Everyone"
@@ -341,6 +345,11 @@ GLOBAL_LIST_EMPTY(##LIST_NAME);\
 #define JOB_SILICON_AI		0x4
 #define JOB_SILICON			0x6 // 2|4, probably don't set jobs to this, but good for checking
 
+//Job defines
+#define JOB_OUTSIDER	"Outsider" //VOREStation Note: Not implemented on VS. Used downstream.
+#define JOB_ANOMALY 	"Anomaly" //VOREStation Note: Not implemented on VS. Used downstream.
+#define JOB_VR			"VR Avatar"
+
 #define DEFAULT_OVERMAP_RANGE 0 // Makes general computers and devices be able to connect to other overmap z-levels on the same tile.
 
 /*
@@ -442,9 +451,9 @@ GLOBAL_LIST_EMPTY(##LIST_NAME);\
 #define VOLUME_CHANNEL_INSTRUMENTS "Instruments"
 #define VOLUME_CHANNEL_WEATHER "Weather"
 #define VOLUME_CHANNEL_SPECIES_SOUNDS "Species Sounds (Verbal Injury Feedback)"
-#define VOLUME_CHANNEL_HUD_WARNINGS "SS13 HUD (Clientside-only sounds)"
+#define VOLUME_CHANNEL_HUD_WARNINGS "SS13 HUD (Clientside-only sounds)" //NYI //CHOMPStation Note: Implemented on Chomp
 #define VOLUME_CHANNEL_DEATH_SOUNDS "Death Sounds"
-#define VOLUME_CHANNEL_INJURY_SOUNDS "Mob Injury Sounds (Non-Verbal Feedback)"
+#define VOLUME_CHANNEL_INJURY_SOUNDS "Mob Injury Sounds (Non-Verbal Feedback)" //NYI //CHOMPStation Note: Implemented on Chomp
 #define VOLUME_CHANNEL_MACHINERY "Machinery Noises"
 #define VOLUME_CHANNEL_MACHINERY_IDLE "Machinery Idle Noises"
 
@@ -476,24 +485,11 @@ GLOBAL_LIST_INIT(all_volume_channels, list(
 #define APPEARANCECHANGER_CHANGED_F_HAIRCOLOR "Facial Hair Color"
 #define APPEARANCECHANGER_CHANGED_EYES "Eye Color"
 
-#define GET_DECL(D) (ispath(D, /decl) ? (decls_repository.fetched_decls[D] || decls_repository.get_decl(D)) : null)
+#define GET_DECL(D) (ispath(D, /datum/decl) ? (GLOB.decls_repository.fetched_decls[D] || GLOB.decls_repository.get_decl(D)) : null)
 
 #define LOADOUT_WHITELIST_OFF    0
 #define LOADOUT_WHITELIST_LAX    1
 #define LOADOUT_WHITELIST_STRICT 2
-
-
-#ifndef WINDOWS_HTTP_POST_DLL_LOCATION
-#define WINDOWS_HTTP_POST_DLL_LOCATION "lib/byhttp.dll"
-#endif
-
-#ifndef UNIX_HTTP_POST_DLL_LOCATION
-#define UNIX_HTTP_POST_DLL_LOCATION "lib/libbyhttp.so"
-#endif
-
-#ifndef HTTP_POST_DLL_LOCATION
-#define HTTP_POST_DLL_LOCATION (world.system_type == MS_WINDOWS ? WINDOWS_HTTP_POST_DLL_LOCATION : UNIX_HTTP_POST_DLL_LOCATION)
-#endif
 
 #define DOCK_ATTEMPT_TIMEOUT 200	//how long in ticks we wait before assuming the docking controller is broken or blown up.
 
@@ -524,6 +520,9 @@ GLOBAL_LIST_INIT(all_volume_channels, list(
 #define COLORMATE_TINT 1
 #define COLORMATE_HSV 2
 #define COLORMATE_MATRIX 3
+#define COLORMATE_MATRIX_AUTO 4
+
+#define DEFAULT_COLORMATRIX list(1, 0, 0, 0, 1, 0, 0, 0, 1,	0, 0, 0)
 
 #define DEPARTMENT_OFFDUTY			"Off-Duty"
 
@@ -555,6 +554,12 @@ GLOBAL_LIST_INIT(all_volume_channels, list(
 #define SHELTER_DEPLOY_BAD_AREA "bad area"
 #define SHELTER_DEPLOY_ANCHORED_OBJECTS "anchored objects"
 #define SHELTER_DEPLOY_SHIP_SPACE "ship not in space"
+
+// Borg hypo injection checks
+#define BORGHYPO_STATUS_CONTAINERFULL "container full"
+#define BORGHYPO_STATUS_NOCHARGE "not enough charge"
+#define BORGHYPO_STATUS_NORECIPE "recipe not found"
+#define BORGHYPO_STATUS_SUCCESS "success"
 
 #define PTO_SECURITY		"Security"
 #define PTO_MEDICAL			"Medical"
@@ -591,3 +596,9 @@ GLOBAL_LIST_INIT(all_volume_channels, list(
 
 #define WEIGHT_MIN 70
 #define WEIGHT_MAX 500
+
+#define LADDER_CONSTRUCTION_UNANCHORED 0
+#define LADDER_CONSTRUCTION_WRENCHED 1
+#define LADDER_CONSTRUCTION_WELDED 2
+
+#define FINGERPRINT_COMPLETE 6

@@ -5,6 +5,8 @@
 	desc = "Your standard drinking glass."
 	icon_state = "glass_empty"
 	amount_per_transfer_from_this = 5
+	max_transfer_amount = 30
+	min_transfer_amount = 1
 	volume = 30
 	unacidable = TRUE //glass
 	center_of_mass_x = 16
@@ -100,12 +102,12 @@
 		price_tag = null
 
 // for /obj/machinery/vending/sovietsoda
-/obj/item/reagent_containers/food/drinks/drinkingglass/soda/New()
-	..()
+/obj/item/reagent_containers/food/drinks/drinkingglass/soda/Initialize(mapload)
+	. = ..()
 	reagents.add_reagent(REAGENT_ID_SODAWATER, 50)
 
-/obj/item/reagent_containers/food/drinks/drinkingglass/cola/New()
-	..()
+/obj/item/reagent_containers/food/drinks/drinkingglass/cola/Initialize(mapload)
+	. = ..()
 	reagents.add_reagent(REAGENT_ID_COLA, 50)
 
 /obj/item/reagent_containers/food/drinks/drinkingglass/shotglass

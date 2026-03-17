@@ -39,8 +39,8 @@
 	var/lockdown = 0
 	var/datum/wires/seedstorage/wires = null
 
-/obj/machinery/seed_storage/New()
-	..()
+/obj/machinery/seed_storage/Initialize(mapload)
+	. = ..()
 	wires = new(src)
 	if(!contraband_seeds.len)
 		contraband_seeds = pick( 	/// Some form of ambrosia in all lists.
@@ -83,7 +83,6 @@
 				/obj/item/seeds/deathberryseed = 1 /// Very ow.
 			)
 		)
-	return
 
 /obj/machinery/seed_storage/process()
 	..()
@@ -217,7 +216,6 @@
 		wires.Interact(user)
 	if(lockdown)
 		return
-	user.set_machine(src)
 	tgui_interact(user)
 
 /obj/machinery/seed_storage/tgui_interact(mob/user, datum/tgui/ui)

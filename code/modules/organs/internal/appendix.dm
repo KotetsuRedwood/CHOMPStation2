@@ -23,11 +23,11 @@
 	if(inflamed == 1)
 		if(prob(5))
 			to_chat(owner, span_warning("You feel a stinging pain in your abdomen!"))
-			owner.custom_emote(VISIBLE_MESSAGE, "winces slightly.")
+			owner.automatic_custom_emote(VISIBLE_MESSAGE, "winces slightly.", check_stat = TRUE)
 	if(inflamed > 1)
 		if(prob(3))
 			to_chat(owner, span_warning("You feel a stabbing pain in your abdomen!"))
-			owner.custom_emote(VISIBLE_MESSAGE, "winces painfully.")
+			owner.automatic_custom_emote(VISIBLE_MESSAGE, "winces painfully.", check_stat = TRUE)
 			owner.adjustToxLoss(1)
 	if(inflamed > 2)
 		if(prob(1))
@@ -41,6 +41,8 @@
 			var/datum/wound/W = new /datum/wound/internal_bleeding(20)
 			owner.adjustToxLoss(25)
 			groin.wounds += W
+			groin.update_damages()
+			owner.handle_organs(TRUE) //Force an update so we start processing the internal bleeding.
 			inflamed = 1
 */
 /obj/item/organ/internal/appendix/removed()

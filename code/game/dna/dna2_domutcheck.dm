@@ -5,12 +5,12 @@
 // flags: See below, bitfield.
 
 /proc/domutcheck(var/mob/living/M, var/connected=null, var/flags=0)
-	// Traitgenes NO_SCAN and Synthetics cannot be mutated
+	// Traitgenes NO_DNA and Synthetics cannot be mutated
 	if(M.isSynthetic())
 		return
 	if(ishuman(M))
 		var/mob/living/carbon/human/H = M
-		if(!H.species || H.species.flags & NO_SCAN)
+		if(!H.species || H.species.flags & NO_DNA)
 			return
 	// Traitgenes Sort genes into currently active, and deactivated... Genes that are active and may deactivate should do so before attempting to activate genes(to avoid conflicts blocking them!)
 	var/list/enabled_genes = list()
@@ -68,3 +68,5 @@
 					M.active_genes -= gene.name // Traitgenes Use name instead, cannot use type with dynamically setup traitgenes
 					M.update_icon = 1
 	M.update_mutations()
+	// Inform anything attached of our mutation
+	SEND_SIGNAL(M, COMSIG_MOB_DNA_MUTATION)

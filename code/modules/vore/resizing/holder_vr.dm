@@ -11,11 +11,11 @@
 	if(anchored)
 		to_chat(user, span_notice("\The [src] won't budge, you can't pick it up!"))
 		return
-	if (hasorgans(user))
+	if(ishuman(user))
 		var/mob/living/carbon/human/H = user
-		var/obj/item/organ/external/temp = H.organs_by_name["r_hand"]
+		var/obj/item/organ/external/temp = H.organs_by_name[BP_R_HAND]
 		if (user.hand)
-			temp = H.organs_by_name["l_hand"]
+			temp = H.organs_by_name[BP_L_HAND]
 		if(temp && !temp.is_usable())
 			to_chat(user, span_notice("You try to move your [temp.name], but cannot!"))
 			return
@@ -31,7 +31,6 @@
 			return
 
 	src.pickup(user)
-	src.throwing = 0
 	if (src.loc == user)
 		if(!mob_can_unequip(user, user.get_inventory_slot(src))) //VOREStation Edit
 			return

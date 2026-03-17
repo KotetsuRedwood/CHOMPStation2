@@ -33,7 +33,7 @@
 
 	default_pixel_x = -16
 	pixel_x = -16
-	minbodytemp = 175 //yw edit, Makes mobs survive cryogaia temps
+	minbodytemp = 175
 	maxHealth = 200
 	health = 200
 
@@ -47,7 +47,7 @@
 	base_attack_cooldown = 2 SECONDS
 	attacktext = list("gouged", "bit", "cut", "clawed", "whipped")
 
-	organ_names = /decl/mob_organ_names/kururak
+	organ_names = /datum/decl/mob_organ_names/kururak
 	meat_amount = 5
 
 	armor = list(
@@ -60,22 +60,16 @@
 		"rad" = 100
 		)
 
-	armor_soak = list(
-		"melee" = 5,
-		"bullet" = 5,
-		"laser" = 5,
-		"energy" = 0,
-		"bomb" = 0,
-		"bio" = 0,
-		"rad" = 0
-		)
-
 	say_list_type = /datum/say_list/kururak
 	ai_holder_type = /datum/ai_holder/simple_mob/intentional/kururak
 
 	special_attack_min_range = 0
 	special_attack_max_range = 4
 	special_attack_cooldown = 1 MINUTE
+
+	vore_active = TRUE
+	vore_capacity = 1
+	vore_pounce_chance = 15
 
 	// Players have 2 seperate cooldowns for these, while the AI must choose one. Both respect special_attack_cooldown
 	var/last_strike_time = 0
@@ -84,6 +78,21 @@
 	var/instinct	// The points used by Kururaks to decide Who Is The Boss
 	var/obey_pack_rule = TRUE	// Decides if the Kururak will automatically assign itself to follow the one with the highest instinct.
 
+/mob/living/simple_mob/animal/sif/kururak/load_default_bellies()
+	. = ..()
+	var/obj/belly/B = vore_selected
+	B.name = "stomach"
+	B.desc = "Blue innards of a sleek creature surround you in an overwhelmingly tight pressure. Walls, coated in slick, reflective mucus reflect \
+		light from the pool of teal stomach juices, flashing you from random angles. The texture of the surroundings is only mildly soft, it feels \
+		firm, muscular body ensuring you stay in your place, drenched in fluids, pacified by constant churning motions. Effective and agile predator \
+		made sure you were helpless during the hunt, now its gut ensures you are as disoriented in this pit of flashing lights and bubbling acid."
+	B.mode_flags = DM_FLAG_THICKBELLY | DM_FLAG_NUMBING
+	B.digest_brute = 3
+	B.digest_burn = 2
+	B.digestchance = 0
+	B.absorbchance = 0
+	B.escapechance = 25
+	B.escape_stun = 5
 
 /datum/say_list/kururak
 	speak = list("Kurr?","|R|rrh..", "Ksss...")
@@ -194,7 +203,7 @@
 							to_chat(H, span_alien("You are disoriented by \the [src]!"))
 							H.eye_blurry = max(H.eye_blurry, flash_strength + 5)
 							H.flash_eyes()
-							H.apply_damage(flash_strength * H.species.flash_burn/5, BURN, BP_HEAD, 0, 0)
+							H.apply_damage(flash_strength * H.species.flash_burn/5, BURN, BP_HEAD, 0)
 
 		else if(issilicon(L))
 			if(isrobot(L))
@@ -272,7 +281,7 @@
 		var/mob/living/L = A
 		if(ishuman(L))
 			var/mob/living/carbon/human/H = L
-			H.apply_damage(damage_to_apply, BRUTE, BP_TORSO, 0, 0)
+			H.apply_damage(damage_to_apply, BRUTE, BP_TORSO, 0)
 
 		else
 			L.adjustBruteLoss(damage_to_apply)
@@ -285,7 +294,7 @@
 		M.take_damage(damage_to_apply)
 		if(prob(3))
 			visible_message(span_critical("\The [src] begins digging its claws into \the [M]'s hatch!"))
-			if(do_after(src, 1 SECOND))
+			if(do_after(src, 1 SECOND, target = M))
 				visible_message(span_critical("\The [src] rips \the [M]'s access hatch open, dragging [M.occupant] out!"))
 				M.go_out()
 
@@ -426,5 +435,5 @@
 	bleeding_rate_percent = 0.7
 	attack_speed_percent = 0.8
 
-/decl/mob_organ_names/kururak
+/datum/decl/mob_organ_names/kururak
 	hit_zones = list("head", "chest", "left foreleg", "right foreleg", "left hind leg", "right hind leg", "far left tail", "far right tail", "left middle tail", "right middle tail")

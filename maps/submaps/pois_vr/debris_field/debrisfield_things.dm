@@ -145,11 +145,14 @@
 /obj/item/space_spider_egg
 	name = "ruptured giant spider egg"
 	desc = "An attempt by space-adapted giant spiders to reproduce! Unfortunately, their young cannot yet survive hard vacuum. Yet."
-	icon = 'icons/obj/egg_new_vr.dmi'	//VOREStation Edit
+	icon = 'icons/obj/egg.dmi'
 	icon_state = "egg_slimeglob"
 	origin_tech = list(TECH_BIO = 10)
 
-/obj/item/space_spider_egg/attack_self(mob/user as mob)
+/obj/item/space_spider_egg/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	var/turf/drop_loc = user.loc
 	to_chat(user, span_warning("The egg cracks open, splattering disgusting goop at your feet...\n \
 	Whatever life laid within shall never awaken, if it was even alive."))
@@ -305,7 +308,8 @@ i just hope whatever happens, she finds the mercy we werent equipped to give her
 	goal: RETURN HOME status: Successful \n \
 	goal: PRO-PRO"
 
-/obj/item/poi/broken_drone_circuit/phoron_tanker/New()
+/obj/item/poi/broken_drone_circuit/phoron_tanker/Initialize(mapload)
+	. = ..()
 	drone_name = "NED-[pick(list("ADA","DOS","GNU","MAC","WIN","NJS","SKS","DRD","IOS","CRM","IBM","TEX","LVM","BSD",))]-[rand(1000, 9999)]]"
 	tanker = locate("POI_NT_TANKER_BOAT")	//actual .dmm area has this
 	var/tankername = "Unknown Ship"

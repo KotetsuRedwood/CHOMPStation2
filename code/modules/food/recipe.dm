@@ -9,7 +9,7 @@
  * * items are objects. Fruits, tools, circuit boards.
  * * result is type to create as new object
  * * time is optional parameter, you shall use in in your machine,
-     default /datum/recipe/ procs does not rely on this parameter.
+ *	default /datum/recipe/ procs does not rely on this parameter.
  *
  *  Functions you need:
  *  /datum/recipe/proc/make(var/obj/container as obj)
@@ -62,6 +62,8 @@
 	// This is a bitfield, more than one type can be used
 	// Grill is presently unused and not listed
 
+	var/wiki_flag = 0
+
 /datum/recipe/proc/check_reagents(var/datum/reagents/avail_reagents, var/exact = FALSE)
 	if(!reagents || !reagents.len)
 		return TRUE
@@ -69,18 +71,17 @@
 	if(!avail_reagents)
 		return FALSE
 
-	. = TRUE
 	for(var/r_r in reagents)
 		var/aval_r_amnt = avail_reagents.get_reagent_amount(r_r)
-		if(aval_r_amnt - reagents[r_r] >= 0)
-			if(aval_r_amnt>(reagents[r_r]) && exact)
-				. = FALSE
-		else
+		if(aval_r_amnt - reagents[r_r] < 0)
 			return FALSE
 
-	if((reagents?(reagents.len):(0)) < avail_reagents.reagent_list.len)
+		if(aval_r_amnt > (reagents[r_r]) && exact)
+			return FALSE
+
+	if(LAZYLEN(reagents) < avail_reagents.reagent_list.len)
 		return FALSE
-	return .
+	return TRUE
 
 /datum/recipe/proc/check_fruit(var/obj/container, var/exact = FALSE)
 	if (!fruit || !fruit.len)
@@ -89,7 +90,7 @@
 	. = TRUE
 	if(fruit && fruit.len)
 		var/list/checklist = list()
-		 // You should trust Copy().
+		// You should trust Copy().
 		checklist = fruit.Copy()
 		for(var/obj/item/reagent_containers/food/snacks/grown/G in container)
 			if(!G.seed || !G.seed.kitchen_tag || isnull(checklist[G.seed.kitchen_tag]))
@@ -209,14 +210,12 @@
 			var/obj/item/I = locate(i) in container
 			if (I && I.reagents)
 				I.reagents.trans_to_holder(buffer,I.reagents.total_volume)
-			// Outpost 21 upport start - Handle holders dropping mobs on destruction. No more endless mice burgers
 			if(istype(I,/obj/item/holder))
 				var/obj/item/holder/hol = I
 				if(hol.held_mob?.client)
 					hol.held_mob.ghostize()
 				qdel(hol.held_mob)
 				hol.held_mob = null
-			// Outpost 21 upport end
 			qdel(I)
 
 	//Find fruits
@@ -270,6 +269,8 @@
 			result_obj.reagents.trans_to(holder, result_obj.reagents.total_volume)
 		tally++
 
+	if(results.len)
+		SEND_GLOBAL_SIGNAL(COMSIG_GLOB_FOOD_PREPARED, container, results)
 
 	switch(reagent_mix)
 		if (RECIPE_REAGENT_REPLACE)

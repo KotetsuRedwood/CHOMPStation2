@@ -31,9 +31,20 @@
 	pressure_resistance = 2
 	drop_sound = 'sound/items/drop/accessory.ogg'
 	pickup_sound = 'sound/items/pickup/accessory.ogg'
+	var/can_click = TRUE
 
-/obj/item/pen/attack_self(var/mob/user)
+	///Var for attack_self chain
+	var/special_handling = FALSE
+
+/obj/item/pen/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
+	if(special_handling)
+		return FALSE
 	if(!user.checkClickCooldown())
+		return
+	if(!can_click)
 		return
 	user.setClickCooldown(1 SECOND)
 	to_chat(user, span_notice("Click."))
@@ -99,13 +110,18 @@
 	desc = "It's a pen with multiple colors of ink!"
 	var/selectedColor = 1
 	var/colors = list("black","blue","red")
+	special_handling = TRUE
 
-/obj/item/pen/AltClick(mob/user)
+/obj/item/pen/click_alt(mob/user)
+	if(!Adjacent(user))
+		return
 	to_chat(user, span_notice("Click."))
 	playsound(src, 'sound/items/penclick.ogg', 50, 1)
-	return
 
 /obj/item/pen/multi/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	if(++selectedColor > 3)
 		selectedColor = 1
 
@@ -131,8 +147,8 @@
 	flags = OPENCONTAINER
 	origin_tech = list(TECH_MATERIAL = 2, TECH_ILLEGAL = 5)
 
-/obj/item/pen/reagent/New()
-	..()
+/obj/item/pen/reagent/Initialize(mapload)
+	. = ..()
 	create_reagents(30)
 
 /obj/item/pen/reagent/attack(mob/living/M as mob, mob/user as mob)
@@ -180,7 +196,7 @@
 	active_icon_state = "[icon_state]-x"
 	default_icon_state = icon_state
 
-/obj/item/pen/blade/AltClick(mob/user)
+/obj/item/pen/blade/click_alt(mob/user)
 	..()
 	if(active)
 		deactivate(user)
@@ -247,9 +263,10 @@
 	desc = "It's a black ink pen with a sharp point and a carefully engraved \"Waffle Co.\""
 	origin_tech = list(TECH_MATERIAL = 2, TECH_ILLEGAL = 5)
 
-/obj/item/pen/reagent/sleepy/New()
-	..()
-	reagents.add_reagent(REAGENT_ID_CHLORALHYDRATE, 22)	//Used to be 100 sleep toxin//30 Chloral seems to be fatal, reducing it to 22./N
+/obj/item/pen/reagent/sleepy/Initialize(mapload)
+	. = ..()
+	reagents.add_reagent(REAGENT_ID_CHLORALHYDRATE, 22)	// CHOMPEdit
+	// reagents.add_reagent(REAGENT_ID_STOXIN, 14)	// CHOMPRemove
 
 
 /*
@@ -258,8 +275,8 @@
 /obj/item/pen/reagent/paralysis
 	origin_tech = list(TECH_MATERIAL = 2, TECH_ILLEGAL = 5)
 
-/obj/item/pen/reagent/paralysis/New()
-	..()
+/obj/item/pen/reagent/paralysis/Initialize(mapload)
+	. = ..()
 	reagents.add_reagent(REAGENT_ID_ZOMBIEPOWDER, 5)
 	reagents.add_reagent(REAGENT_ID_CRYPTOBIOLIN, 10)
 
@@ -268,12 +285,16 @@
  */
 /obj/item/pen/chameleon
 	var/signature = ""
+	special_handling = TRUE
 
 /obj/item/pen/chameleon/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	/*
 	// Limit signatures to official crew members
 	var/personnel_list[] = list()
-	for(var/datum/data/record/t in data_core.locked) //Look in data core locked.
+	for(var/datum/data/record/t in GLOB.data_core.locked) //Look in data core locked.
 		personnel_list.Add(t.fields["name"])
 	personnel_list.Add("Anonymous")
 
@@ -281,7 +302,7 @@
 	if(new_signature)
 		signature = new_signature
 	*/
-	signature = sanitize(tgui_input_text(user, "Enter new signature. Leave blank for 'Anonymous'", "New Signature", signature))
+	signature = tgui_input_text(user, "Enter new signature. Leave blank for 'Anonymous'", "New Signature", signature, MAX_MESSAGE_LEN)
 
 /obj/item/pen/proc/get_signature(var/mob/user)
 	return (user && user.real_name) ? user.real_name : "Anonymous"
@@ -336,14 +357,14 @@
 	var/colourName = "red" //for updateIcon purposes
 	drop_sound = 'sound/items/drop/gloves.ogg'
 	pickup_sound = 'sound/items/pickup/gloves.ogg'
+	can_click = FALSE
+	special_handling = TRUE
 
-/obj/item/pen/crayon/New()
-	name = "[colourName] crayon"
+/obj/item/pen/crayon/Initialize(mapload)
+	. = ..()
+	name = "[colourName] [name]"
 
 /obj/item/pen/crayon/marker
 	name = "marker"
 	desc = "A chisel-tip permanent marker. Hopefully non-toxic."
 	icon_state = "markerred"
-
-/obj/item/pen/crayon/marker/New()
-	name = "[colourName] marker"

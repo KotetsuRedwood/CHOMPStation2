@@ -72,12 +72,6 @@
 	outdoors = 0
 	},
 /area/template_noop)
-"dd" = (
-/obj/effect/floor_decal/industrial/warning,
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/tiled,
-/area/submap/BorgLab)
 "de" = (
 /obj/effect/floor_decal/industrial/warning{
 	dir = 1
@@ -207,7 +201,6 @@
 /obj/effect/floor_decal/rust,
 /obj/item/material/shard,
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled,
 /area/submap/BorgLab)
 "ib" = (
@@ -247,7 +240,6 @@
 "jx" = (
 /obj/effect/floor_decal/industrial/warning,
 /obj/machinery/light/small/emergency/flicker,
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled,
 /area/submap/BorgLab)
@@ -328,15 +320,6 @@
 	},
 /turf/simulated/floor/tiled/dark,
 /area/submap/BorgLab)
-"no" = (
-/obj/effect/floor_decal/industrial/warning{
-	dir = 1
-	},
-/obj/effect/floor_decal/rust,
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/tiled,
-/area/submap/BorgLab)
 "nv" = (
 /obj/item/stack/material/phoron{
 	amount = 10
@@ -363,7 +346,6 @@
 	maxHealth = 15
 	},
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled,
 /area/submap/BorgLab)
 "nH" = (
@@ -386,7 +368,6 @@
 	dir = 4
 	},
 /obj/random/trash,
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/generic,
 /turf/simulated/floor/tiled,
@@ -436,7 +417,6 @@
 	maxHealth = 15
 	},
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/plating,
 /area/submap/BorgLab)
 "rW" = (
@@ -478,7 +458,6 @@
 /obj/machinery/door/airlock/maintenance/rnd{
 	req_one_access = null
 	},
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled/techmaint,
 /area/submap/BorgLab)
@@ -539,13 +518,10 @@
 	},
 /obj/random/trash,
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled,
 /area/submap/BorgLab)
 "vq" = (
 /obj/effect/floor_decal/rust,
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled,
 /area/submap/BorgLab)
@@ -723,11 +699,11 @@
 /area/submap/BorgLab)
 "Ds" = (
 /mob/living/simple_mob/vore/aggressive/corrupthound/prettyboi{
+	faction = "synthtide";
 	health = 300;
 	maxHealth = 300;
 	melee_damage_lower = 15;
-	melee_damage_upper = 25;
-	faction = "synthtide"
+	melee_damage_upper = 25
 	},
 /turf/simulated/floor/reinforced,
 /area/submap/BorgLab)
@@ -761,8 +737,7 @@
 /area/submap/BorgLab)
 "DY" = (
 /obj/item/pickaxe/plasmacutter,
-/obj/machinery/firealarm{
-	alarms_hidden = 1;
+/obj/machinery/firealarm/alarms_hidden{
 	pixel_y = 24
 	},
 /obj/effect/floor_decal/rust,
@@ -811,8 +786,7 @@
 /turf/simulated/floor/tiled,
 /area/submap/BorgLab)
 "EE" = (
-/obj/machinery/firealarm{
-	alarms_hidden = 1;
+/obj/machinery/firealarm/alarms_hidden{
 	dir = 8;
 	pixel_x = -24
 	},
@@ -1015,6 +989,7 @@
 /obj/item/stack/material/phoron{
 	amount = 10
 	},
+/obj/item/prop/deconstructable/gigacell,
 /turf/simulated/floor/plating,
 /area/submap/BorgLab)
 "LA" = (
@@ -1053,7 +1028,6 @@
 /obj/effect/floor_decal/industrial/warning,
 /obj/random/junk,
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled,
 /area/submap/BorgLab)
 "Mi" = (
@@ -1082,11 +1056,6 @@
 /obj/effect/landmark/loot_spawn/low,
 /turf/simulated/floor/outdoors/dirt,
 /area/template_noop)
-"Nd" = (
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/plating,
-/area/submap/BorgLab)
 "Nr" = (
 /obj/effect/floor_decal/industrial/warning{
 	dir = 1
@@ -1111,7 +1080,7 @@
 /obj/effect/floor_decal/industrial/warning{
 	dir = 1
 	},
-/obj/machinery/firealarm{
+/obj/machinery/firealarm/alarms_hidden{
 	pixel_y = 24
 	},
 /obj/effect/floor_decal/rust,
@@ -1123,15 +1092,12 @@
 /obj/effect/floor_decal/rust,
 /obj/effect/gibspawner/robot,
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled,
 /area/submap/BorgLab)
 "Or" = (
 /obj/effect/floor_decal/industrial/warning{
 	dir = 1
 	},
-/obj/effect/map_helper/no_phaseshift/area,
 /turf/simulated/floor/tiled,
 /area/submap/BorgLab)
 "Oy" = (
@@ -1154,7 +1120,6 @@
 /obj/structure/window/reinforced/tinted/frosted{
 	dir = 4
 	},
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled,
 /area/submap/BorgLab)
@@ -1208,13 +1173,11 @@
 /obj/effect/floor_decal/rust,
 /obj/random/junk,
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled,
 /area/submap/BorgLab)
 "RG" = (
 /obj/effect/floor_decal/rust,
 /obj/random/trash,
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled,
 /area/submap/BorgLab)
@@ -1369,8 +1332,6 @@
 	},
 /obj/effect/floor_decal/rust,
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled,
 /area/submap/BorgLab)
 "Ym" = (
@@ -1430,7 +1391,6 @@
 /area/submap/BorgLab)
 "ZB" = (
 /obj/effect/floor_decal/rust,
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/plating,
 /area/submap/BorgLab)
@@ -1558,7 +1518,7 @@ SR
 bh
 ts
 Xw
-Nd
+du
 Ps
 So
 iK
@@ -1854,7 +1814,7 @@ vS
 eI
 jv
 Gb
-dd
+gA
 dK
 dl
 wY
@@ -1881,7 +1841,7 @@ kU
 II
 PS
 nS
-Nd
+du
 YK
 MC
 pv
@@ -1933,7 +1893,7 @@ CQ
 hp
 vS
 tC
-no
+de
 zS
 gA
 Bk
@@ -1960,7 +1920,7 @@ CQ
 dt
 Oy
 pU
-no
+de
 OP
 mo
 yP
@@ -1987,7 +1947,7 @@ HT
 pv
 vS
 tC
-no
+de
 ug
 Jy
 WT
@@ -2096,7 +2056,7 @@ Mi
 FU
 tC
 Ee
-Nd
+du
 JK
 ha
 RO

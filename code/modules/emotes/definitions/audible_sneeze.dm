@@ -1,4 +1,4 @@
-/decl/emote/audible/sneeze
+/datum/decl/emote/audible/sneeze
 	key = "sneeze"
 	emote_message_1p = "You sneeze."
 	emote_message_3p = "sneezes."
@@ -7,10 +7,9 @@
 	emote_message_synthetic_3p = "emits a robotic sneeze."
 	emote_message_synthetic_3p_target = "emits a robotic sneeze towards TARGET."
 
-/decl/emote/audible/sneeze/get_emote_sound(var/atom/user)
+/datum/decl/emote/audible/sneeze/get_emote_sound(var/atom/user)
 	if(ishuman(user) && !check_synthetic(user))
 		var/mob/living/carbon/human/H = user
-		// CHOMPEdit Start: Standardize Species Sounds
 		var/vol = H.species.sneeze_volume
 		var/s = get_species_sound(get_gendered_sound(H))["sneeze"]
 		if(!s && !(get_species_sound(H.species.species_sounds) == "None")) // Failsafe, so we always use the default sneeze/etc sounds. None will cancel out anyways.

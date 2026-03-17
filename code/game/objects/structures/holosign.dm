@@ -98,11 +98,9 @@
 		addtimer(VARSET_CALLBACK(src, icon_state, "holo_medical"), 10 SECONDS, TIMER_DELETE_ME)
 
 /obj/structure/holosign/barrier/medical/proc/CheckHuman(mob/living/carbon/human/H)
-	if(istype(H.get_species(), SPECIES_XENOCHIMERA))
+	if(H.get_species() == SPECIES_XENOCHIMERA)
 		return FALSE
-	if(H.GetViruses())
-		for(var/datum/disease/D in H.GetViruses())
-			if(D.severity == NONTHREAT)
-				continue
-			return FALSE
+	var/threat = H.check_virus()
+	if(get_disease_danger_value(threat) > get_disease_danger_value(DISEASE_MINOR))
+		return FALSE
 	return TRUE

@@ -7,7 +7,7 @@
 	pass_flags = PASSBLOB | PASSTABLE
 	faction = FACTION_BLOB
 
-	organ_names = /decl/mob_organ_names/blob
+	organ_names = /datum/decl/mob_organ_names/blob
 
 	heat_damage_per_tick = 0
 	cold_damage_per_tick = 0
@@ -30,8 +30,8 @@
 	mob_class = MOB_CLASS_SLIME
 	ai_holder_type = /datum/ai_holder/simple_mob/melee
 
-	can_be_drop_prey = FALSE //CHOMP Add
-	can_pain_emote = FALSE // CHOMPEdit: Can't feel pain
+	can_be_drop_prey = FALSE
+	can_pain_emote = FALSE
 
 /mob/living/simple_mob/blob/speech_bubble_appearance()
 	return "slime"
@@ -88,5 +88,5 @@
 
 	return ally
 
-/decl/mob_organ_names/blob
+/datum/decl/mob_organ_names/blob
 	hit_zones = list("mass")

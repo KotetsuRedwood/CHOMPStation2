@@ -20,7 +20,7 @@
 	center_of_mass_y = 14
 	matter = list(MAT_GLASS = 150)
 	amount_per_transfer_from_this = 5
-	possible_transfer_amounts = null
+	max_transfer_amount = null
 	volume = 15
 	w_class = ITEMSIZE_TINY
 	slot_flags = SLOT_EARS
@@ -30,14 +30,13 @@
 	var/image/filling //holds a reference to the current filling overlay
 	var/visible_name = "a syringe"
 	var/time = 30
-	var/drawing = 0
+	var/drawing = FALSE
 	var/used = FALSE
 	var/dirtiness = 0
 	var/list/targets
 	var/list/datum/disease/viruses
 	drop_sound = 'sound/items/drop/glass.ogg'
 	pickup_sound = 'sound/items/pickup/glass.ogg'
-
 
 /obj/item/reagent_containers/syringe/Initialize(mapload)
 	. = ..()
@@ -65,12 +64,14 @@
 	..()
 	update_icon()
 
-/obj/item/reagent_containers/syringe/attack_self(mob/user as mob)
+/obj/item/reagent_containers/syringe/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	switch(mode)
 		if(SYRINGE_CAPPED)
 			mode = SYRINGE_DRAW
-			// to_chat(user,span_notice("You uncap the syringe."))
-			balloon_alert(user, "[src] uncapped") // CHOMPEdit - Changed to balloon_alert
+			balloon_alert(user, "[src] uncapped")
 		if(SYRINGE_DRAW)
 			mode = SYRINGE_INJECT
 		if(SYRINGE_INJECT)
@@ -86,6 +87,10 @@
 /obj/item/reagent_containers/syringe/attackby(obj/item/I as obj, mob/user as mob)
 	return
 
+/obj/item/reagent_containers/syringe/extrapolator_act(mob/living/user, obj/item/extrapolator/extrapolator, dry_run)
+	. = ..()
+	EXTRAPOLATOR_ACT_ADD_DISEASES(., viruses)
+
 /obj/item/reagent_containers/syringe/afterattack(obj/target, mob/user, proximity)
 	if(!proximity || !target.reagents)
 		return
@@ -95,7 +100,7 @@
 		return
 
 	if(user.a_intent == I_HURT && ismob(target))
-		if((CLUMSY in user.mutations) && prob(50))
+		if(CLUMSY_HARM_CHANCE(user))
 			target = user
 		syringestab(target, user)
 		return
@@ -132,24 +137,24 @@
 						return
 
 					var/datum/reagent/B
-					drawing = 1
+					drawing = TRUE
 					if(ishuman(T))
 						var/mob/living/carbon/human/H = T
 						if(H.species && !H.should_have_organ(O_HEART))
 							H.reagents.trans_to_obj(src, amount)
 						else
 							if(ismob(H) && H != user)
-								if(!do_mob(user, target, time))
-									drawing = 0
+								if(!do_after(user, time, target))
+									drawing = FALSE
 									return
 							B = T.take_blood(src, amount)
-							drawing = 0
+							drawing = FALSE
 					else
-						if(!do_mob(user, target, time))
-							drawing = 0
+						if(!do_after(user, time, target))
+							drawing = FALSE
 							return
 						B = T.take_blood(src,amount)
-						drawing = 0
+						drawing = FALSE
 
 					if (B)
 						reagents.reagent_list += B
@@ -165,7 +170,7 @@
 					to_chat(user, span_notice("[target] is empty."))
 					return
 
-				if(!target.is_open_container() && !istype(target, /obj/structure/reagent_dispensers) && !istype(target, /obj/item/slime_extract) && !istype(target, /obj/item/reagent_containers/food))
+				if(!target.is_open_container() && !istype(target, /obj/structure/reagent_dispensers) && !istype(target, /obj/item/slime_extract) && !istype(target, /obj/item/reagent_containers/food) && !istype(target, /obj/item/reagent_containers/blood))
 					to_chat(user, span_notice("You cannot directly remove reagents from this object."))
 					return
 
@@ -199,7 +204,7 @@
 				return
 			// CHOMPedit end
 
-			if(!target.is_open_container() && !ismob(target) && !istype(target, /obj/item/reagent_containers/food) && !istype(target, /obj/item/slime_extract) && !istype(target, /obj/item/clothing/mask/smokable/cigarette) && !istype(target, /obj/item/storage/fancy/cigarettes) && !istype(target, /obj/item/clothing/mask/chewable)) // CHOMPEdit
+			if(!target.is_injectable_container() && !ismob(target))
 				to_chat(user, span_notice("You cannot directly fill this object."))
 				return
 			if(!target.reagents.get_free_space())
@@ -209,6 +214,10 @@
 			var/mob/living/carbon/human/H = target
 			var/obj/item/organ/external/affected //VOREStation Edit - Moved this outside this if
 			if(istype(H))
+				if(!H.consume_liquid_belly)
+					if(liquid_belly_check())
+						to_chat(user, span_infoplain("[user == H ? "You can't" : "\The [H] can't"] take that, it contains something produced from a belly!"))
+						return
 				affected = H.get_organ(user.zone_sel.selecting) //VOREStation Edit - See above comment.
 				if(!affected)
 					to_chat(user, span_danger("\The [H] is missing that limb!"))
@@ -245,7 +254,7 @@
 
 			//The warmup
 			user.setClickCooldown(DEFAULT_QUICK_COOLDOWN)
-			if(!do_after(user,warmup_time,target))
+			if(!do_after(user, warmup_time, target))
 				return
 
 			var/trans = 0
@@ -254,7 +263,7 @@
 				while(reagents.total_volume)
 					trans += reagents.trans_to_mob(target, amount_per_transfer_from_this, CHEM_BLOOD)
 					update_icon()
-					if(!reagents.total_volume || !do_after(user,cycle_time,target))
+					if(!reagents.total_volume || !do_after(user, cycle_time, target))
 						break
 			else
 				trans += reagents.trans_to_obj(target, amount_per_transfer_from_this)
@@ -278,11 +287,11 @@
 
 		var/mob/living/carbon/human/H = target
 
-		var/target_zone = ran_zone(check_zone(user.zone_sel.selecting, target))
+		var/target_zone = get_zone_with_miss_chance(check_zone(user.zone_sel.selecting, target))
 		var/obj/item/organ/external/affecting = H.get_organ(target_zone)
 
 		if (!affecting || affecting.is_stump())
-			balloon_alert(user, "They are missing that limb!") // CHOMPEdit - Changed to balloon_alert
+			balloon_alert(user, "they are missing that limb!")
 			return
 
 		var/hit_area = affecting.name
@@ -290,7 +299,8 @@
 		if((user != target) && H.check_shields(7, src, user, "\the [src]"))
 			return
 
-		if (target != user && H.getarmor(target_zone, "melee") > 5 && prob(50))
+		var/armor_val = H.getarmor(target_zone, "melee")
+		if(target != user && armor_val >= 5 && prob(50+armor_val)) // High armor can deflect syringe stabs
 			for(var/mob/O in viewers(world.view, user))
 				O.show_message(span_bolddanger("[user] tries to stab [target] in \the [hit_area] with [src.name], but the attack is deflected by armor!"), 1)
 			user.remove_from_mob(src)
@@ -300,15 +310,13 @@
 
 			return
 
-		// user.visible_message(span_danger("[user] stabs [target] in \the [hit_area] with [src.name]!"))
-		balloon_alert_visible("Stabs [target] in \the [hit_area] with [src.name]!") // CHOMPEdit - Changed to balloon alert
+		balloon_alert_visible("stabs [target] in \the [hit_area] with [src.name]!")
 
 		if(affecting.take_damage(3))
 			H.UpdateDamageIcon()
 
 	else
-		// user.visible_message(span_danger("[user] stabs [target] with [src.name]!"))
-		balloon_alert_visible("Stabs [user] in \the [target] with [src.name]!") // CHOMPEdit - Changed to balloon alert
+		balloon_alert_visible("stabs [user] in \the [target] with [src.name]!")
 		target.take_organ_damage(3)// 7 is the same as crowbar punch
 
 
@@ -420,10 +428,9 @@
 	targets |= hash
 
 	//Grab any viruses they have
-	if(iscarbon(target) && LAZYLEN(target.viruses.len))
+	if(iscarbon(target) && LAZYLEN(target.IsInfected()))
 		LAZYINITLIST(viruses)
-		var/datum/disease/virus = pick(target.viruses.len)
-		viruses[hash] = virus.Copy()
+		viruses[hash] = target.GetViruses()
 
 	//Dirtiness should be very low if you're the first injectee. If you're spam-injecting 4 people in a row around you though,
 	//This gives the last one a 30% chance of infection.
@@ -490,6 +497,17 @@
 
 	icon_state = "[rounded_vol]"
 	item_state = "syringe_[rounded_vol]"
+
+/obj/item/reagent_containers/syringe/old
+	name = "old syringe"
+	desc = "An old, broken syringe. Are you sure it's a good idea to pick it up without gloves?"
+	mode = SYRINGE_BROKEN
+
+/obj/item/reagent_containers/syringe/old/Initialize(mapload)
+	. = ..()
+	if(prob(75))
+		var/datum/disease/advance/new_disease = new /datum/disease/advance/random(rand(1, 3), rand(7, 9), 2, infected = src)
+		src.viruses += new_disease
 
 #undef SYRINGE_DRAW
 #undef SYRINGE_INJECT

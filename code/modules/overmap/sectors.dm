@@ -49,7 +49,9 @@
 
 	var/unique_identifier //Define this for objs that we want to be able to rename. Needed to avoid compiler errors if not included.
 
-/obj/effect/overmap/visitable/Initialize(mapload)
+	var/mob_announce_cooldown = 0 //Define this to make it so when visited, the ATC will announce their arrival. Only used if you have a Crossed/Uncrossed that calls announce_atc w/ announce_atc being redefined.
+
+/obj/effect/overmap/visitable/Initialize(mapload, dyn_poi) //CHOMPEdit - dyn_poi
 	. = ..()
 	if(. == INITIALIZE_HINT_QDEL)
 		return
@@ -65,6 +67,22 @@
 
 	forceMove(locate(start_x, start_y, global.using_map.overmap_z))
 
+	// CHOMPAdd Start
+	if(dyn_poi)
+		for(var/obj/effect/overmap/visitable/dynamic/poi/P in loc.contents) // If we've spawned on another poi, we'll try again once.
+			if(P == src)
+				continue
+			start_x = start_x || rand(OVERMAP_EDGE, global.using_map.overmap_size - OVERMAP_EDGE)
+			start_y = start_y || rand(OVERMAP_EDGE, global.using_map.overmap_size - OVERMAP_EDGE)
+			forceMove(locate(start_x, start_y, global.using_map.overmap_z))
+			break
+		var/sanity = 0
+		for(var/obj/effect/overmap/visitable/dynamic/poi/P in loc.contents)
+			sanity++
+			if(sanity > 1)
+				return INITIALIZE_HINT_QDEL
+	// CHOMPAdd End
+
 	if(!docking_codes)
 		docking_codes = "[ascii2text(rand(65,90))][ascii2text(rand(65,90))][ascii2text(rand(65,90))][ascii2text(rand(65,90))]"
 
@@ -77,7 +95,7 @@
 
 	if(known)
 		plane = PLANE_LIGHTING_ABOVE
-		for(var/obj/machinery/computer/ship/helm/H in global.machines)
+		for(var/obj/machinery/computer/ship/helm/H in GLOB.machines)
 			H.get_known_sectors()
 	else
 		real_appearance = image(icon, src, icon_state)
@@ -89,7 +107,15 @@
 		real_desc = desc
 		desc = "Scan this to find out more information."
 	//at the moment only used for the OM location renamer. Initializing here in case we want shuttles incl as well in future. Also proc definition convenience.
-	visitable_overmap_object_instances |= src
+	GLOB.visitable_overmap_object_instances += src
+
+	for(var/i in 1 to length(levels_for_distress))
+		var/current = levels_for_distress[i]
+		if(isnum(current))
+			continue
+		levels_for_distress[i] = GLOB.map_templates_loaded[current]
+	if(!levels_for_distress)
+		levels_for_distress = list(1)
 
 //To be used by GMs and calling through var edits for the overmap object
 //It causes the overmap object to "reinitialize" its real_appearance for known = FALSE objects
@@ -124,12 +150,21 @@
 /obj/effect/overmap/visitable/proc/find_z_levels()
 	if(!LAZYLEN(map_z)) // If map_z is already populated use it as-is, otherwise start with connected z-levels.
 		map_z = GetConnectedZlevels(z)
-	if(LAZYLEN(extra_z_levels))
-		map_z |= extra_z_levels
+
+	// extra_z_levels may need to be resolved
+	for(var/extra_z in extra_z_levels)
+		if(isnum(extra_z))
+			map_z |= extra_z
+			continue
+		var/resolved_z = GLOB.map_templates_loaded[extra_z]
+		if(resolved_z)
+			map_z |= resolved_z
+		else
+			admin_notice(span_danger("[src] could not find z_level [extra_z]!"), R_DEBUG)
 
 /obj/effect/overmap/visitable/proc/register_z_levels()
 	for(var/zlevel in map_z)
-		map_sectors["[zlevel]"] = src
+		GLOB.map_sectors["[zlevel]"] = src
 
 	global.using_map.player_levels |= map_z
 	if(!in_space)
@@ -142,7 +177,7 @@
 	*/
 
 /obj/effect/overmap/visitable/proc/unregister_z_levels()
-	map_sectors -= map_z
+	GLOB.map_sectors -= map_z
 
 	global.using_map.player_levels -= map_z
 	if(!in_space)
@@ -233,6 +268,8 @@
 	icon_state = "sector"
 	anchored = TRUE
 
+/obj/effect/overmap/visitable/sector/proc/announce_atc(var/atom/movable/AM, var/going = FALSE) //Base proc. Used for virgo3b at this time.
+	return
 // Because of the way these are spawned, they will potentially have their invisibility adjusted by the turfs they are mapped on
 // prior to being moved to the overmap. This blocks that. Use set_invisibility to adjust invisibility as needed instead.
 /obj/effect/overmap/visitable/sector/hide()
@@ -248,10 +285,8 @@
 	This message will repeat one time in 5 minutes. Thank you for your urgent assistance."
 	//CHOMPedit end
 
-	if(!levels_for_distress)
-		levels_for_distress = list(1)
 	for(var/zlevel in levels_for_distress)
-		priority_announcement.Announce(message, new_title = "Automated Distress Signal", new_sound = 'sound/AI/sos_ch.ogg', zlevel = zlevel) //CHOMPedit, changed sound
+		GLOB.priority_announcement.Announce(message, new_title = "Automated Distress Signal", new_sound = 'sound/AI/sos_ch.ogg', zlevel = zlevel) //CHOMPedit, changed sound
 
 	var/image/I = image(icon, icon_state = "distress")
 	I.plane = PLANE_LIGHTING_ABOVE
@@ -270,7 +305,7 @@
 	//CHOMPedit end
 
 	for(var/zlevel in levels_for_distress)
-		priority_announcement.Announce(message, new_title = "Automated Distress Signal", new_sound = 'sound/AI/sos_ch.ogg', zlevel = zlevel) //CHOMPedit, changed sound
+		GLOB.priority_announcement.Announce(message, new_title = "Automated Distress Signal", new_sound = 'sound/AI/sos_ch.ogg', zlevel = zlevel) //CHOMPedit, changed sound
 
 /proc/build_overmap()
 	if(!global.using_map.use_overmap)

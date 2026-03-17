@@ -115,7 +115,6 @@
 	target.ooc_notes_dislikes = value
 	return
 
-// CHOMP specific, but added here not to forget
 /datum/preference/toggle/living/ooc_notes_style
 	category = PREFERENCE_CATEGORY_MANUALLY_RENDERED
 	savefile_key = "OOC_Notes_System"
@@ -124,7 +123,7 @@
 	can_randomize = FALSE
 
 /datum/preference/toggle/living/ooc_notes_style/apply_to_living(mob/living/target, value)
-	target.ooc_notes_style = value // CHOMPEnable
+	target.ooc_notes_style = value
 	return
 
 /datum/preference/text/living/ooc_notes_maybes
@@ -135,7 +134,7 @@
 	can_randomize = FALSE
 
 /datum/preference/text/living/ooc_notes_maybes/apply_to_living(mob/living/target, value)
-	target.ooc_notes_maybes = value // CHOMPEnable
+	target.ooc_notes_maybes = value
 	return
 
 /datum/preference/text/living/ooc_notes_favs
@@ -146,7 +145,7 @@
 	can_randomize = FALSE
 
 /datum/preference/text/living/ooc_notes_favs/apply_to_living(mob/living/target, value)
-	target.ooc_notes_favs = value // CHOMPEnable
+	target.ooc_notes_favs = value
 	return
 
 /datum/preference/toggle/human/name_is_always_random
@@ -174,6 +173,10 @@
 /datum/preference/choiced/living/spawnpoint/apply_to_living(mob/living/target, value)
 	return // handled in job_controller
 
+/datum/preference/choiced/living/spawnpoint/create_default_value()
+	var/datum/spawnpoint/default_spawnpoint = DEFAULT_LATEJOIN_LOCATION
+	return default_spawnpoint::display_name
+
 /datum/preference/text/living/private_notes
 	category = PREFERENCE_CATEGORY_MANUALLY_RENDERED
 	savefile_identifier = PREFERENCE_CHARACTER
@@ -184,3 +187,21 @@
 /datum/preference/text/living/private_notes/apply_to_living(mob/living/target, value)
 	target.private_notes = value
 	return
+
+/datum/preference/choiced/living/emote_sound_mode
+	category = PREFERENCE_CATEGORY_MANUALLY_RENDERED
+	savefile_identifier = PREFERENCE_CHARACTER
+	savefile_key = "emote_sound_mode"
+
+/datum/preference/choiced/living/emote_sound_mode/init_possible_values()
+	return list(
+		EMOTE_SOUND_NO_FREQ,
+		EMOTE_SOUND_VOICE_FREQ,
+		EMOTE_SOUND_VOICE_LIST,
+	)
+
+/datum/preference/choiced/living/emote_sound_mode/apply_to_living(mob/living/target, value)
+	target.emote_sound_mode = value
+
+/datum/preference/choiced/living/emote_sound_mode/create_informed_default_value(datum/preferences/preferences)
+	return EMOTE_SOUND_VOICE_FREQ

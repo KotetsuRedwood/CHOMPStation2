@@ -9,12 +9,15 @@
 	origin_tech = list(TECH_BLUESPACE = 6, TECH_MATERIAL = 3)
 	var/blink_range = 8 // The teleport range when crushed/thrown at someone.
 
-/obj/item/bluespace_crystal/New()
-	..()
+/obj/item/bluespace_crystal/Initialize(mapload)
+	. = ..()
 	pixel_x = rand(-5, 5)
 	pixel_y = rand(-5, 5)
 
 /obj/item/bluespace_crystal/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	user.balloon_alert_visible("[user] crushes [src]!", "Crushed [src]!") // CHOMPEdit - Balloon alert
 	var/datum/effect/effect/system/spark_spread/s = new /datum/effect/effect/system/spark_spread()
 	s.set_up(5, 1, get_turf(src))

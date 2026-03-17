@@ -1,5 +1,5 @@
 var/datum/map/using_map = new USING_MAP_DATUM
-var/list/all_maps = list()
+GLOBAL_LIST_EMPTY(all_maps)
 
 /hook/startup/proc/initialise_map_list()
 	for(var/type in subtypesof(/datum/map))
@@ -10,9 +10,9 @@ var/list/all_maps = list()
 		else
 			M = new type
 		if(!M.path)
-			log_debug("Map '[M]' does not have a defined path, not adding to map list!")
+			log_mapping("Map '[M]' does not have a defined path, not adding to map list!")
 		else
-			all_maps[M.path] = M
+			GLOB.all_maps[M.path] = M
 	return 1
 
 
@@ -36,7 +36,7 @@ var/list/all_maps = list()
 	var/static/list/secret_levels = list() // Z-levels that (non-admin) ghosts can't get to
 	var/static/list/hidden_levels = list() // Z-levels who's contents are hidden, but not forbidden (gateways)
 	var/static/list/empty_levels = list()   // Empty Z-levels that may be used for various things
-	var/static/list/vorespawn_levels = list() //Z-levels where players are allowed to vore latejoin to. //CHOMPedit: the number of missing chompedits is giving me an aneurysm
+	var/static/list/vorespawn_levels = list() //Z-levels where players are allowed to vore latejoin to.
 	var/static/list/mappable_levels = list()// List of levels where mapping or other similar devices might work fully
 	var/static/list/below_blocked_levels = list()// List of levels where mapping or other similar devices might work fully
 	// End Static Lists
@@ -59,11 +59,11 @@ var/list/all_maps = list()
 	var/list/lateload_redgate = list() //VOREStation Add - The same thing as gateway, but safe-ish
 
 	var/list/allowed_jobs = list() //Job datums to use.
-	                               //Works a lot better so if we get to a point where three-ish maps are used
-	                               //We don't have to C&P ones that are only common between two of them
-	                               //That doesn't mean we have to include them with the rest of the jobs though, especially for map specific ones.
-	                               //Also including them lets us override already created jobs, letting us keep the datums to a minimum mostly.
-	                               //This is probably a lot longer explanation than it needs to be.
+								//Works a lot better so if we get to a point where three-ish maps are used
+								//We don't have to C&P ones that are only common between two of them
+								//That doesn't mean we have to include them with the rest of the jobs though, especially for map specific ones.
+								//Also including them lets us override already created jobs, letting us keep the datums to a minimum mostly.
+								//This is probably a lot longer explanation than it needs to be.
 
 	var/list/holomap_smoosh		// List of lists of zlevels to smoosh into single icons
 	var/list/holomap_offset_x = list()
@@ -84,10 +84,11 @@ var/list/all_maps = list()
 
 	var/station_name  = "BAD Station"
 	var/station_short = "Baddy"
-	var/dock_name     = "THE PirateBay"
-	var/dock_type     = "station"	//VOREStation Edit - for a list of valid types see the switch block in air_traffic.dm at line 148
-	var/boss_name     = "Captain Roger"
-	var/boss_short    = "Cap'"
+	var/facility_type = "station" //CHOMPEdit - Default to station instead of "facility"
+	var/dock_name	 = "THE PirateBay"
+	var/dock_type	 = "station"	//VOREStation Edit - for a list of valid types see the switch block in air_traffic.dm at line 148
+	var/boss_name	 = "Captain Roger"
+	var/boss_short	= "Cap'"
 	var/company_name  = "BadMan"
 	var/company_short = "BM"
 	var/starsys_name  = "Dull Star"
@@ -115,17 +116,14 @@ var/list/all_maps = list()
 	var/datum/spawnpoint/spawnpoint_stayed = /datum/spawnpoint/cryo 	// Used if you end the round on the station.
 	// VOREStation Edit End
 
-	var/use_overmap = 0          // If overmap should be used (including overmap space travel override)
+	var/use_overmap = 0		  // If overmap should be used (including overmap space travel override)
 	var/overmap_size = 20		 // Dimensions of overmap zlevel if overmap is used.
-	var/overmap_z = 0		     // If 0 will generate overmap zlevel on init. Otherwise will populate the zlevel provided.
+	var/overmap_z = 0			 // If 0 will generate overmap zlevel on init. Otherwise will populate the zlevel provided.
 	var/overmap_event_areas = 0  // How many event "clouds" will be generated
 
 	var/datum/skybox_settings/default_skybox // What skybox do we use if a zlevel doesn't have a custom one? Provide a type.
 
-	//CHOMPStation Edit Start TFF 24/12/19 - Chompers welcome screen message
-	var/lobby_icon = 'icons/misc/splash_screen.dmi' // The icon which contains the lobby image(s)
-	var/list/lobby_screens = list()                 // The list of lobby screen to pick() from. If left unset the first icon state is always selected.
-	//CHOMPStation Edit End
+	var/list/lobby_screens = list('modular_chomp/html/lobby/chompstation.webp')				 // The list of lobby screen to pick() from. If left unset the first icon state is always selected.
 
 	var/default_law_type = /datum/ai_laws/nanotrasen // The default lawset use by synth units, if not overriden by their laws var.
 
@@ -139,6 +137,8 @@ var/list/all_maps = list()
 	var/list/unit_test_z_levels //To test more than Z1, set your z-levels to test here.
 
 	var/list/planet_datums_to_make = list() // Types of `/datum/planet`s that will be instantiated by SSPlanets.
+
+	var/list/skipped_tests = list() // /datum/unit_test's to skip
 
 /datum/map/New()
 	..()
@@ -213,8 +213,8 @@ var/list/all_maps = list()
 /datum/map/proc/get_empty_zlevel()
 	// Try to free up a z level from existing temp sectors
 	if(!empty_levels.len)
-		for(var/Z in map_sectors)
-			var/obj/effect/overmap/visitable/sector/temporary/T = map_sectors[Z]
+		for(var/Z in GLOB.map_sectors)
+			var/obj/effect/overmap/visitable/sector/temporary/T = GLOB.map_sectors["[Z]"]
 			T.cleanup() // If we can release some of these, do that.
 
 	// Else, we need to buy a new one.
@@ -278,19 +278,20 @@ var/list/all_maps = list()
 /datum/map/proc/default_internal_channels()
 	return list(
 		num2text(PUB_FREQ)   = list(),
-		num2text(AI_FREQ)    = list(access_synth),
+		num2text(AI_FREQ)  = list(ACCESS_SYNTH),
 		num2text(ENT_FREQ)   = list(),
-		num2text(ERT_FREQ)   = list(access_cent_specops),
-		num2text(COMM_FREQ)  = list(access_heads),
-		num2text(ENG_FREQ)   = list(access_engine_equip, access_atmospherics),
-		num2text(MED_FREQ)   = list(access_medical_equip),
-		num2text(MED_I_FREQ) = list(access_medical_equip),
-		num2text(BDCM_FREQ)  = list(access_security), // CHOMPEdit
-		num2text(SEC_FREQ)   = list(access_security),
-		num2text(SEC_I_FREQ) = list(access_security),
-		num2text(SCI_FREQ)   = list(access_tox,access_robotics,access_xenobiology),
-		num2text(SUP_FREQ)   = list(access_cargo),
-		num2text(SRV_FREQ)   = list(access_janitor, access_hydroponics),
+		num2text(ERT_FREQ) = list(ACCESS_CENT_SPECOPS),
+		num2text(COMM_FREQ)= list(ACCESS_HEADS),
+		num2text(ENG_FREQ) = list(ACCESS_ENGINE_EQUIP, ACCESS_ATMOSPHERICS),
+		num2text(MED_FREQ) = list(ACCESS_MEDICAL_EQUIP),
+		num2text(MED_I_FREQ)=list(ACCESS_MEDICAL_EQUIP),
+		num2text(BDCM_FREQ) =list(ACCESS_SECURITY),
+		num2text(SEC_FREQ) = list(ACCESS_SECURITY),
+		num2text(SEC_I_FREQ)=list(ACCESS_SECURITY),
+		num2text(SCI_FREQ) = list(ACCESS_TOX,ACCESS_ROBOTICS,ACCESS_XENOBIOLOGY),
+		num2text(SUP_FREQ) = list(ACCESS_CARGO, ACCESS_MINING_STATION),
+		num2text(SRV_FREQ) = list(ACCESS_JANITOR, ACCESS_LIBRARY, ACCESS_HYDROPONICS, ACCESS_BAR, ACCESS_KITCHEN),
+		num2text(EXP_FREQ) = list(ACCESS_EXPLORER)
 	)
 
 /datum/map/proc/get_skybox_datum(z)
@@ -307,7 +308,7 @@ var/list/all_maps = list()
 /datum/map_z_level
 	var/z = 0				// Actual z-index of the zlevel. This had better be right!
 	var/name				// Friendly name of the zlevel
-	var/flags = 0			// Bitflag of which *_levels lists this z should be put into.
+	var/flags = NONE		// Bitflag of which *_levels lists this z should be put into.
 	var/turf/base_turf		// Type path of the base turf for this z
 	var/transit_chance = 0	// Percentile chance this z will be chosen for map-edge space transit.
 
@@ -330,7 +331,7 @@ var/list/all_maps = list()
 	if(flags & MAP_LEVEL_PLAYER) map.player_levels += z
 	if(flags & MAP_LEVEL_SEALED) map.sealed_levels += z
 	if(flags & MAP_LEVEL_XENOARCH_EXEMPT) map.xenoarch_exempt_levels += z
-	if(flags & MAP_LEVEL_VORESPAWN) map.vorespawn_levels += z //CHOMPedit: I stg stop forgetting CHOMPedit comments
+	if(flags & MAP_LEVEL_VORESPAWN) map.vorespawn_levels += z
 	if(flags & MAP_LEVEL_PERSIST) map.persist_levels += z
 	if(flags & MAP_LEVEL_EMPTY)
 		if(!map.empty_levels) map.empty_levels = list()

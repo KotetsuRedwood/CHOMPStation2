@@ -12,6 +12,10 @@
 	var/obj/item/disk/nuclear/the_disk = null
 	var/active = 0
 
+	///TODO: Clear up click code entirely. This is used exclusively for attack_self
+	var/nuclear = FALSE
+	var/shuttle = FALSE
+
 	pickup_sound = 'sound/items/pickup/device.ogg'
 	drop_sound = 'sound/items/drop/device.ogg'
 
@@ -20,13 +24,18 @@
 	STOP_PROCESSING(SSobj, src)
 	return ..()
 
-/obj/item/pinpointer/attack_self()
+/obj/item/pinpointer/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
+	if(nuclear || shuttle)
+		return
 	if(!active)
-		active = 1
+		active = TRUE
 		START_PROCESSING(SSobj, src)
 		to_chat(usr, span_notice("You activate the pinpointer"))
 	else
-		active = 0
+		active = FALSE
 		STOP_PROCESSING(SSobj, src)
 		icon_state = "pinoff"
 		to_chat(usr, span_notice("You deactivate the pinpointer"))
@@ -55,7 +64,7 @@
 
 /obj/item/pinpointer/examine(mob/user)
 	. = ..()
-	for(var/obj/machinery/nuclearbomb/bomb in machines)
+	for(var/obj/machinery/nuclearbomb/bomb in GLOB.machines)
 		if(bomb.timing)
 			. += "Extreme danger.  Arming signal detected.   Time remaining: [bomb.timeleft]"
 
@@ -166,7 +175,7 @@
 					var/DNAstring = tgui_input_text(usr, "Input DNA string to search for." , "Please Enter String." , "")
 					if(!DNAstring)
 						return
-					for(var/mob/living/carbon/M in mob_list)
+					for(var/mob/living/carbon/M in GLOB.mob_list)
 						if(!M.dna)
 							continue
 						if(M.dna.unique_enzymes == DNAstring)
@@ -185,7 +194,10 @@
 	var/mode = 0	//Mode 0 locates disk, mode 1 locates the shuttle
 	var/obj/machinery/computer/shuttle_control/multi/syndicate/home = null
 
-/obj/item/pinpointer/nukeop/attack_self(mob/user as mob)
+/obj/item/pinpointer/nukeop/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	if(!active)
 		active = 1
 		START_PROCESSING(SSobj, src)
@@ -212,7 +224,7 @@
 			worklocation()
 
 /obj/item/pinpointer/nukeop/proc/workdisk()
-	if(bomb_set)	//If the bomb is set, lead to the shuttle
+	if(GLOB.bomb_set)	//If the bomb is set, lead to the shuttle
 		mode = 1	//Ensures worklocation() continues to work
 		playsound(src, 'sound/machines/twobeep.ogg', 50, 1)	//Plays a beep
 		visible_message(span_notice("Shuttle Locator active."))			//Lets the mob holding it know that the mode has changed
@@ -237,7 +249,7 @@
 			icon_state = "pinonfar"
 
 /obj/item/pinpointer/nukeop/proc/worklocation()
-	if(!bomb_set)
+	if(!GLOB.bomb_set)
 		mode = 0
 		playsound(src, 'sound/machines/twobeep.ogg', 50, 1)
 		visible_message(span_notice("Authentication Disk Locator active."))
@@ -271,7 +283,10 @@
 	var/shuttle_comp_id = null
 	var/obj/machinery/computer/shuttle_control/our_shuttle = null
 
-/obj/item/pinpointer/shuttle/attack_self(mob/user as mob)
+/obj/item/pinpointer/shuttle/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	if(!active)
 		active = TRUE
 		START_PROCESSING(SSobj, src)
@@ -287,7 +302,7 @@
 		return PROCESS_KILL
 
 	if(!our_shuttle)
-		for(var/obj/machinery/computer/shuttle_control/S in machines)
+		for(var/obj/machinery/computer/shuttle_control/S in GLOB.machines)
 			if(S.shuttle_tag == shuttle_comp_id) // Shuttle tags are used so that it will work if the computer path changes, as it does on the southern cross map.
 				our_shuttle = S
 				break

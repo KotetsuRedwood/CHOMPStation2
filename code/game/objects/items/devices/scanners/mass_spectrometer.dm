@@ -19,8 +19,8 @@
 	pickup_sound = 'sound/items/pickup/device.ogg'
 	drop_sound = 'sound/items/drop/device.ogg'
 
-/obj/item/mass_spectrometer/New()
-	..()
+/obj/item/mass_spectrometer/Initialize(mapload)
+	. = ..()
 	var/datum/reagents/R = new/datum/reagents(5)
 	reagents = R
 	R.my_atom = src
@@ -31,7 +31,10 @@
 	else
 		icon_state = initial(icon_state)
 
-/obj/item/mass_spectrometer/attack_self(mob/user as mob)
+/obj/item/mass_spectrometer/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	if (user.stat)
 		return
 	if (!user.IsAdvancedToolUser())

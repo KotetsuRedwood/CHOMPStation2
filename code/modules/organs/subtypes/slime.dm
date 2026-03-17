@@ -51,10 +51,10 @@
 
 /obj/item/organ/external/head/unbreakable/slime	//They don't need this anymore.
 	nonsolid = 1
-	cannot_gib = 0
-	vital = 0
+	cannot_gib = FALSE
+	vital = FALSE
 	max_damage = 45 //ChompEdit matching our changes to broken bones for less squishy people.
-	encased = 0
+	encased = FALSE
 	spread_dam = 1
 
 /*
@@ -93,11 +93,9 @@
 
 /obj/item/organ/internal/regennetwork/Initialize(mapload)
 	. = ..()
-	var/mob/living/carbon/human/H = null
-	spawn(15)
-		if(ishuman(owner))
-			H = owner
-			color = H.species.get_blood_colour(H)
+	if(ishuman(loc))
+		var/mob/living/carbon/human/H = loc
+		color = H.species.get_blood_colour(H)
 
 /obj/item/organ/internal/regennetwork/proc/get_strain_percent(var/cost)
 	adjust_strain(cost)

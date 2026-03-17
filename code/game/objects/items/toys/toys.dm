@@ -14,7 +14,7 @@
  *		Plushies
  *		Toy cult sword
  *		Bouquets
- 		Stick Horse
+ *		Stick Horse
  */
 
 
@@ -163,20 +163,23 @@
 	w_class = ITEMSIZE_SMALL
 	attack_verb = list("attacked", "struck", "hit")
 
-/obj/item/toy/sword/attack_self(mob/user as mob)
-	src.active = !( src.active )
-	if (src.active)
+/obj/item/toy/sword/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
+	active = !active
+	if(active)
 		to_chat(user, span_notice("You extend the plastic blade with a quick flick of your wrist."))
 		playsound(src, 'sound/weapons/saberon.ogg', 50, 1)
-		src.item_state = "[icon_state]_blade"
-		src.w_class = ITEMSIZE_LARGE
+		item_state = "[icon_state]_blade"
+		w_class = ITEMSIZE_LARGE
 	else
 		to_chat(user, span_notice("You push the plastic blade back down into the handle."))
 		playsound(src, 'sound/weapons/saberoff.ogg', 50, 1)
-		src.item_state = "[icon_state]"
-		src.w_class = ITEMSIZE_SMALL
+		item_state = "[icon_state]"
+		w_class = ITEMSIZE_SMALL
 	update_icon()
-	src.add_fingerprint(user)
+	add_fingerprint(user)
 	return
 
 /obj/item/toy/sword/update_icon()
@@ -191,7 +194,7 @@
 		H.update_inv_l_hand()
 		H.update_inv_r_hand()
 
-/obj/item/toy/sword/AltClick(mob/living/user)
+/obj/item/toy/sword/click_alt(mob/living/user)
 	if(!in_range(src, user))	//Basic checks to prevent abuse
 		return
 	if(user.incapacitated() || !istype(user))
@@ -282,7 +285,10 @@
 	w_class = ITEMSIZE_TINY
 	slot_flags = SLOT_EARS | SLOT_HOLSTER
 
-/obj/item/toy/bosunwhistle/attack_self(mob/user as mob)
+/obj/item/toy/bosunwhistle/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	if(cooldown < world.time - 35)
 		to_chat(user, span_notice("You blow on [src], creating an ear-splitting noise!"))
 		playsound(src, 'sound/misc/boatswain.ogg', 20, 1)
@@ -305,9 +311,12 @@
 	. = ..()
 	desc = "A \"Space Life\" brand [name]"
 
-/obj/item/toy/figure/attack_self(mob/user as mob)
+/obj/item/toy/figure/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	if(cooldown < world.time)
-		cooldown = (world.time + 30) //3 second cooldown
+		cooldown = (world.time + 3 SECONDS)
 		user.visible_message(span_notice("The [src] says \"[toysay]\"."))
 		playsound(src, 'sound/machines/click.ogg', 20, 1)
 
@@ -629,16 +638,12 @@
 	icon = 'icons/obj/toy.dmi'
 	icon_state = "basecarp"
 	attack_verb = list("bitten", "eaten", "fin slapped")
-	var/bitesound = 'sound/weapons/bite.ogg'
+	squeeze_sound = 'sound/weapons/bite.ogg'
+	cooldown_length = 1 SECOND
 
 // Attack mob
 /obj/item/toy/plushie/carp/attack(mob/M as mob, mob/user as mob)
-	playsound(src, bitesound, 20, 1)	// Play bite sound in local area
-	return ..()
-
-// Attack self
-/obj/item/toy/plushie/carp/attack_self(mob/user as mob)
-	playsound(src, bitesound, 20, 1)
+	playsound(src, squeeze_sound, 20, 1)	// Play bite sound in local area
 	return ..()
 
 
@@ -716,7 +721,7 @@
 
 	if(stored_item && opened && !searching)
 		searching = TRUE
-		if(do_after(user, 10))
+		if(do_after(user, 1 SECOND, target = src))
 			to_chat(user, "You find [icon2html(stored_item, user.client)] [stored_item] in [src]!")
 			stored_item.forceMove(get_turf(src))
 			stored_item = null
@@ -733,7 +738,8 @@
 		user.visible_message(span_warning(span_bold("\The [user]") + " attempts to strangle [src]!"),span_warning("You attempt to strangle [src]!"))
 	else
 		user.visible_message(span_notice(span_bold("\The [user]") + " pokes the [src]."),span_notice("You poke the [src]."))
-		visible_message("[src] says, \"[phrase]\"")
+	if(phrase) //There was no indiciation you had to use disarm intent to make it speak...So now it speaks if you touch it at all!
+		atom_say("[phrase]")
 
 
 /obj/structure/plushie/attackby(obj/item/I as obj, mob/user as mob)
@@ -775,6 +781,7 @@
 	desc = "A plushie of a happy drone! It appears to be smiling."
 	icon_state = "droneplushie"
 	phrase = "Beep boop!"
+	bubble_icon = "machine"
 
 /obj/structure/plushie/carp
 	name = "plush carp"
@@ -787,6 +794,7 @@
 	desc = "A plushie of a popular industrious cleaning robot! If it could feel emotions, it would love you."
 	icon_state = "beepskyplushie"
 	phrase = "Ping!"
+	bubble_icon = "security"
 
 //Small plushies.
 /obj/item/toy/plushie
@@ -801,7 +809,25 @@
 	var/searching = FALSE
 	var/opened = FALSE	// has this been slit open? this will allow you to store an object in a plushie.
 	var/obj/item/stored_item	// Note: Stored items can't be bigger than the plushie itself.
+	var/adjusted_name // Our modified name. Used so people don't do funny business with us!
 
+	//This makes it so it reverts back to its initial name when it speaks if TRUE.
+	//This should be used if a plushie can be made to say custom messages. Not currently required at the moment, but here just in case it'd added in the future.
+	var/prevent_impersonation = FALSE
+
+	var/special_handling = FALSE
+
+	///The sound we make when squeezed
+	var/squeeze_sound = 'sound/items/drop/plushie.ogg'
+
+	///Timer to track how long until we can play a sound again
+	var/cooldown_timer
+	///How long our cooldown timer is. Default 15 seconds
+	var/cooldown_length = 15 SECONDS
+
+/obj/item/toy/plushie/Initialize(mapload)
+	. = ..()
+	adjusted_name = name
 
 /obj/item/toy/plushie/examine(mob/user)
 	. = ..()
@@ -810,10 +836,15 @@
 		if(in_range(user, src) && stored_item)
 			. += span_italics("You can see something in there...")
 
-/obj/item/toy/plushie/attack_self(mob/user as mob)
+/obj/item/toy/plushie/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
+	if(special_handling)
+		return
 	if(stored_item && opened && !searching)
 		searching = TRUE
-		if(do_after(user, 10))
+		if(do_after(user, 1 SECOND, target = src))
 			to_chat(user, "You find [icon2html(stored_item, user.client)] [stored_item] in [src]!")
 			stored_item.forceMove(get_turf(src))
 			stored_item = null
@@ -832,9 +863,24 @@
 		user.visible_message(span_warning(span_bold("\The [user]") + " attempts to strangle [src]!"),span_warning("You attempt to strangle [src]!"))
 	else
 		user.visible_message(span_notice(span_bold("\The [user]") + " pokes [src]."),span_notice("You poke [src]."))
-		playsound(src, 'sound/items/drop/plushie.ogg', 25, 0)
-		visible_message("[src] says, \"[pokephrase]\"")
+		if(cooldown_timer < world.time)
+			playsound(src, squeeze_sound, 25, 0)
+			cooldown_timer = world.time + cooldown_length
+	if(pokephrase) //There was no indiciation you had to use disarm intent to make it speak...So now it speaks if you touch it at all!
+		say_phrase()
 	last_message = world.time
+
+/obj/item/toy/plushie/proc/say_phrase()
+	//If we don't prevent impersonation, we just speak like normal!
+	//The PI var is used in case a plushie can be made to speak a custom message.
+	if(!prevent_impersonation)
+		atom_say("[pokephrase]")
+		return
+
+	//If we do prevent impersonation, change the name to original, speak, then bring it back.
+	name = initial(name) //No namestealing.
+	atom_say("[pokephrase]")
+	name = adjusted_name
 
 /obj/item/toy/plushie/verb/rename_plushie()
 	set name = "Name Plushie"
@@ -844,7 +890,7 @@
 	if(!M.mind)
 		return 0
 
-	var/input = sanitizeSafe(tgui_input_text(usr, "What do you want to name the plushie?", ,""), MAX_NAME_LEN)
+	var/input = tgui_input_text(usr, "What do you want to name the plushie?", ,"", MAX_NAME_LEN)
 
 	if(src && input && !M.stat && in_range(M,src))
 		name = input
@@ -852,6 +898,7 @@
 		for(var/mob/living/voice/V in possessed_voice)
 			V.name = input
 		//CHOMPAdd End
+		adjusted_name = input
 		to_chat(M, "You name the plushie [input], giving it a hug for good luck.")
 		return 1
 
@@ -891,67 +938,79 @@
 	desc = "A plushie of an adorable diona nymph! While its level of self-awareness is still being debated, its level of cuteness is not."
 	icon_state = "nymphplushie"
 	pokephrase = "Chirp!"
+	bubble_icon = "plant"
 
 /obj/item/toy/plushie/teshari
 	name = "teshari plush"
 	desc = "This is a plush teshari. Very soft, with a pompom on the tail. The toy is made well, as if alive. Looks like she is sleeping. Shhh!"
 	icon_state = "teshariplushie"
 	pokephrase = "Rya!"
+	bubble_icon = "heart"
 
 /obj/item/toy/plushie/mouse
 	name = "mouse plush"
 	desc = "A plushie of a delightful mouse! What was once considered a vile rodent is now your very best friend."
 	icon_state = "mouseplushie"
 	pokephrase = "Squeak!"
+	bubble_icon = "maus"
 
 /obj/item/toy/plushie/kitten
 	name = "kitten plush"
 	desc = "A plushie of a cute kitten! Watch as it purrs its way right into your heart."
 	icon_state = "kittenplushie"
 	pokephrase = "Mrow!"
+	bubble_icon = "heart"
 
 /obj/item/toy/plushie/lizard
 	name = "lizard plush"
 	desc = "A plushie of a scaly lizard! Very controversial, after being accused as \"racist\" by some Unathi."
 	icon_state = "lizardplushie"
 	pokephrase = "Hiss!"
+	bubble_icon = "heart"
 
 /obj/item/toy/plushie/spider
 	name = "spider plush"
 	desc = "A plushie of a fuzzy spider! It has eight legs - all the better to hug you with."
 	icon_state = "spiderplushie"
 	pokephrase = "Sksksk!"
+	bubble_icon = "heart"
 
 /obj/item/toy/plushie/farwa
 	name = "farwa plush"
 	desc = "A farwa plush doll. It's soft and comforting!"
 	icon_state = "farwaplushie"
 	pokephrase = "Squaw!"
+	bubble_icon = "heart"
 
 /obj/item/toy/plushie/corgi
 	name = "corgi plushie"
 	icon_state = "corgi"
 	pokephrase = "Woof!"
+	bubble_icon = "heart"
 
 /obj/item/toy/plushie/girly_corgi
 	name = "corgi plushie"
 	icon_state = "girlycorgi"
 	pokephrase = "Arf!"
+	bubble_icon = "heart"
 
 /obj/item/toy/plushie/robo_corgi
 	name = "borgi plushie"
 	icon_state = "robotcorgi"
 	pokephrase = "Bark."
+	bubble_icon = "synthetic"
 
 /obj/item/toy/plushie/octopus
 	name = "octopus plushie"
 	icon_state = "loveable"
 	pokephrase = "Squish!"
+	bubble_icon = "tentacles"
 
 /obj/item/toy/plushie/face_hugger
 	name = "facehugger plushie"
 	icon_state = "huggable"
 	pokephrase = "Hug!"
+	bubble_icon = "science"
 
 //foxes are basically the best
 
@@ -959,176 +1018,183 @@
 	name = "red fox plushie"
 	icon_state = "redfox"
 	pokephrase = "Gecker!"
+	bubble_icon = "latte_fox"
 
 /obj/item/toy/plushie/black_fox
 	name = "black fox plushie"
 	icon_state = "blackfox"
 	pokephrase = "Ack!"
+	bubble_icon = "latte_fox"
 
 /obj/item/toy/plushie/marble_fox
 	name = "marble fox plushie"
 	icon_state = "marblefox"
 	pokephrase = "Awoo!"
+	bubble_icon = "latte_fox"
 
 /obj/item/toy/plushie/blue_fox
 	name = "blue fox plushie"
 	icon_state = "bluefox"
 	pokephrase = "Yoww!"
+	bubble_icon = "latte_fox"
 
 /obj/item/toy/plushie/orange_fox
 	name = "orange fox plushie"
 	icon_state = "orangefox"
 	pokephrase = "Yagh!"
+	bubble_icon = "latte_fox"
 
 /obj/item/toy/plushie/coffee_fox
 	name = "coffee fox plushie"
 	icon_state = "coffeefox"
 	pokephrase = "Gerr!"
+	bubble_icon = "latte_fox"
 
 /obj/item/toy/plushie/pink_fox
 	name = "pink fox plushie"
 	icon_state = "pinkfox"
 	pokephrase = "Yack!"
+	bubble_icon = "latte_fox"
 
 /obj/item/toy/plushie/purple_fox
 	name = "purple fox plushie"
 	icon_state = "purplefox"
 	pokephrase = "Whine!"
+	bubble_icon = "latte_fox"
 
 /obj/item/toy/plushie/crimson_fox
 	name = "crimson fox plushie"
 	icon_state = "crimsonfox"
 	pokephrase = "Auuu!"
+	bubble_icon = "latte_fox"
 
 /obj/item/toy/plushie/deer
 	name = "deer plushie"
 	icon_state = "deer"
 	pokephrase = "Bleat!"
+	bubble_icon = "heart"
 
 /obj/item/toy/plushie/black_cat
 	name = "black cat plushie"
 	icon_state = "blackcat"
 	pokephrase = "Mlem!"
+	bubble_icon = "heart"
 
 /obj/item/toy/plushie/grey_cat
 	name = "grey cat plushie"
 	icon_state = "greycat"
 	pokephrase = "Mraw!"
+	bubble_icon = "heart"
 
 /obj/item/toy/plushie/white_cat
 	name = "white cat plushie"
 	icon_state = "whitecat"
 	pokephrase = "Mew!"
+	bubble_icon = "heart"
 
 /obj/item/toy/plushie/orange_cat
 	name = "orange cat plushie"
 	icon_state = "orangecat"
 	pokephrase = "Meow!"
+	bubble_icon = "heart"
 
 /obj/item/toy/plushie/siamese_cat
 	name = "siamese cat plushie"
 	icon_state = "siamesecat"
 	pokephrase = "Mrew?"
+	bubble_icon = "heart"
 
 /obj/item/toy/plushie/tabby_cat
 	name = "tabby cat plushie"
 	icon_state = "tabbycat"
 	pokephrase = "Purr!"
+	bubble_icon = "heart"
 
 /obj/item/toy/plushie/tuxedo_cat
 	name = "tuxedo cat plushie"
 	icon_state = "tuxedocat"
 	pokephrase = "Mrowww!!"
+	bubble_icon = "heart"
 
 // nah, squids are better than foxes :>
 
-/obj/item/toy/plushie/squid/green
+/obj/item/toy/plushie/squid
+	name = DEVELOPER_WARNING_NAME
+
+/obj/item/toy/plushie/squid
 	name = "green squid plushie"
 	desc = "A small, cute and loveable squid friend. This one is green."
 	icon = 'icons/obj/toy.dmi'
 	icon_state = "greensquid"
 	slot_flags = SLOT_HEAD
 	pokephrase = "Squrr!"
+	bubble_icon = "tentacles"
 
 /obj/item/toy/plushie/squid/mint
 	name = "mint squid plushie"
 	desc = "A small, cute and loveable squid friend. This one is mint coloured."
-	icon = 'icons/obj/toy.dmi'
 	icon_state = "mintsquid"
-	slot_flags = SLOT_HEAD
 	pokephrase = "Blurble!"
 
 /obj/item/toy/plushie/squid/blue
 	name = "blue squid plushie"
 	desc = "A small, cute and loveable squid friend. This one is blue."
-	icon = 'icons/obj/toy.dmi'
 	icon_state = "bluesquid"
-	slot_flags = SLOT_HEAD
 	pokephrase = "Blob!"
 
 /obj/item/toy/plushie/squid/orange
 	name = "orange squid plushie"
 	desc = "A small, cute and loveable squid friend. This one is orange."
-	icon = 'icons/obj/toy.dmi'
 	icon_state = "orangesquid"
-	slot_flags = SLOT_HEAD
 	pokephrase = "Squash!"
 
 /obj/item/toy/plushie/squid/yellow
 	name = "yellow squid plushie"
 	desc = "A small, cute and loveable squid friend. This one is yellow."
-	icon = 'icons/obj/toy.dmi'
 	icon_state = "yellowsquid"
-	slot_flags = SLOT_HEAD
 	pokephrase = "Glorble!"
 
 /obj/item/toy/plushie/squid/pink
 	name = "pink squid plushie"
 	desc = "A small, cute and loveable squid friend. This one is pink."
-	icon = 'icons/obj/toy.dmi'
 	icon_state = "pinksquid"
-	slot_flags = SLOT_HEAD
 	pokephrase = "Wobble!"
 
-/obj/item/toy/plushie/therapy/red
+/obj/item/toy/plushie/therapy
 	name = "red therapy doll"
 	desc = "A toy for therapeutic and recreational purposes. This one is red."
 	icon = 'icons/obj/toy.dmi'
 	icon_state = "therapyred"
 	item_state = "egg4" // It's the red egg in items_left/righthand
+	bubble_icon = "medical"
 
 /obj/item/toy/plushie/therapy/purple
 	name = "purple therapy doll"
 	desc = "A toy for therapeutic and recreational purposes. This one is purple."
-	icon = 'icons/obj/toy.dmi'
 	icon_state = "therapypurple"
 	item_state = "egg1" // It's the magenta egg in items_left/righthand
 
 /obj/item/toy/plushie/therapy/blue
 	name = "blue therapy doll"
 	desc = "A toy for therapeutic and recreational purposes. This one is blue."
-	icon = 'icons/obj/toy.dmi'
 	icon_state = "therapyblue"
 	item_state = "egg2" // It's the blue egg in items_left/righthand
 
 /obj/item/toy/plushie/therapy/yellow
 	name = "yellow therapy doll"
 	desc = "A toy for therapeutic and recreational purposes. This one is yellow."
-	icon = 'icons/obj/toy.dmi'
 	icon_state = "therapyyellow"
 	item_state = "egg5" // It's the yellow egg in items_left/righthand
 
 /obj/item/toy/plushie/therapy/orange
 	name = "orange therapy doll"
 	desc = "A toy for therapeutic and recreational purposes. This one is orange."
-	icon = 'icons/obj/toy.dmi'
 	icon_state = "therapyorange"
 	item_state = "egg4" // It's the red one again, lacking an orange item_state and making a new one is pointless
 
 /obj/item/toy/plushie/therapy/green
 	name = "green therapy doll"
 	desc = "A toy for therapeutic and recreational purposes. This one is green."
-	icon = 'icons/obj/toy.dmi'
 	icon_state = "therapygreen"
 	item_state = "egg3" // It's the green egg in items_left/righthand
 
@@ -1137,6 +1203,25 @@
 	desc = "A plushie of a....?"
 	icon_state = "fumoplushie"
 	pokephrase = "I just don't think about losing."
+
+// Tiny tin, rip - OP21
+
+/obj/item/toy/plushie/tinytin
+	name = "tiny tin plushie"
+	desc = "A tiny fluffy nevrean plush with the label 'Tiny-Tin.' Press his belly to hear a sound!"
+	icon = 'icons/obj/toy.dmi'
+	icon_state = "plushie_tin"
+	pokephrase = "Peep peep!"
+	squeeze_sound = 'sound/voice/peep.ogg'
+
+/obj/item/toy/plushie/tinytin_sec
+	name = "officer tiny tin plushie"
+	desc = "Officer Tiny-Tin, now with rooty-tooty-shooty action! Press his belly to hear a sound!"
+	icon = 'icons/obj/toy.dmi'
+	icon_state = "plushie_tinsec"
+	bubble_icon = "security"
+	pokephrase = "That means you fucked up!"
+	squeeze_sound = 'sound/voice/tinytin_fuckedup.ogg'
 
 //Toy cult sword
 /obj/item/toy/cultsword
@@ -1184,13 +1269,15 @@
 	var/cooldown = 0
 	var/list/possible_answers = list("Definitely.", "All signs point to yes.", "Most likely.", "Yes.", "Ask again later.", "Better not tell you now.", "Future unclear.", "Maybe.", "Doubtful.", "No.", "Don't count on it.", "Never.")
 
-/obj/item/toy/eight_ball/attack_self(mob/user as mob)
+/obj/item/toy/eight_ball/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	if(!cooldown)
 		var/answer = pick(possible_answers)
 		user.visible_message(span_notice("[user] focuses on their question and [use_action]..."))
 		user.visible_message(span_notice("The [src] says \"[answer]\""))
-		spawn(30)
-			cooldown = 0
+		VARSET_IN(src, cooldown, FALSE, 3 SECONDS)
 		return
 
 /obj/item/toy/eight_ball/conch
@@ -1247,26 +1334,7 @@
 	/obj/item/toy/character/voidone,
 	/obj/item/toy/character/lich
 	)
-/* VOREStation edit. Moved to toys_vr.dm
-/obj/item/toy/AI
-	name = "toy AI"
-	desc = "A little toy model AI core!"// with real law announcing action!" //Alas, requires a rewrite of how ion laws work.
-	icon = 'icons/obj/toy.dmi'
-	icon_state = "AI"
-	w_class = ITEMSIZE_SMALL
-	var/cooldown = 0
 
-/obj/item/toy/AI/attack_self(mob/user)
-	if(!cooldown) //for the sanity of everyone
-		var/message = generate_ion_law()
-		to_chat(user, span_notice("You press the button on [src]."))
-		playsound(src, 'sound/machines/click.ogg', 20, 1)
-		visible_message(span_danger("[message]"))
-		cooldown = 1
-		spawn(30) cooldown = 0
-		return
-	..()
-*/
 /obj/item/toy/owl
 	name = "owl action figure"
 	desc = "An action figure modeled after 'The Owl', defender of justice."
@@ -1276,15 +1344,16 @@
 	var/cooldown = 0
 
 /obj/item/toy/owl/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	if(!cooldown) //for the sanity of everyone
 		var/message = pick("You won't get away this time, Griffin!", "Stop right there, criminal!", "Hoot! Hoot!", "I am the night!")
 		to_chat(user, span_notice("You pull the string on the [src]."))
 		//playsound(src, 'sound/misc/hoot.ogg', 25, 1)
 		visible_message(span_danger("[message]"))
 		cooldown = 1
-		spawn(30) cooldown = 0
-		return
-	..()
+		VARSET_IN(src, cooldown, FALSE, 3 SECONDS)
 
 /obj/item/toy/griffin
 	name = "griffin action figure"
@@ -1295,15 +1364,16 @@
 	var/cooldown = 0
 
 /obj/item/toy/griffin/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	if(!cooldown) //for the sanity of everyone
 		var/message = pick("You can't stop me, Owl!", "My plan is flawless! The vault is mine!", "Caaaawwww!", "You will never catch me!")
 		to_chat(user, span_notice("You pull the string on the [src]."))
 		//playsound(src, 'sound/misc/caw.ogg', 25, 1)
 		visible_message(span_danger("[message]"))
 		cooldown = 1
-		spawn(30) cooldown = 0
-		return
-	..()
+		VARSET_IN(src, cooldown, FALSE, 3 SECONDS)
 
 /* NYET.
 /obj/item/toddler

@@ -17,21 +17,24 @@
 		capsuleowner = user
 
 /obj/item/buttonofnormal/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	if(colorindex)
 		nonrandom()
-	sleep(10)
-	capsuleowner.resize(sizetouse)
-	sizetouse = rand(25,200)/100 //randmization occurs after press
+	addtimer(CALLBACK(src, PROC_REF(do_size_effect), capsuleowner), 10, TIMER_DELETE_ME)
 
 /obj/item/buttonofnormal/throw_impact(atom/A, speed, mob/user)
 	..()
 	if(isliving(A))
 		if(colorindex)
 			nonrandom()
-		sleep(5)
-		var/mob/living/capsulehit = A
-		capsulehit.resize(sizetouse)
-		sizetouse = rand(25,200)/100 //randmization occurs after press
+		addtimer(CALLBACK(src, PROC_REF(do_size_effect), A), 5, TIMER_DELETE_ME)
+
+/obj/item/buttonofnormal/proc/do_size_effect(atom/A)
+	var/mob/living/capsulehit = A
+	capsulehit.resize(sizetouse)
+	sizetouse = rand(25,200)/100 //randmization occurs after press
 
 /obj/item/buttonofnormal/attackby(obj/item/W, mob/user)
 	if(istype(W, /obj/item/pen))
@@ -79,6 +82,9 @@
 	..()
 
 /obj/item/daredevice/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	var/mob/living/capsuleowner = user
 	playsound(src, 'sound/effects/splat.ogg', 30, 1)
 	var/item = pick(winitems)

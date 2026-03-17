@@ -113,16 +113,15 @@
 
 	var/datum/looping_sound/supermatter/soundloop
 
-	var/engwarn = FALSE // CHOMPEdit: Looping Alarms
-	var/critwarn = FALSE // CHOMPEdit: Looping Alarms
-	var/causalitywarn = FALSE // CHOMPEdit: Looping Alarms
-	var/stationcrystal = FALSE // CHOMPEdit: Looping Alarms
-
-/obj/machinery/power/supermatter/New()
-	..()
-	uid = gl_uid++
+	// CHOMPAdd Start
+	var/engwarn = FALSE
+	var/critwarn = FALSE
+	var/causalitywarn = FALSE
+	var/stationcrystal = FALSE
+	// CHOMPAdd End
 
 /obj/machinery/power/supermatter/Initialize(mapload)
+	uid = gl_uid++
 	soundloop = new(list(src), TRUE)
 	if(src.z in using_map.station_levels) // CHOMPEdit: Looping Alarms
 		stationcrystal = TRUE  // CHOMPEdit: Looping Alarms
@@ -175,7 +174,7 @@
 
 	set waitfor = 0
 
-	message_admins("Supermatter exploded at ([x],[y],[z] - <A href='byond://?_src_=holder;[HrefToken()];adminplayerobservecoodjump=1;X=[x];Y=[y];Z=[z]'>JMP</a>)",0,1)
+	message_admins("Supermatter exploded at ([x],[y],[z] - <A href='byond://?_src_=holder;[HrefToken()];adminplayerobservecoodjump=1;X=[x];Y=[y];Z=[z]'>JMP</a>)")
 	log_game("SUPERMATTER([x],[y],[z]) Exploded. Power:[power], Oxygen:[oxygen], Damage:[damage], Integrity:[get_integrity()]")
 	anchored = TRUE
 	grav_pulling = 1
@@ -196,7 +195,7 @@
 	for(var/z in affected_z)
 		SSradiation.z_radiate(locate(1, 1, z), DETONATION_RADS, 1)
 
-	for(var/mob/living/mob in living_mob_list)
+	for(var/mob/living/mob in GLOB.living_mob_list)
 		var/turf/TM = get_turf(mob)
 		if(!TM)
 			continue
@@ -222,7 +221,7 @@
 			A.energy_fail(round(DETONATION_SHUTDOWN_APC * random_change))
 
 	// Effect 3: Break solar arrays
-	for(var/obj/machinery/power/solar/S in machines)
+	for(var/obj/machinery/power/solar/S in GLOB.machines)
 		if(!(S.z in affected_z))
 			continue
 		if(prob(DETONATION_SOLAR_BREAK_CHANCE))
@@ -271,7 +270,7 @@
 		// CHOMPEdit Start
 		if(!critwarn)
 			if(src.z in using_map.station_levels)
-				for(var/obj/machinery/firealarm/candidate_alarm in global.machines)
+				for(var/obj/machinery/firealarm/candidate_alarm in GLOB.machines)
 					var/area/our_area = get_area(candidate_alarm)
 					if(istype(our_area, /area/engineering))
 						candidate_alarm.critalarm.start()
@@ -283,7 +282,7 @@
 		// CHOMPEdit: Looping Alarms - we're not making a proc for initiating the alarms in this case.
 		if(!engwarn)
 			if(src.z in using_map.station_levels)
-				for(var/obj/machinery/firealarm/candidate_alarm in global.machines)
+				for(var/obj/machinery/firealarm/candidate_alarm in GLOB.machines)
 					var/area/our_area = get_area(candidate_alarm)
 					if(istype(our_area, /area/engineering))
 						for(var/obj/machinery/light/L in our_area)
@@ -304,19 +303,19 @@
 	else
 		alert_msg = null
 	if(alert_msg)
-		global_announcer.autosay(alert_msg, "Supermatter Monitor", "Engineering")
+		GLOB.global_announcer.autosay(alert_msg, "Supermatter Monitor", "Engineering")
 		log_game("SUPERMATTER([x],[y],[z]) Emergency engineering announcement. Power:[power], Oxygen:[oxygen], Damage:[damage], Integrity:[get_integrity()]")
 		//Public alerts
 		if((damage > emergency_point) && !public_alert)
-			global_announcer.autosay("WARNING: SUPERMATTER CRYSTAL DELAMINATION IMMINENT!", "Supermatter Monitor")
-			for(var/mob/M in player_list) // Rykka adds SM Delam alarm
+			GLOB.global_announcer.autosay("WARNING: SUPERMATTER CRYSTAL DELAMINATION IMMINENT!", "Supermatter Monitor")
+			for(var/mob/M in GLOB.player_list) // Rykka adds SM Delam alarm
 				if(!isnewplayer(M) && !isdeaf(M)) // Rykka adds SM Delam alarm
 					M << message_sound // Rykka adds SM Delam alarm
 			admin_chat_message(message = "SUPERMATTER DELAMINATING!", color = "#FF2222") //VOREStation Add
 			public_alert = TRUE
 			log_game("SUPERMATTER([x],[y],[z]) Emergency PUBLIC announcement. Power:[power], Oxygen:[oxygen], Damage:[damage], Integrity:[get_integrity()]")
 		else if(safe_warned && public_alert)
-			global_announcer.autosay(alert_msg, "Supermatter Monitor")
+			GLOB.global_announcer.autosay(alert_msg, "Supermatter Monitor")
 			public_alert = FALSE
 
 /obj/machinery/power/supermatter/process()
@@ -348,6 +347,16 @@
 
 	if(grav_pulling)
 		supermatter_pull(src)
+
+	if(damage) // Start fucking things up
+		if(get_integrity() < 85 && prob(5))
+			generate_anomaly(get_ranged_target_turf(src, pick(GLOB.cardinal), rand(5, 10)), FLUX_ANOMALY)
+		if(get_integrity() < 75 && prob(5))
+			generate_anomaly(get_ranged_target_turf(src, pick(GLOB.cardinal), rand(5, 10)), HALLUCINATION_ANOMALY)
+		if(get_integrity() < 50 && prob(2))
+			generate_anomaly(get_ranged_target_turf(src, pick(GLOB.cardinal), rand(5, 10)), GRAVITATIONAL_ANOMALY)
+		if(get_integrity() < 25 && prob(0.3))
+			generate_anomaly(get_ranged_target_turf(src, pick(GLOB.cardinal), rand(5, 10)), PYRO_ANOMALY)
 
 	// Vary volume by power produced.
 	if(power)
@@ -419,7 +428,7 @@
 		//Release reaction gasses
 		var/heat_capacity = removed.heat_capacity()
 		removed.adjust_multi(GAS_PHORON, max(device_energy / PHORON_RELEASE_MODIFIER, 0), \
-		                     GAS_O2, max((device_energy + removed.temperature - T0C) / OXYGEN_RELEASE_MODIFIER, 0))
+								GAS_O2, max((device_energy + removed.temperature - T0C) / OXYGEN_RELEASE_MODIFIER, 0))
 
 		var/thermal_power = THERMAL_RELEASE_MODIFIER * device_energy
 		if (debug)
@@ -453,7 +462,7 @@
 	if(!final_countdown)
 		if(!causalitywarn)
 			if(src.z in using_map.station_levels)
-				for(var/obj/machinery/firealarm/candidate_alarm in global.machines)
+				for(var/obj/machinery/firealarm/candidate_alarm in GLOB.machines)
 					var/area/our_area = get_area(candidate_alarm)
 					if(istype(our_area, /area/engineering))
 						candidate_alarm.causality.start()
@@ -470,10 +479,10 @@
 	update_icon()
 
 	var/speaking = "[emergency_alert] The supermatter has reached critical integrity failure. Emergency causality destabilization field has been activated."
-	global_announcer.autosay(speaking, "Supermatter Monitor")
+	GLOB.global_announcer.autosay(speaking, "Supermatter Monitor")
 	for(var/i in SUPERMATTER_COUNTDOWN_TIME to 0 step -10)
 		if(damage < explosion_point) // Cutting it a bit close there engineers
-			global_announcer.autosay("[safe_alert] Failsafe has been disengaged.", "Supermatter Monitor")
+			GLOB.global_announcer.autosay("[safe_alert] Failsafe has been disengaged.", "Supermatter Monitor")
 			final_countdown = FALSE
 			update_icon()
 			return
@@ -484,7 +493,7 @@
 			speaking = "[DisplayTimeText(i, TRUE)] remain before causality stabilization."
 		else
 			speaking = "[i*0.1]..."
-		global_announcer.autosay(speaking, "Supermatter Monitor")
+		GLOB.global_announcer.autosay(speaking, "Supermatter Monitor")
 		sleep(10)
 
 	explode() // Chompers Edit End
@@ -519,8 +528,7 @@
 	tgui_interact(user)
 
 /obj/machinery/power/supermatter/attack_hand(mob/user as mob)
-	var/datum/gender/TU = gender_datums[user.get_visible_gender()]
-	user.visible_message(span_warning("\The [user] reaches out and touches \the [src], inducing a resonance... [TU.his] body starts to glow and bursts into flames before flashing into ash."),\
+	user.visible_message(span_warning("\The [user] reaches out and touches \the [src], inducing a resonance... [user.p_Their()] body starts to glow and bursts into flames before flashing into ash."),\
 		span_danger("You reach out and touch \the [src]. Everything starts burning and all you can hear is ringing. Your last thought is \"That was not a wise decision.\""),\
 		span_warning("You hear an uneartly ringing, then what sounds like a shrilling kettle as you are washed with a wave of heat."))
 
@@ -568,8 +576,7 @@
 		return
 	if(isliving(AM))
 		var/mob/living/M = AM
-		var/datum/gender/T = gender_datums[M.get_visible_gender()]
-		AM.visible_message(span_warning("\The [AM] slams into \the [src] inducing a resonance... [T.his] body starts to glow and catch flame before flashing into ash."),\
+		AM.visible_message(span_warning("\The [AM] slams into \the [src] inducing a resonance... [M.p_Their()] body starts to glow and catch flame before flashing into ash."),\
 		span_danger("You slam into \the [src] as your ears are filled with unearthly ringing. Your last thought is \"Oh, fuck.\""),\
 		span_warning("You hear an uneartly ringing, then what sounds like a shrilling kettle as you are washed with a wave of heat."))
 	else if(!grav_pulling) //To prevent spam, detonating supermatter does not indicate non-mobs being destroyed
@@ -634,10 +641,10 @@
 	icon = 'icons/obj/supermatter.dmi'
 	icon_state = "darkmatter_broken"
 
-/obj/item/broken_sm/New()
-	message_admins("Broken SM shard created at ([x],[y],[z] - <A href='byond://?_src_=holder;[HrefToken()];adminplayerobservecoodjump=1;X=[x];Y=[y];Z=[z]'>JMP</a>)",0,1)
+/obj/item/broken_sm/Initialize(mapload)
+	. = ..()
+	message_admins("Broken SM shard created at ([x],[y],[z] - <A href='byond://?_src_=holder;[HrefToken()];adminplayerobservecoodjump=1;X=[x];Y=[y];Z=[z]'>JMP</a>)")
 	START_PROCESSING(SSobj, src)
-	return ..()
 
 /obj/item/broken_sm/process()
 	SSradiation.radiate(src, 50)
@@ -657,7 +664,7 @@
 	causalitywarn = FALSE
 
 /proc/reset_sm_alarms()
-	for(var/obj/machinery/firealarm/candidate_alarm in global.machines)
+	for(var/obj/machinery/firealarm/candidate_alarm in GLOB.machines)
 		var/area/our_area = get_area(candidate_alarm)
 		if(istype(our_area, /area/engineering))
 			for(var/obj/machinery/light/L in our_area)

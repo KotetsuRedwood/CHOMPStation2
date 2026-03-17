@@ -49,7 +49,7 @@
 	for(var/atom/movable/AM in contents)
 		qdel(AM)
 	QDEL_NULL(soundloop)
-	..()
+	. = ..()
 
 /obj/machinery/pda_multicaster/update_icon()
 	if(on)
@@ -111,7 +111,7 @@
 /obj/machinery/pda_multicaster/process()
 	update_power()
 
-/obj/machinery/pda_multicaster/emp_act(severity)
+/obj/machinery/pda_multicaster/emp_act(severity, recursive)
 	if(!(stat & EMPED))
 		stat |= EMPED
 		var/duration = (300 * 10)/severity

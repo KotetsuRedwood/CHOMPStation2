@@ -13,7 +13,7 @@
 	account_allowed = 0
 	offmap_spawn = TRUE
 
-	outfit_type = /decl/hierarchy/outfit/noncrew
+	outfit_type = /datum/decl/hierarchy/outfit/noncrew
 	job_description = {"Players taking a role of an outsider not employed by NT with no special mechanics. One superpose pod is provided.
 		-----Server rules still apply to the fullest
 		-----Outsiders are considered unauthorized personnel on Southern Cross.
@@ -28,12 +28,12 @@
 
 /datum/alt_title/spacefarer
 	title = "Spacefarer"
-	title_outfit = /decl/hierarchy/outfit/noncrew/spacefarer
+	title_outfit = /datum/decl/hierarchy/outfit/noncrew/spacefarer
 
 /*seems to be a kin only thing?
 /datum/job/noncrew/is_species_banned(species_name, brain_type)
-    // Any species can join as non-crew, including shadekin.
-    return FALSE
+	// Any species can join as non-crew, including shadekin.
+	return FALSE
  */
 
 /datum/job/shadekin
@@ -52,7 +52,7 @@
 	offmap_spawn = TRUE
 	camp_protection = TRUE //So far leave this for shadekin
 
-	outfit_type = /decl/hierarchy/outfit/noncrew
+	outfit_type = /datum/decl/hierarchy/outfit/noncrew
 	job_description = {"Players taking a role of an outsider not employed by NT with no special mechanics. One superpose pod is provided.
 		-----Server rules still apply to the fullest
 		-----Outsiders are considered unauthorized personnel on Southern Cross.
@@ -74,20 +74,3 @@
 	var/current_limit = spawn_positions + round(comperator / 50)
 	if(current_limit > total_positions)
 		total_positions = current_limit
-
-/datum/job/vr_avatar //So VR avatars dont spawn with PDAs and flood the servers
-	title = JOB_VR
-	disallow_jobhop = TRUE
-	total_positions = 99
-	spawn_positions = 5
-	latejoin_only = 1
-	supervisors = "The VR world"
-
-	flag = NONCREW
-	departments = list(DEPARTMENT_NONCREW)
-	department_flag = OTHER
-	faction = "Station"
-	assignable = FALSE
-	account_allowed = 0
-	offmap_spawn = TRUE
-	outfit_type = /decl/hierarchy/outfit/noncrew/vr_avatar

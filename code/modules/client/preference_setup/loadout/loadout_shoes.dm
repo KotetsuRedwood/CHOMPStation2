@@ -43,7 +43,7 @@
 
 /datum/gear/shoes/colorboots/New()
 	..()
-	gear_tweaks += gear_tweak_free_color_choice
+	gear_tweaks += GLOB.gear_tweak_free_color_choice
 
 /datum/gear/shoes/jackboots_white
 	display_name = "jackboots, white"
@@ -78,12 +78,12 @@
 	path = /obj/item/clothing/shoes/laceup
 
 /datum/gear/shoes/lacey/New()
-    ..()
-    var/list/laces = list()
-    for(var/lace in typesof(/obj/item/clothing/shoes/laceup))
-        var/obj/item/clothing/shoes/laceup/lace_type = lace
-        laces[initial(lace_type.name)] = lace_type
-    gear_tweaks += new/datum/gear_tweak/path(sortAssoc(laces))
+	..()
+	var/list/laces = list()
+	for(var/lace in typesof(/obj/item/clothing/shoes/laceup))
+		var/obj/item/clothing/shoes/laceup/lace_type = lace
+		laces[initial(lace_type.name)] = lace_type
+	gear_tweaks += new/datum/gear_tweak/path(sortAssoc(laces))
 
 /datum/gear/shoes/green
 	display_name = "shoes, green"
@@ -118,12 +118,12 @@
 	path = /obj/item/clothing/shoes/hitops/
 
 /datum/gear/shoes/hitops/New()
-    ..()
-    var/list/hitops = list()
-    for(var/hitop in typesof(/obj/item/clothing/shoes/hitops))
-        var/obj/item/clothing/shoes/hitops/hitop_type = hitop
-        hitops[initial(hitop_type.name)] = hitop_type
-    gear_tweaks += new/datum/gear_tweak/path(sortAssoc(hitops))
+	..()
+	var/list/hitops = list()
+	for(var/hitop in typesof(/obj/item/clothing/shoes/hitops))
+		var/obj/item/clothing/shoes/hitops/hitop_type = hitop
+		hitops[initial(hitop_type.name)] = hitop_type
+	gear_tweaks += new/datum/gear_tweak/path(sortAssoc(hitops))
 
 /datum/gear/shoes/flipflops
 	display_name = "flip flops"
@@ -131,7 +131,7 @@
 
 /datum/gear/shoes/flipflops/New()
 	..()
-	gear_tweaks += gear_tweak_free_color_choice
+	gear_tweaks += GLOB.gear_tweak_free_color_choice
 
 /datum/gear/shoes/athletic
 	display_name = "athletic shoes"
@@ -139,7 +139,7 @@
 
 /datum/gear/shoes/athletic/New()
 	..()
-	gear_tweaks += gear_tweak_free_color_choice
+	gear_tweaks += GLOB.gear_tweak_free_color_choice
 
 /datum/gear/shoes/skater
 	display_name = "skater shoes"
@@ -147,7 +147,7 @@
 
 /datum/gear/shoes/skater/New()
 	..()
-	gear_tweaks += gear_tweak_free_color_choice
+	gear_tweaks += GLOB.gear_tweak_free_color_choice
 
 /datum/gear/shoes/flats
 	display_name = "flats"
@@ -155,7 +155,7 @@
 
 /datum/gear/shoes/flats/New()
 	..()
-	gear_tweaks += gear_tweak_free_color_choice
+	gear_tweaks += GLOB.gear_tweak_free_color_choice
 
 /datum/gear/shoes/cowboy
 	display_name = "cowboy boots selection"
@@ -201,7 +201,7 @@
 
 /datum/gear/shoes/heels/New()
 	..()
-	gear_tweaks += gear_tweak_free_color_choice
+	gear_tweaks += GLOB.gear_tweak_free_color_choice
 
 /datum/gear/shoes/slippers
 	display_name = "bunny slippers"
@@ -260,7 +260,7 @@
 
 /datum/gear/shoes/ballet/New()
 	..()
-	gear_tweaks += gear_tweak_free_color_choice
+	gear_tweaks += GLOB.gear_tweak_free_color_choice
 
 /datum/gear/shoes/halfmoon
 	display_name = "half moon boots"
@@ -272,7 +272,7 @@
 
 /datum/gear/shoes/sandals/New()
 	..()
-	gear_tweaks += gear_tweak_free_color_choice
+	gear_tweaks += GLOB.gear_tweak_free_color_choice
 
 /datum/gear/shoes/black/cuffs
 	display_name = "legwraps, black"
@@ -316,7 +316,7 @@
 
 /datum/gear/shoes/sandals_elegant/New()
 	..()
-	gear_tweaks += gear_tweak_free_color_choice
+	gear_tweaks += GLOB.gear_tweak_free_color_choice
 
 //CHOMP ADDITION, trying to make a no shoes shoe option
 /datum/gear/shoes/none

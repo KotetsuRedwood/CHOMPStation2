@@ -62,7 +62,7 @@
 	can_atmos_pass = ATMOS_PASS_NO
 	connect_types = CONNECT_TYPE_REGULAR|CONNECT_TYPE_FUEL
 
-	// construct_state = /decl/machine_construction/default/panel_closed
+	// construct_state = /datum/decl/machine_construction/default/panel_closed
 	// maximum_component_parts = list(/obj/item/stock_parts = 6)//don't want too many, let upgraded component shine
 	// uncreated_component_parts = list(/obj/item/stock_parts/power/apc/buildable = 1)
 
@@ -189,11 +189,13 @@
 	light_color = "#ed9200"
 	anchored = TRUE
 
-/obj/effect/engine_exhaust/New(var/turf/nloc, var/ndir, var/flame)
-	..(nloc)
+/obj/effect/engine_exhaust/Initialize(mapload, var/ndir, var/flame)
+	. = ..()
 	if(flame)
 		icon_state = "exhaust"
-		nloc.hotspot_expose(1000,125)
+		if(isturf(loc))
+			var/turf/T = loc
+			T.hotspot_expose(1000,125)
 		set_light(0.5, 3)
 	set_dir(ndir)
 	QDEL_IN(src, 20)
@@ -212,5 +214,5 @@
 // Not Implemented - Variant that pulls power from cables.  Too complicated without bay's power components.
 // /obj/machinery/atmospherics/unary/engine/terminal
 // 	base_type = /obj/machinery/atmospherics/unary/engine
-// 	stock_part_presets = list(/decl/stock_part_preset/terminal_setup)
+// 	stock_part_presets = list(/datum/decl/stock_part_preset/terminal_setup)
 // 	uncreated_component_parts = list(/obj/item/stock_parts/power/terminal/buildable = 1)

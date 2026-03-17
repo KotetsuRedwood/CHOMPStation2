@@ -26,7 +26,7 @@
 
 /obj/machinery/power/tracker/Destroy()
 	unset_control() //remove from control computer
-	..()
+	. = ..()
 
 //set the control of the tracker to a given computer if closer than SOLAR_MAX_DIST
 /obj/machinery/power/tracker/proc/set_control(var/obj/machinery/power/solar_control/SC)
@@ -56,7 +56,7 @@
 	if(W.has_tool_quality(TOOL_CROWBAR))
 		playsound(src, 'sound/machines/click.ogg', 50, 1)
 		user.visible_message(span_notice("[user] begins to take the glass off the solar tracker."))
-		if(do_after(user, 50))
+		if(do_after(user, 5 SECONDS, target = src))
 			var/obj/item/solar_assembly/S = new(loc)
 			S.tracker = TRUE
 			S.anchored = TRUE

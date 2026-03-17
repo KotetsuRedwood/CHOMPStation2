@@ -1,4 +1,5 @@
-var/list/mob_hat_cache = list()
+GLOBAL_LIST_EMPTY(mob_hat_cache)
+
 /proc/get_hat_icon(var/obj/item/hat, var/offset_x = 0, var/offset_y = 0)
 	var/t_state = hat.icon_state
 	if(LAZYACCESS(hat.item_state_slots, slot_head_str))
@@ -6,7 +7,7 @@ var/list/mob_hat_cache = list()
 	else if(hat.item_state)
 		t_state = hat.item_state
 	var/key = "[t_state]_[offset_x]_[offset_y]"
-	if(!mob_hat_cache[key])            // Not ideal as there's no guarantee all hat icon_states
+	if(!GLOB.mob_hat_cache[key])            // Not ideal as there's no guarantee all hat icon_states
 		var/t_icon = INV_HEAD_DEF_ICON // are unique across multiple dmis, but whatever.
 		if(hat.icon_override)
 			t_icon = hat.icon_override
@@ -15,8 +16,8 @@ var/list/mob_hat_cache = list()
 		var/image/I = image(icon = t_icon, icon_state = t_state)
 		I.pixel_x = offset_x
 		I.pixel_y = offset_y
-		mob_hat_cache[key] = I
-	return mob_hat_cache[key]
+		GLOB.mob_hat_cache[key] = I
+	return GLOB.mob_hat_cache[key]
 
 /mob/living/silicon/robot/drone
 	name = "maintenance drone"
@@ -33,22 +34,19 @@ var/list/mob_hat_cache = list()
 	braintype = "Drone"
 	lawupdate = 0
 	density = TRUE
-	req_access = list(access_engine, access_robotics)
+	req_access = list(ACCESS_ENGINE, ACCESS_ROBOTICS)
 	integrated_light_power = 3
 	local_transmit = 1
 
 	can_pull_size = ITEMSIZE_NO_CONTAINER
 	can_pull_mobs = MOB_PULL_SMALLER
-	can_enter_vent_with = list(
-		/obj,
-		/atom/movable/emissive_blocker)
 
 	mob_bump_flag = SIMPLE_ANIMAL
 	mob_swap_flags = SIMPLE_ANIMAL
 	mob_push_flags = SIMPLE_ANIMAL
 	mob_always_swap = 1
 
-	mob_size = MOB_LARGE // Small mobs can't open doors, it's a huge pain for drones.
+	mob_size = MOB_SMALL
 
 	//Used for self-mailing.
 	var/mail_destination = ""
@@ -75,10 +73,18 @@ var/list/mob_hat_cache = list()
 /mob/living/silicon/robot/drone/Destroy()
 	if(hat)
 		hat.loc = get_turf(src)
-	..()
+	. = ..()
 
 /mob/living/silicon/robot/drone/is_sentient()
 	return FALSE
+
+/mob/living/silicon/robot/drone/ventcrawl_get_item_whitelist()
+	// Yes this allows any object, yes it's silly. I don't know if it's ever been abused by drones though.
+	return list(
+		/atom/movable/emissive_blocker,
+		/atom/movable/screen,
+		/obj
+		)
 
 /mob/living/silicon/robot/drone/construction
 	name = "construction drone"
@@ -102,21 +108,18 @@ var/list/mob_hat_cache = list()
 	can_pick_shell = FALSE
 	shell_accessories = list("eyes-miningdrone")
 
-/mob/living/silicon/robot/drone/New()
-	..()
+/mob/living/silicon/robot/drone/Initialize(mapload, is_decoy)
+	. = ..(mapload, FALSE)
 	add_verb(src, /mob/living/proc/ventcrawl)
 	add_verb(src, /mob/living/proc/hide)
-	remove_language("Robot Talk")
-	add_language("Robot Talk", 0)
-	add_language("Drone Talk", 1)
+	remove_language(LANGUAGE_ROBOT_TALK)
+	add_language(LANGUAGE_ROBOT_TALK, 0)
+	add_language(LANGUAGE_DRONE_TALK, 1)
 	serial_number = rand(0,999)
 
 	//They are unable to be upgraded, so let's give them a bit of a better battery.
 	cell.maxcharge = 10000
 	cell.charge = 10000
-
-	// NO BRAIN.
-	mmi = null
 
 	//We need to screw with their HP a bit. They have around one fifth as much HP as a full borg.
 	for(var/V in components) if(V != "power cell")
@@ -233,7 +236,6 @@ var/list/mob_hat_cache = list()
 		return
 
 	else if (istype(W, /obj/item/card/id)||istype(W, /obj/item/pda))
-		var/datum/gender/TU = gender_datums[user.get_visible_gender()]
 		if(stat == 2)
 
 			if(!CONFIG_GET(flag/allow_drone_spawn) || emagged || health < -35) //It's dead, Dave.
@@ -244,24 +246,13 @@ var/list/mob_hat_cache = list()
 				to_chat(user, span_danger("Access denied."))
 				return
 
-			user.visible_message(span_danger("\The [user] swipes [TU.his] ID card through \the [src], attempting to reboot it."), span_danger(">You swipe your ID card through \the [src], attempting to reboot it."))
+			user.visible_message(span_danger("\The [user] swipes [user.p_their()] ID card through \the [src], attempting to reboot it."), span_danger(">You swipe your ID card through \the [src], attempting to reboot it."))
 			var/drones = 0
-			for(var/mob/living/silicon/robot/drone/D in player_list)
+			for(var/mob/living/silicon/robot/drone/D in GLOB.player_list)
 				drones++
 			if(drones < CONFIG_GET(number/max_maint_drones))
 				request_player()
 			return
-
-		/*else //CHOMPEdit - Comment out drone shutting down since it seems to be a round remove with no recourse
-			user.visible_message(span_danger("\The [user] swipes [TU.his] ID card through \the [src], attempting to shut it down."), span_danger("You swipe your ID card through \the [src], attempting to shut it down."))
-
-			if(emagged)
-				return
-
-			if(allowed(user))
-				shut_down()
-			else
-				to_chat(user, span_danger("Access denied."))*/
 
 		return
 
@@ -283,7 +274,7 @@ var/list/mob_hat_cache = list()
 
 	log_game("[key_name(user)] emagged drone [key_name(src)]. Laws overridden.")
 	var/time = time2text(world.realtime,"hh:mm:ss")
-	lawchanges.Add("[time] " + span_bold(":") + " [user.name]([user.key]) emagged [name]([key])")
+	GLOB.lawchanges.Add("[time] " + span_bold(":") + " [user.name]([user.key]) emagged [name]([key])")
 
 	emagged = 1
 	lawupdate = 0
@@ -291,24 +282,16 @@ var/list/mob_hat_cache = list()
 	clear_supplied_laws()
 	clear_inherent_laws()
 	laws = new /datum/ai_laws/syndicate_override
-	var/datum/gender/TU = gender_datums[user.get_visible_gender()]
-	set_zeroth_law("Only [user.real_name] and people [TU.he] designate[TU.s] as being such are operatives.")
+	set_zeroth_law("Only [user.real_name] and people [user.p_their()] designate[user.p_s()] as being such are operatives.")
 
-	to_chat(src, span_infoplain(span_bold("Obey these laws:")))
-	laws.show_laws(src)
+	to_chat(src, span_infoplain(span_bold("Obey these laws:\n") + laws.get_formatted_laws()))
 	to_chat(src, span_danger("ALERT: [user.real_name] is your new master. Obey your new laws and \his commands."))
 	return 1
 
 //DRONE LIFE/DEATH
 
-//For some goddamn reason robots have this hardcoded. Redefining it for our fragile friends here.
-/mob/living/silicon/robot/drone/updatehealth()
-	if(status_flags & GODMODE)
-		health = maxHealth
-		set_stat(CONSCIOUS)
-		return
-	health = maxHealth - (getBruteLoss() + getFireLoss())
-	return
+/mob/living/silicon/robot/drone/getMaxHealth()
+	return maxHealth
 
 //Easiest to check this here, then check again in the robot proc.
 //Standard robots use config for crit, which is somewhat excessive for these guys.
@@ -321,11 +304,6 @@ var/list/mob_hat_cache = list()
 		gib()
 		return
 	..()
-
-/* DRONE MOVEMENT. // CHOMPedit: Nuking slipping.
-/mob/living/silicon/robot/drone/Process_Spaceslipping(var/prob_slip)
-	return 0
-*/// CHOMPedit end.
 
 //CONSOLE PROCS
 /mob/living/silicon/robot/drone/proc/law_resync()
@@ -354,7 +332,7 @@ var/list/mob_hat_cache = list()
 //Reboot procs.
 
 /mob/living/silicon/robot/drone/proc/request_player()
-	for(var/mob/observer/dead/O in player_list)
+	for(var/mob/observer/dead/O in GLOB.player_list)
 		if(jobban_isbanned(O, JOB_CYBORG))
 			continue
 		if(O.client)

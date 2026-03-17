@@ -7,12 +7,7 @@
 	},
 /area/tether/surfacebase/outside/wilderness)
 "b" = (
-/turf/unsimulated/wall/planetary/virgo3b{
-	desc = "You can't go there!";
-	icon = 'icons/turf/flooring/plating_vr.dmi';
-	icon_state = "";
-	name = "impassible landscape"
-	},
+/turf/unsimulated/wall/planetary/virgo3b_unpassable,
 /area/tether/surfacebase/outside/wilderness)
 "c" = (
 /turf/simulated/floor/outdoors/grass/sif/virgo3b{
@@ -113,10 +108,7 @@
 /area/tether/surfacebase/outside/wilderness)
 "p" = (
 /turf/simulated/floor/outdoors/dirt/virgo3b,
-/area/syndicate_station/southwest{
-	base_turf = /turf/simulated/floor/outdoors/dirt/virgo3b;
-	forced_ambience = list('sound/music/Sacred_Grove.ogg')
-	})
+/area/syndicate_station/southwest/outside)
 
 (1,1,1) = {"
 b

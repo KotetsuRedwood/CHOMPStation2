@@ -1,5 +1,5 @@
 import { binaryInsertWith } from 'common/collections';
-import { ReactNode, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { useBackend } from 'tgui/backend';
 import {
   Box,
@@ -110,20 +110,19 @@ export const GamePreferencesPage = (props) => {
   const [searchVisible, setSearchVisible] = useState(false);
 
   // For some reason, typescript thinks that this call to filter() can change the shape of the array
-  const gamePreferenceEntries: any = sortByName(Object.entries(gamePreferences))
-    .map(([category, preferences]) => {
-      return [
-        category,
-        preferences
-          .filter(
-            (entry) =>
-              !search ||
-              entry.name.toLowerCase().includes(search.toLowerCase()),
-          )
-          .map((entry) => entry.children),
-      ];
-    })
-    .filter(([category, prefs]) => prefs.length !== 0);
+  const gamePreferenceEntries: [string, ReactNode[]][] = sortByName(
+    Object.entries(gamePreferences),
+  )
+    .map(([category, preferences]): [string, ReactNode[]] => [
+      category,
+      preferences
+        .filter(
+          (entry) =>
+            !search || entry.name.toLowerCase().includes(search.toLowerCase()),
+        )
+        .map((entry) => entry.children),
+    ])
+    .filter((item): item is [string, ReactNode[]] => item[1].length !== 0);
 
   return (
     <>
@@ -132,12 +131,7 @@ export const GamePreferencesPage = (props) => {
       )}
       <Box position="absolute" right={4} top={4} style={{ zIndex: '100' }}>
         {searchVisible && (
-          <Input
-            width={16}
-            value={search}
-            onInput={(e, val) => setSearch(val)}
-            onChange={(e, val) => setSearch(val)}
-          />
+          <Input width={16} value={search} onChange={(val) => setSearch(val)} />
         )}
         <Button
           selected={searchVisible}

@@ -1,4 +1,35 @@
 //MAP CONVERTED BY dmm2tgm.py THIS HEADER COMMENT PREVENTS RECONVERSION, DO NOT REMOVE
+"aa" = (
+/mob/living/simple_mob/animal/giant_spider/tunneler{
+	name = "trained giant spider";
+	faction = "syndicate"
+	},
+/turf/template_noop,
+/area/template_noop)
+"ab" = (
+/mob/living/simple_mob/humanoid/merc/ranged/technician,
+/turf/simulated/floor/tiled/dark,
+/area/submap/DogBase)
+"ac" = (
+/obj/machinery/light{
+	dir = 4;
+	icon_state = "tube1";
+	pixel_x = 0
+	},
+/obj/effect/floor_decal/borderfloor{
+	dir = 4
+	},
+/mob/living/simple_mob/humanoid/merc/melee/sword/space,
+/turf/simulated/floor/tiled/dark,
+/area/submap/DogBase)
+"ad" = (
+/obj/structure/table/woodentable,
+/obj/effect/floor_decal/borderfloor{
+	dir = 1
+	},
+/obj/item/prop/deconstructable/gigacell,
+/turf/simulated/floor/tiled/dark,
+/area/submap/DogBase)
 "ao" = (
 /obj/effect/floor_decal/borderfloor/corner{
 	dir = 8
@@ -25,7 +56,6 @@
 /obj/structure/dogbed,
 /obj/effect/decal/remains/deer,
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /obj/random/contraband,
 /turf/simulated/floor/outdoors/dirt/sif/planetuse,
 /area/submap/DogBase)
@@ -46,16 +76,6 @@
 	faction = "syndicate"
 	},
 /obj/effect/floor_decal/corner/purple/diagonal,
-/turf/simulated/floor/tiled/dark,
-/area/submap/DogBase)
-"cK" = (
-/mob/living/simple_mob/animal/giant_spider/tunneler{
-	name = "trained giant spider";
-	faction = "syndicate"
-	},
-/obj/effect/floor_decal/borderfloor{
-	dir = 1
-	},
 /turf/simulated/floor/tiled/dark,
 /area/submap/DogBase)
 "dn" = (
@@ -90,14 +110,12 @@
 	name = "trained giant spider"
 	},
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/outdoors/dirt/sif/planetuse,
 /area/submap/DogBase)
 "ew" = (
 /obj/structure/dogbed,
 /obj/effect/decal/remains/human,
 /obj/effect/decal/cleanable/filth,
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /obj/item/bone/ribs,
 /obj/random/maintenance/research,
@@ -135,15 +153,6 @@
 /obj/effect/floor_decal/corner/purple/diagonal,
 /turf/simulated/floor/tiled/dark,
 /area/submap/DogBase)
-"gi" = (
-/mob/living/simple_mob/animal/giant_spider/pepper{
-	faction = "syndicate";
-	name = "trained giant spider"
-	},
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/outdoors/dirt/sif/planetuse,
-/area/template_noop)
 "gx" = (
 /obj/machinery/power/smes/buildable/point_of_interest,
 /obj/structure/cable/green{
@@ -165,7 +174,6 @@
 /area/submap/DogBase)
 "hV" = (
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /obj/item/bone/leg,
 /mob/living/simple_mob/animal/giant_spider/nurse{
 	faction = "syndicate";
@@ -174,7 +182,6 @@
 /turf/simulated/floor/outdoors/dirt/sif/planetuse,
 /area/submap/DogBase)
 "hW" = (
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/outdoors/dirt/sif/planetuse,
 /area/submap/DogBase)
@@ -187,7 +194,6 @@
 /obj/structure/dogbed,
 /obj/effect/decal/remains/deer,
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/outdoors/dirt/sif/planetuse,
 /area/submap/DogBase)
 "ja" = (
@@ -196,29 +202,18 @@
 "jH" = (
 /obj/structure/dogbed,
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /obj/random/maintenance/security,
 /turf/simulated/floor/outdoors/dirt/sif/planetuse,
 /area/submap/DogBase)
 "kl" = (
-/obj/random/mob/merc/all,
 /obj/structure/bed/chair,
+/mob/living/simple_mob/humanoid/merc/ranged/laser,
 /turf/simulated/floor/tiled/dark,
 /area/submap/DogBase)
 "kn" = (
 /obj/machinery/power/smes/buildable/point_of_interest,
 /obj/structure/cable/green,
 /turf/simulated/floor/plating,
-/area/submap/DogBase)
-"ky" = (
-/mob/living/simple_mob/animal/giant_spider/pepper{
-	faction = "syndicate";
-	name = "trained giant spider"
-	},
-/obj/effect/floor_decal/borderfloor{
-	dir = 8
-	},
-/turf/simulated/floor/tiled/dark,
 /area/submap/DogBase)
 "kL" = (
 /obj/structure/bed/chair,
@@ -264,7 +259,6 @@
 "nV" = (
 /obj/effect/decal/remains/unathi,
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/outdoors/dirt/sif/planetuse,
 /area/submap/DogBase)
 "oa" = (
@@ -304,7 +298,6 @@
 /obj/structure/dogbed,
 /obj/effect/decal/remains/tajaran,
 /obj/effect/decal/cleanable/filth,
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /obj/item/bone,
 /obj/random/maintenance/security,
@@ -375,7 +368,6 @@
 /area/submap/DogBase)
 "vt" = (
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /obj/random/maintenance/cargo,
 /turf/simulated/floor/outdoors/dirt/sif/planetuse,
 /area/submap/DogBase)
@@ -385,16 +377,8 @@
 	},
 /turf/simulated/floor/tiled/dark,
 /area/submap/DogBase)
-"xf" = (
-/mob/living/simple_mob/animal/giant_spider/tunneler{
-	name = "trained giant spider";
-	faction = "syndicate"
-	},
-/turf/simulated/floor/tiled/dark,
-/area/submap/DogBase)
 "xC" = (
 /obj/structure/dogbed,
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /obj/item/bone,
 /obj/random/maintenance/security,
@@ -432,23 +416,6 @@
 	},
 /mob/living/simple_mob/mechanical/viscerator/mercenary,
 /turf/simulated/floor/plating,
-/area/submap/DogBase)
-"AN" = (
-/mob/living/simple_mob/animal/giant_spider/pepper{
-	faction = "syndicate";
-	name = "trained giant spider"
-	},
-/turf/template_noop,
-/area/template_noop)
-"BX" = (
-/mob/living/simple_mob/animal/giant_spider/pepper{
-	faction = "syndicate";
-	name = "trained giant spider"
-	},
-/obj/effect/floor_decal/borderfloor{
-	dir = 6
-	},
-/turf/simulated/floor/tiled/dark,
 /area/submap/DogBase)
 "CP" = (
 /obj/machinery/porta_turret/poi{
@@ -510,11 +477,6 @@
 "Ge" = (
 /turf/template_noop,
 /area/template_noop)
-"Gm" = (
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/outdoors/dirt/sif/planetuse,
-/area/template_noop)
 "GP" = (
 /obj/item/storage/belt/janitor,
 /obj/effect/floor_decal/corner/purple/diagonal,
@@ -534,7 +496,7 @@
 /turf/simulated/floor/plating,
 /area/submap/DogBase)
 "Hv" = (
-/obj/random/mob/merc/all,
+/mob/living/simple_mob/humanoid/merc/ranged/grenadier,
 /turf/simulated/floor/tiled/dark,
 /area/submap/DogBase)
 "HX" = (
@@ -558,7 +520,10 @@
 /turf/simulated/floor/tiled/dark,
 /area/submap/DogBase)
 "JV" = (
-/obj/random/mob/merc/all,
+/mob/living/simple_mob/animal/giant_spider/tunneler{
+	name = "trained giant spider";
+	faction = "syndicate"
+	},
 /turf/simulated/floor/plating/sif/planetuse,
 /area/submap/DogBase)
 "Ka" = (
@@ -601,7 +566,6 @@
 "MF" = (
 /obj/structure/dogbed,
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /obj/item/bone,
 /obj/random/contraband,
 /turf/simulated/floor/outdoors/dirt/sif/planetuse,
@@ -609,7 +573,6 @@
 "MW" = (
 /obj/structure/dogbed,
 /obj/effect/decal/remains/unathi,
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /obj/random/maintenance/security,
 /turf/simulated/floor/outdoors/dirt/sif/planetuse,
@@ -638,7 +601,6 @@
 "Oj" = (
 /obj/structure/dogbed,
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/remains/tajaran,
 /obj/random/maintenance/medical,
 /turf/simulated/floor/outdoors/dirt/sif/planetuse,
@@ -659,7 +621,6 @@
 /area/submap/DogBase)
 "PW" = (
 /obj/structure/dogbed,
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/remains/human,
 /obj/random/contraband,
@@ -702,7 +663,6 @@
 /obj/effect/decal/remains/human,
 /obj/effect/decal/cleanable/filth,
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /obj/random/maintenance/cargo,
 /turf/simulated/floor/outdoors/dirt/sif/planetuse,
 /area/submap/DogBase)
@@ -723,13 +683,11 @@
 "Sj" = (
 /obj/structure/dogbed,
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /obj/random/maintenance/research,
 /turf/simulated/floor/outdoors/dirt/sif/planetuse,
 /area/submap/DogBase)
 "Sn" = (
 /obj/effect/decal/remains/human,
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /obj/random/maintenance/cargo,
 /turf/simulated/floor/outdoors/dirt/sif/planetuse,
@@ -796,6 +754,7 @@
 	dir = 10;
 	icon_state = "bordercolor"
 	},
+/mob/living/simple_mob/humanoid/merc/ranged/smg,
 /turf/simulated/floor/tiled/dark,
 /area/submap/DogBase)
 "Vn" = (
@@ -831,7 +790,7 @@
 /turf/simulated/floor/plating/sif/planetuse,
 /area/submap/DogBase)
 "XR" = (
-/obj/random/mob/merc/all,
+/mob/living/simple_mob/humanoid/merc/ranged/technician,
 /turf/template_noop,
 /area/template_noop)
 "YI" = (
@@ -1015,7 +974,7 @@ Ep
 Lb
 UM
 Ge
-Ge
+aa
 Ge
 Ge
 Ed
@@ -1064,7 +1023,7 @@ Ge
 Ge
 Ge
 XR
-AN
+Ge
 Ge
 tE
 bG
@@ -1077,11 +1036,11 @@ hV
 nV
 vt
 Ns
-Gm
-Gm
-Gm
-Gm
-Gm
+Ed
+Ed
+Ed
+Ed
+Ed
 Ge
 mF
 Ge
@@ -1109,10 +1068,10 @@ ec
 Sn
 hW
 Ns
-Gm
-Gm
-gi
-Gm
+Ed
+Ed
+Ed
+Ed
 Ge
 Ge
 Ge
@@ -1202,7 +1161,7 @@ tE
 to
 JD
 JD
-ky
+JD
 sB
 yr
 tE
@@ -1220,7 +1179,7 @@ Ge
 (12,1,1) = {"
 RB
 Ge
-Ju
+aa
 tE
 UN
 ja
@@ -1228,7 +1187,7 @@ HX
 Sc
 tE
 lt
-Hv
+ja
 XA
 tE
 fP
@@ -1238,7 +1197,7 @@ RO
 ja
 Sc
 tE
-cK
+fP
 ja
 ja
 Sc
@@ -1251,11 +1210,11 @@ mF
 "}
 (13,1,1) = {"
 Ge
-Ju
+Ge
 Ge
 tE
 PI
-ja
+ab
 lJ
 Sc
 tE
@@ -1319,7 +1278,7 @@ XC
 gW
 tE
 PI
-Hv
+ja
 lJ
 Sc
 md
@@ -1331,7 +1290,7 @@ fP
 kL
 Zn
 RO
-xf
+ja
 Sc
 tE
 fP
@@ -1379,7 +1338,7 @@ Ge
 "}
 (17,1,1) = {"
 Ge
-Ju
+Ge
 Ge
 tE
 PI
@@ -1395,7 +1354,7 @@ fP
 kL
 KH
 RO
-Hv
+ja
 Vz
 QF
 vI
@@ -1412,9 +1371,9 @@ Ge
 (18,1,1) = {"
 Ge
 Ge
-Ju
+aa
 tE
-NA
+ad
 ja
 bb
 Sc
@@ -1447,7 +1406,7 @@ Ge
 Ge
 tE
 aB
-QF
+ac
 PL
 sX
 tE
@@ -1460,7 +1419,7 @@ PL
 PL
 PL
 QF
-BX
+sX
 tE
 Vw
 PL
@@ -1559,7 +1518,7 @@ Ge
 Ge
 Ge
 Ge
-AN
+Ge
 Ge
 Ge
 Ge
@@ -1576,7 +1535,7 @@ Ge
 Ge
 Ge
 Ge
-AN
+Ge
 Ge
 tE
 SB
@@ -1590,7 +1549,7 @@ Ge
 Ge
 Ge
 Ge
-Ge
+aa
 Ge
 Ge
 Ge

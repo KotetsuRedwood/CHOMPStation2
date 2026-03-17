@@ -14,7 +14,7 @@ import { createSearch } from 'tgui-core/string';
 
 import { MAX_SEARCH_RESULTS } from './constants';
 import { ItemList } from './ItemList';
-import type { Data, item } from './types';
+import type { Data, Item } from './types';
 
 export const GenericUplink = (props: {
   currencyAmount: number;
@@ -28,7 +28,7 @@ export const GenericUplink = (props: {
 
   const [searchText, setSearchText] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(categories[0]?.name);
-  const testSearch = createSearch(searchText, (item: item) => {
+  const testSearch = createSearch<Item>(searchText, (item) => {
     return item.name + item.desc;
   });
   const items =
@@ -50,26 +50,32 @@ export const GenericUplink = (props: {
         </Box>
       }
       buttons={
-        <>
-          Search
-          <Input
-            autoFocus
-            value={searchText}
-            onInput={(e, value: string) => setSearchText(value)}
-            mx={1}
-          />
-          <Button
-            icon={compactMode ? 'list' : 'info'}
-            onClick={() => act('compact_toggle')}
-          >
-            {compactMode ? 'Compact' : 'Detailed'}
-          </Button>
-          {!!lockable && (
-            <Button icon="lock" onClick={() => act('lock')}>
-              Lock
+        <Stack>
+          <Stack.Item>Search</Stack.Item>{' '}
+          <Stack.Item>
+            <Input
+              autoFocus
+              value={searchText}
+              onChange={(value: string) => setSearchText(value)}
+              mx={1}
+            />
+          </Stack.Item>
+          <Stack.Item>
+            <Button
+              icon={compactMode ? 'list' : 'info'}
+              onClick={() => act('compact_toggle')}
+            >
+              {compactMode ? 'Compact' : 'Detailed'}
             </Button>
+          </Stack.Item>
+          {!!lockable && (
+            <Stack.Item>
+              <Button icon="lock" onClick={() => act('lock')}>
+                Lock
+              </Button>
+            </Stack.Item>
           )}
-        </>
+        </Stack>
       }
     >
       <Stack>

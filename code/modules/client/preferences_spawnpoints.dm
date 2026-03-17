@@ -1,15 +1,14 @@
-var/list/spawntypes = list()
+GLOBAL_LIST_INIT(spawntypes, populate_spawn_points())
 
 /proc/populate_spawn_points()
-	spawntypes = list()
+	var/list/spawns = list()
 	for(var/type in subtypesof(/datum/spawnpoint))
-		var/datum/spawnpoint/S = new type()
-		spawntypes[S.display_name] = S
+		var/datum/spawnpoint/spawn_point = new type()
+		spawns[spawn_point.display_name] = spawn_point
+	return spawns
 
 /proc/get_spawn_points()
-	if(!LAZYLEN(spawntypes))
-		populate_spawn_points()
-	return spawntypes
+	return GLOB.spawntypes
 
 /datum/spawnpoint
 	var/msg          //Message to display on the arrivals computer.
@@ -18,7 +17,7 @@ var/list/spawntypes = list()
 	var/list/restrict_job = null
 	var/list/disallow_job = null
 	var/announce_channel = "Common"
-	var/allow_offmap_spawn = FALSE //CHOMPEdit - add option to allow offmap spawns to a spawnpoint without entirely restricting that spawnpoint
+	var/allow_offmap_spawn = FALSE // add option to allow offmap spawns to a spawnpoint without entirely restricting that spawnpoint
 	var/allowed_mob_types = JOB_SILICON|JOB_CARBON
 
 /datum/spawnpoint/proc/check_job_spawning(job)
@@ -32,7 +31,7 @@ var/list/spawntypes = list()
 	if(!J) // Couldn't find, admin shenanigans? Allow it
 		return 1
 
-	if(J.offmap_spawn && !allow_offmap_spawn && !(job in restrict_job)) //CHOMPEdit - add option to allow offmap spawns to a spawnpoint without entirely restricting that spawnpoint
+	if(J.offmap_spawn && !allow_offmap_spawn && !(job in restrict_job)) // add option to allow offmap spawns to a spawnpoint without entirely restricting that spawnpoint
 		return 0
 
 	if(!(J.mob_type & allowed_mob_types))
@@ -50,7 +49,7 @@ var/list/spawntypes = list()
 
 /datum/spawnpoint/arrivals/New()
 	..()
-	turfs = latejoin
+	turfs = GLOB.latejoin
 
 /datum/spawnpoint/gateway
 	display_name = "Gateway"
@@ -58,7 +57,7 @@ var/list/spawntypes = list()
 
 /datum/spawnpoint/gateway/New()
 	..()
-	turfs = latejoin_gateway
+	turfs = GLOB.latejoin_gateway
 /* VOREStation Edit
 /datum/spawnpoint/elevator
 	display_name = "Elevator"
@@ -76,7 +75,7 @@ var/list/spawntypes = list()
 
 /datum/spawnpoint/cryo/New()
 	..()
-	turfs = latejoin_cryo
+	turfs = GLOB.latejoin_cryo
 
 /datum/spawnpoint/cyborg
 	display_name = "Cyborg Storage"
@@ -86,25 +85,25 @@ var/list/spawntypes = list()
 
 /datum/spawnpoint/cyborg/New()
 	..()
-	turfs = latejoin_cyborg
+	turfs = GLOB.latejoin_cyborg
 
 /obj/effect/landmark/arrivals
 	name = "JoinLateShuttle"
 	delete_me = 1
 
-/obj/effect/landmark/arrivals/New()
-	latejoin += loc
-	..()
+/obj/effect/landmark/arrivals/Initialize(mapload)
+	GLOB.latejoin += loc
+	. = ..()
 
-var/global/list/latejoin_tram   = list()
+GLOBAL_LIST_EMPTY(latejoin_tram)
 
 /obj/effect/landmark/tram
 	name = "JoinLateTram"
 	delete_me = 1
 
-/obj/effect/landmark/tram/New()
-	latejoin_tram += loc // There's no tram but you know whatever man!
-	..()
+/obj/effect/landmark/tram/Initialize(mapload)
+	GLOB.latejoin_tram += loc // There's no tram but you know whatever man!
+	. = ..()
 
 /datum/spawnpoint/tram
 	display_name = "Tram Station"
@@ -113,4 +112,23 @@ var/global/list/latejoin_tram   = list()
 
 /datum/spawnpoint/tram/New()
 	..()
-	turfs = latejoin_tram
+	turfs = GLOB.latejoin_tram
+
+/datum/spawnpoint/vore
+	display_name = "Vorespawn - Prey"
+	msg = "has arrived on the station"
+	allow_offmap_spawn = TRUE
+
+/datum/spawnpoint/vore/pred
+	display_name = "Vorespawn - Pred"
+	msg = "has arrived on the station"
+
+// CHOMPEnable Start
+/datum/spawnpoint/vore/itemtf
+	display_name = "Item TF spawn"
+	msg = "has arrived on the station"
+// CHOMPEnable End
+
+/datum/spawnpoint/vore/New()
+	..()
+	turfs = GLOB.latejoin

@@ -104,7 +104,7 @@
 	// Service begins, delay
 	visible_message(span_bold("\The [src]") + " scans [user] thoroughly!")
 	flick("kiosk_active", src)
-	if(!do_after(user, 5 SECONDS, src, exclusive = TASK_ALL_EXCLUSIVE) || inoperable())
+	if(!do_after(user, 5 SECONDS, target = src) || inoperable())
 		suspend()
 		return
 
@@ -186,19 +186,21 @@
 			problems |= ALCOHOL_POISONING
 		if(our_user.chem_effects[CE_ALCOHOL])
 			is_drunk = TRUE
-		if(our_user.vessel.total_volume < our_user.vessel.maximum_volume) //Bloodloss
+		if(our_user.vessel.total_volume < (our_user.vessel.maximum_volume*0.95)) //Bloodloss. Only happens at below 95% blood.
 			problems |= BLOODLOSS
 
 	if(!problems) //Minor stuff that we really don't care much about, but can be annoying! So let's tell people how to fix it. But only if they don't  have a health crisis going on!
 		var/minor_problems = ""
 		if(user.hallucination)
 			minor_problems += "<br>" + span_warning("Brain activity suggesting severe mental inhibitions detected - medical assistance recommended.")
-		if(user.drowsyness || user.dizziness || user.sleeping)
+		if(user.drowsyness || user.sleeping)
 			minor_problems += "<br>" + span_warning("Mild mental inhibitions detected - drinking coffee can improve symptoms and stimulate nervous system.")
 		if(is_drunk)
 			minor_problems += "<br>" + span_warning("Ethanol intoxication detected - suggest close observation to alleviate risk of injury.")
-		if(user.getHalLoss() > 0)
-			minor_problems += "<br>" + span_warning("Mild concussion detected - advising bed rest until feeling better. No other anatomical issues detected.")
+		if(user.getHalLoss())
+			minor_problems += "<br>" + span_warning("Mild concussion detected - advising bed rest until feeling better.")
+		if(user.get_jittery() || user.get_dizzy())
+			minor_problems += "<br>" + span_warning("Neurological symptoms detected - advising bed rest until feeling better.") //Resting fixes dizziness and jitteryness!
 		else
 			minor_problems += "<br>" + span_notice("No anatomical issues detected.")
 			return minor_problems
@@ -332,6 +334,8 @@
 		return "<br>" + span_warning("Unable to perform full scan. Please see a medical professional.")
 	if(!user.mind)
 		return "<br>" + span_warning("Unable to perform full scan. Please see a medical professional.")
+	if(istype(get_area(src), /area/vr))
+		return "<br>" + span_danger("Incompatible database configuration error: A Transcore Mind and Body Resource Management server could not be detected.")
 
 	var/nif = user.nif
 	if(nif)

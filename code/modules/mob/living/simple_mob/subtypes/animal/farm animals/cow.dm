@@ -15,7 +15,7 @@
 	response_harm   = "kicks"
 	attacktext = list("kicked")
 
-	organ_names = /decl/mob_organ_names/cow
+	organ_names = /datum/decl/mob_organ_names/cow
 
 	say_list_type = /datum/say_list/cow
 
@@ -24,10 +24,13 @@
 
 	var/datum/reagents/udder = null
 
-/mob/living/simple_mob/animal/passive/cow/New()
+/mob/living/simple_mob/animal/passive/cow/Initialize(mapload)
+	. = ..()
+
 	udder = new(50)
 	udder.my_atom = src
-	..()
+
+	AddComponent(/datum/component/hose_connector/output/cow) // Moo?
 
 /mob/living/simple_mob/animal/passive/cow/attackby(var/obj/item/O as obj, var/mob/user as mob)
 	var/obj/item/reagent_containers/glass/G = O
@@ -68,5 +71,5 @@
 	emote_hear = list("brays", "moos","moos hauntingly")
 	emote_see = list("shakes its head")
 
-/decl/mob_organ_names/cow
+/datum/decl/mob_organ_names/cow
 	hit_zones = list("head", "torso", "left foreleg", "right foreleg", "left hind leg", "right hind leg", "udder")

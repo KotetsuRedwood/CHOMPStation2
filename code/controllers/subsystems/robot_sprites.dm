@@ -1,6 +1,8 @@
 SUBSYSTEM_DEF(robot_sprites)
 	name = "Robot Sprites"
-	init_order = INIT_ORDER_ROBOT_SPRITES
+	dependencies = list(
+		/datum/controller/subsystem/garbage
+	)
 	flags = SS_NO_FIRE
 	var/list/all_cyborg_sprites = list()
 	var/list/cyborg_sprites_by_module = list()
@@ -32,7 +34,7 @@ SUBSYSTEM_DEF(robot_sprites)
 			qdel(RS)
 			continue
 
-		all_cyborg_sprites |= src
+		all_cyborg_sprites |= RS
 
 		if(islist(RS.module_type))
 			for(var/M in RS.module_type)
@@ -83,13 +85,13 @@ SUBSYSTEM_DEF(robot_sprites)
 	if(!islist(sprite_list))
 		return 0
 
-	return sprite_list.len
+	return length(sprite_list)
 
 /datum/controller/subsystem/robot_sprites/proc/get_default_module_sprite(var/module)
 
 	var/list/module_sprites = get_module_sprites(module)
 
-	if(!module_sprites || !module_sprites.len)
+	if(!module_sprites || !length(module_sprites))
 		return
 
 	var/chosen_sprite
@@ -139,7 +141,7 @@ SUBSYSTEM_DEF(robot_sprites)
 		RS.icon_x = text2num(splitted[1])
 		RS.icon_y = text2num(splitted[2])
 		RS.vis_height = text2num(splitted[2])
-		var/list/icon_states = icon_states(RS.sprite_icon)
+		var/list/icon_states = icon_states_fast(RS.sprite_icon)
 		for(var/icon in icon_states)
 			// testing whitelist functionality ckey-...
 			if(findtext(icon, regex("ckey-")))
@@ -158,6 +160,12 @@ SUBSYSTEM_DEF(robot_sprites)
 				var/list/decals = splittext(icon, "_")
 				decals -= "decals"
 				RS.sprite_decals |= decals
+				continue
+			// special overlays that also can be used as animations, as some names have - in them, seperated by _
+			if(findtext(icon, regex("^animations")))
+				var/list/animations = splittext(icon, "_")
+				animations -= "animations"
+				RS.sprite_animations |= animations
 				continue
 			// Check for all the possible overlays
 			if(findtext(icon, regex("-roll")))
@@ -190,8 +198,14 @@ SUBSYSTEM_DEF(robot_sprites)
 			if(findtext(icon, regex("-disabler")))
 				RS.sprite_flags |= ROBOT_HAS_DISABLER_SPRITE
 				continue
+			if(findtext(icon, regex("-rest-eyes")))
+				RS.has_rest_eyes_sprites = TRUE
+				continue
 			if(findtext(icon, regex("-eyes")))
 				RS.has_eye_sprites = TRUE
+				continue
+			if(findtext(icon, regex("-rest-lights")))
+				RS.has_rest_lights_sprites = TRUE
 				continue
 			if(findtext(icon, regex("-lights")))
 				RS.has_eye_light_sprites = TRUE
@@ -204,6 +218,9 @@ SUBSYSTEM_DEF(robot_sprites)
 				continue
 			if(findtext(icon, regex("-openpanel_w")))
 				RS.has_custom_open_sprites = TRUE
+				continue
+			if(findtext(icon, regex("-glow")))
+				RS.has_glow_sprites = TRUE
 				continue
 			if(findtext(icon, regex("-\\d-rest")))
 				RS.has_vore_belly_resting_sprites = TRUE

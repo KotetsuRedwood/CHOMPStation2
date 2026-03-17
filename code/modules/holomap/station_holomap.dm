@@ -14,6 +14,7 @@
 	active_power_usage = 500
 	circuit = /obj/item/circuitboard/station_map
 	vis_flags = VIS_HIDE // They have an emissive that looks bad in openspace due to their wall-mounted nature
+	flags = ON_BORDER|WALL_ITEM
 
 	// TODO - Port use_auto_lights from /vg - for now declare here
 	var/use_auto_lights = 1
@@ -29,10 +30,6 @@
 	var/original_zLevel = 1	// zLevel on which the station map was initialized.
 	var/bogus = TRUE		// set to 0 when you initialize the station map on a zLevel that has its own icon formatted for use by station holomaps.
 	var/datum/station_holomap/holomap_datum
-
-/obj/machinery/station_map/New()
-	..()
-	flags |= ON_BORDER // Why? It doesn't help if its not density
 
 /obj/machinery/station_map/Initialize(mapload)
 	. = ..()
@@ -75,6 +72,8 @@
 	if(user.loc != loc)
 		to_chat(user, span_warning("You need to stand in front of \the [src]."))
 		return
+	if(watching_mob)
+		return
 	startWatching(user)
 
 // Let people bump up against it to watch
@@ -83,7 +82,7 @@
 		startWatching(AM)
 
 /obj/machinery/station_map/Uncross(atom/movable/mover, turf/target)
-	if(get_dir(mover, target) == reverse_dir[dir])
+	if(get_dir(mover, target) == GLOB.reverse_dir[dir])
 		return FALSE
 	return TRUE
 /obj/machinery/station_map/proc/startWatching(var/mob/user)
@@ -103,17 +102,17 @@
 	// TODO - This part!! ~Leshana
 	if(isliving(user) && anchored && !(stat & (NOPOWER|BROKEN)))
 		if(user.client)
-			holomap_datum.station_map.loc = global_hud.holomap  // Put the image on the holomap hud
+			holomap_datum.station_map.loc = GLOB.global_hud.holomap  // Put the image on the holomap hud
 			holomap_datum.station_map.alpha = 0 // Set to transparent so we can fade in
 			animate(holomap_datum.station_map, alpha = 255, time = 5, easing = LINEAR_EASING)
 			flick("station_map_activate", src)
 			// Wait, if wea re not modifying the holomap_obj... can't it be part of the global hud?
-			user.client.screen |= global_hud.holomap // TODO - HACK! This should be there permenently really.
+			user.client.screen |= GLOB.global_hud.holomap // TODO - HACK! This should be there permenently really.
 			user.client.images |= holomap_datum.station_map
 
 			watching_mob = user
 			watching_mob.AddComponent(/datum/component/recursive_move)
-			RegisterSignal(watching_mob, COMSIG_OBSERVER_MOVED, /obj/machinery/station_map/proc/checkPosition)
+			RegisterSignal(watching_mob, COMSIG_MOVABLE_ATTEMPTED_MOVE, /obj/machinery/station_map/proc/checkPosition)
 			//GLOB.dir_set_event.register(watching_mob, src, /obj/machinery/station_map/proc/checkPosition)
 			RegisterSignal(watching_mob, COMSIG_OBSERVER_DESTROYED, /obj/machinery/station_map/proc/stopWatching)
 			update_use_power(USE_POWER_ACTIVE)
@@ -132,17 +131,19 @@
 		stopWatching()
 
 /obj/machinery/station_map/proc/checkPosition()
+	SIGNAL_HANDLER
 	if(!watching_mob || (watching_mob.loc != loc) || (dir != watching_mob.dir))
 		stopWatching()
 
 /obj/machinery/station_map/proc/stopWatching()
+	SIGNAL_HANDLER
 	if(watching_mob)
 		if(watching_mob.client)
 			animate(holomap_datum.station_map, alpha = 0, time = 5, easing = LINEAR_EASING)
 			var/mob/M = watching_mob
 			spawn(5) //we give it time to fade out
 				M.client.images -= holomap_datum.station_map
-		UnregisterSignal(watching_mob, COMSIG_OBSERVER_MOVED)
+		UnregisterSignal(watching_mob, COMSIG_MOVABLE_ATTEMPTED_MOVE)
 		//GLOB.dir_set_event.unregister(watching_mob, src)
 		UnregisterSignal(watching_mob, COMSIG_OBSERVER_DESTROYED)
 	watching_mob = null
@@ -261,4 +262,4 @@
 	holomarker.x = src.x
 	holomarker.y = src.y
 	holomarker.z = src.z
-	holomap_markers["[id]_\ref[src]"] = holomarker
+	GLOB.holomap_markers["[id]_\ref[src]"] = holomarker

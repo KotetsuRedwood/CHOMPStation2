@@ -4,27 +4,12 @@
 /area)
 "ab" = (
 /turf/simulated/shuttle/wall{
-	 icon_state = "swall_s";
 	dir = 2
 	},
 /area/shuttle/overmap_examples/outpost)
 "ac" = (
-/obj/structure/shuttle/window{
-	 icon_state = "3"
-	},
+/obj/structure/shuttle/window,
 /turf/simulated/shuttle/floor,
-/area/shuttle/overmap_examples/outpost)
-"ad" = (
-/turf/simulated/shuttle/wall{
-	 icon_state = "swall_s";
-	dir = 2
-	},
-/area/shuttle/overmap_examples/outpost)
-"ae" = (
-/turf/simulated/shuttle/wall{
-	 icon_state = "swall_straight";
-	dir = 1
-	},
 /area/shuttle/overmap_examples/outpost)
 "af" = (
 /obj/machinery/computer/shuttle_control/explore{
@@ -33,12 +18,7 @@
 /turf/simulated/shuttle/floor,
 /area/shuttle/overmap_examples/outpost)
 "ag" = (
-/obj/effect/mapinfo/sector{
-	icon = 'icons/obj/mining.dmi';
-	icon_state = "ore2";
-	landing_area = /area/shuttle/escape_pod2/centcom;
-	name = "Abandoned Outpost"
-	},
+/obj/effect/mapinfo/sector/abandoned,
 /turf/space,
 /area)
 "ah" = (
@@ -49,7 +29,6 @@
 /area/shuttle/escape_pod2/centcom)
 "aj" = (
 /turf/simulated/shuttle/wall{
-	 icon_state = "swall_s";
 	dir = 1
 	},
 /area/shuttle/overmap_examples/outpost)
@@ -59,7 +38,6 @@
 /area/shuttle/overmap_examples/outpost)
 "al" = (
 /turf/simulated/shuttle/wall{
-	 icon_state = "swall_s";
 	dir = 8
 	},
 /area/shuttle/overmap_examples/outpost)
@@ -805,7 +783,7 @@
 "co" = (
 /obj/machinery/door/airlock/glass{
 	name = "Glass Airlock";
-	req_access_txt = "0"
+	req_access = null
 	},
 /turf/simulated/floor/airless{
 	dir = 5;
@@ -876,7 +854,7 @@
 "cy" = (
 /obj/machinery/door/airlock/external{
 	name = "External Airlock";
-	req_access_txt = "0"
+	req_access = null
 	},
 /turf/simulated/floor/airless{
 	dir = 5;
@@ -1880,8 +1858,8 @@ aa
 "}
 (23,1,1) = {"
 ab
-ae
-ae
+aj
+aj
 aj
 am
 ap
@@ -1963,9 +1941,9 @@ aa
 aa
 "}
 (25,1,1) = {"
-ad
-ae
-ae
+ab
+aj
+aj
 al
 am
 ar

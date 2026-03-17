@@ -42,11 +42,9 @@
 	var/atom/movable/product = instances[instances.len]	// Remove the last added product
 	instances -= product
 	product.forceMove(product_location)
-	//VOREStation Addition Start
-	if(istype(product, /obj))
-		var/obj/item = product
-		item.persist_storable = FALSE
-	//VOREStation Addition End
+	if(istype(product, /obj/item))
+		var/obj/item/our_item = product
+		our_item.persist_storable = FALSE
 	return product
 
 /datum/stored_item/proc/add_product(var/atom/movable/product)
@@ -85,15 +83,15 @@
 /datum/stored_item/stack/get_product(var/product_location, var/count)
 	if(!LAZYLEN(instances))
 		return null // Shouldn't happen, but will loudly complain if it breaks
-	
+
 	var/obj/item/stack/S = instances[1]
 	count = min(count, S.get_max_amount())
 	src.amount -= count // We won't vend more than one full stack per call
-	
+
 	// Case 1: Draw the full amount from the first instance
 	if(count < S.get_amount())
 		S = S.split(count)
-		
+
 	// Case 2: Amount at least one stack, or have to accumulate
 	else if(count >= S.get_amount())
 		count -= S.get_amount()

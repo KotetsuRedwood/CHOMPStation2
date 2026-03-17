@@ -22,10 +22,10 @@ type Data = {
   display_craftable_only: BooleanLike;
   display_compact: BooleanLike;
   craftability: Record<string, number>;
-  crafting_recipes: Record<string, recipe[]>;
+  crafting_recipes: Record<string, Recipe[]>;
 };
 
-type recipe = {
+type Recipe = {
   name: string;
   ref: string;
   req_text: string;
@@ -34,16 +34,16 @@ type recipe = {
   has_subcats: BooleanLike;
 };
 
-type uiCategory = { name: string; category: string; subcategory?: string };
-type uiRecipe = Required<recipe & { category: string }>;
+type UiCategory = { name: string; category: string; subcategory?: string };
+type UiRecipe = Required<Recipe & { category: string }>;
 
-function getUiEntries(crafting_recipes: Record<string, recipe[]>) {
-  const categories: uiCategory[] = [];
-  const recipes: uiRecipe[] = [];
-  for (let category of Object.keys(crafting_recipes)) {
+function getUiEntries(crafting_recipes: Record<string, Recipe[]>) {
+  const categories: UiCategory[] = [];
+  const recipes: UiRecipe[] = [];
+  for (const category of Object.keys(crafting_recipes)) {
     const subcategories = crafting_recipes[category];
     if ('has_subcats' in subcategories) {
-      for (let subcategory of Object.keys(subcategories)) {
+      for (const subcategory of Object.keys(subcategories)) {
         if (subcategory === 'has_subcats') {
           continue;
         }
@@ -55,7 +55,7 @@ function getUiEntries(crafting_recipes: Record<string, recipe[]>) {
         });
         // Push recipes
         const _recipes = subcategories[subcategory];
-        for (let recipe of _recipes) {
+        for (const recipe of _recipes) {
           recipes.push({
             ...recipe,
             category: subcategory,
@@ -71,7 +71,7 @@ function getUiEntries(crafting_recipes: Record<string, recipe[]>) {
     });
     // Push recipes
     const _recipes = crafting_recipes[category];
-    for (let recipe of _recipes) {
+    for (const recipe of _recipes) {
       recipes.push({
         ...recipe,
         category,
@@ -91,12 +91,12 @@ export const PersonalCrafting = (props) => {
   // Sort out the tab state
   const [tab, setTab] = useState(categories[0]?.name);
 
-  const testSearch = createSearch(searchText, (recipe: recipe) => recipe.name);
+  const testSearch = createSearch<Recipe>(searchText, (recipe) => recipe.name);
 
-  const shownRecipes: uiRecipe[] = flow([
-    (recipes: uiRecipe[]) =>
+  const shownRecipes: UiRecipe[] = flow([
+    (recipes: UiRecipe[]) =>
       recipes.filter((recipe) => recipe.category === tab),
-    (recipes: uiRecipe[]) => {
+    (recipes: UiRecipe[]) => {
       if (!searchText) {
         return recipes;
       } else {
@@ -117,20 +117,24 @@ export const PersonalCrafting = (props) => {
         <Section
           title="Personal Crafting"
           buttons={
-            <>
-              <Button.Checkbox
-                checked={display_compact}
-                onClick={() => act('toggle_compact')}
-              >
-                Compact
-              </Button.Checkbox>
-              <Button.Checkbox
-                checked={display_craftable_only}
-                onClick={() => act('toggle_recipes')}
-              >
-                Craftable Only
-              </Button.Checkbox>
-            </>
+            <Stack>
+              <Stack.Item>
+                <Button.Checkbox
+                  checked={display_compact}
+                  onClick={() => act('toggle_compact')}
+                >
+                  Compact
+                </Button.Checkbox>
+              </Stack.Item>
+              <Stack.Item>
+                <Button.Checkbox
+                  checked={display_craftable_only}
+                  onClick={() => act('toggle_recipes')}
+                >
+                  Craftable Only
+                </Button.Checkbox>
+              </Stack.Item>
+            </Stack>
           }
         >
           <Input
@@ -138,7 +142,7 @@ export const PersonalCrafting = (props) => {
             value={searchText}
             mb={1}
             placeholder="Search for recipes..."
-            onInput={(e, value: string) => setSearchText(value)}
+            onChange={(value: string) => setSearchText(value)}
           />
           <Stack>
             <Stack.Item>
@@ -175,7 +179,7 @@ export const PersonalCrafting = (props) => {
 };
 
 const CraftingList = (props: {
-  craftables: uiRecipe[];
+  craftables: UiRecipe[];
   display_compact: BooleanLike;
   display_craftable_only: BooleanLike;
 }) => {
@@ -198,7 +202,7 @@ const CraftingList = (props: {
               icon="cog"
               disabled={!craftability[craftable.ref]}
               tooltip={
-                craftable.tool_text && 'Tools needed: ' + craftable.tool_text
+                craftable.tool_text && `Tools needed: ${craftable.tool_text}`
               }
               tooltipPosition="left"
               onClick={() =>

@@ -4,30 +4,37 @@
  * @license MIT
  */
 
-import fs from 'fs';
-import path from 'path';
+import path from 'node:path';
 
-import { require } from './require.js';
-
-const globPkg = require('glob');
+import { Glob } from 'bun';
 
 export const resolvePath = path.resolve;
 
-/**
- * Combines path.resolve with glob patterns.
- */
-export const resolveGlob = (...sections) => {
-  const unsafePaths = globPkg.sync(path.resolve(...sections), {
-    strict: false,
-    silent: true,
-    windowsPathsNoEscape: true,
-  });
-  const safePaths: string[] = [];
-  for (let path of unsafePaths) {
+/** Combines path.resolve with glob patterns. */
+export async function resolveGlob(
+  directory: string,
+  pattern = '*',
+): Promise<string[]> {
+  // If no pattern is supplied, just return the directory if it exists
+  if (pattern === '*') {
     try {
-      fs.statSync(path);
-      safePaths.push(path);
-    } catch {}
+      const stat = await Bun.file(directory).stat();
+      if (stat?.isDirectory()) {
+        return [directory];
+      }
+    } catch (e) {
+      return [];
+    }
+    return [];
   }
-  return safePaths;
-};
+
+  // Otherwise, use glob logic
+  const glob = new Glob(pattern);
+  const results: string[] = [];
+
+  for await (const match of glob.scan({ onlyFiles: false, cwd: directory })) {
+    results.push(path.resolve(directory, match));
+  }
+
+  return results;
+}

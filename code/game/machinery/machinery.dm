@@ -1,87 +1,87 @@
 /*
 Overview:
-   Used to create objects that need a per step proc call.  Default definition of 'New()'
-   stores a reference to src machine in global 'machines list'.  Default definition
-   of 'Del' removes reference to src machine in global 'machines list'.
+	Used to create objects that need a per step proc call.  Default definition of 'New()'
+	stores a reference to src machine in global 'machines list'.  Default definition
+	of 'Del' removes reference to src machine in global 'machines list'.
 
 Class Variables:
 
-   power_init_complete (boolean)
-      Indicates that we have have registered our static power usage with the area.
+	power_init_complete (boolean)
+		Indicates that we have have registered our static power usage with the area.
 
-   use_power (num)
-      current state of auto power use.
-      Possible Values:
-         USE_POWER_OFF:0 -- no auto power use
-         USE_POWER_IDLE:1 -- machine is using power at its idle power level
-         USE_POWER_ACTIVE:2 -- machine is using power at its active power level
+	use_power (num)
+		current state of auto power use.
+		Possible Values:
+			USE_POWER_OFF:0 -- no auto power use
+			USE_POWER_IDLE:1 -- machine is using power at its idle power level
+			USE_POWER_ACTIVE:2 -- machine is using power at its active power level
 
-   active_power_usage (num)
-      Value for the amount of power to use when in active power mode
+	active_power_usage (num)
+		Value for the amount of power to use when in active power mode
 
-   idle_power_usage (num)
-      Value for the amount of power to use when in idle power mode
+	idle_power_usage (num)
+		Value for the amount of power to use when in idle power mode
 
-   power_channel (num)
-      What channel to draw from when drawing power for power mode
-      Possible Values:
-         EQUIP:0 -- Equipment Channel
-         LIGHT:2 -- Lighting Channel
-         ENVIRON:3 -- Environment Channel
+	power_channel (num)
+		What channel to draw from when drawing power for power mode
+		Possible Values:
+			EQUIP:0 -- Equipment Channel
+			LIGHT:2 -- Lighting Channel
+			ENVIRON:3 -- Environment Channel
 
-   component_parts (list)
-      A list of component parts of machine used by frame based machines.
+	component_parts (list)
+		A list of component parts of machine used by frame based machines.
 
-   panel_open (num)
-      Whether the panel is open
+	panel_open (num)
+		Whether the panel is open
 
-   uid (num)
-      Unique id of machine across all machines.
+	uid (num)
+		Unique id of machine across all machines.
 
-   gl_uid (global num)
-      Next uid value in sequence
+	gl_uid (global num)
+		Next uid value in sequence
 
-   stat (bitflag)
-      Machine status bit flags.
-      Possible bit flags:
-         BROKEN:1 -- Machine is broken
-         NOPOWER:2 -- No power is being supplied to machine.
-         POWEROFF:4 -- tbd
-         MAINT:8 -- machine is currently under going maintenance.
-         EMPED:16 -- temporary broken by EMP pulse
+	stat (bitflag)
+		Machine status bit flags.
+		Possible bit flags:
+			BROKEN:1 -- Machine is broken
+			NOPOWER:2 -- No power is being supplied to machine.
+			POWEROFF:4 -- tbd
+			MAINT:8 -- machine is currently under going maintenance.
+			EMPED:16 -- temporary broken by EMP pulse
 
 Class Procs:
-   New()                     'game/machinery/machine.dm'
+	Initialize(mapload)                     'game/machinery/machine.dm'
 
-   Destroy()                     'game/machinery/machine.dm'
+	Destroy()                     'game/machinery/machine.dm'
 
-   get_power_usage()            'game/machinery/machinery_power.dm'
-      Returns the amount of power this machine uses every SSmachines cycle.
-      Default definition uses 'use_power', 'active_power_usage', 'idle_power_usage'
+	get_power_usage()            'game/machinery/machinery_power.dm'
+		Returns the amount of power this machine uses every SSmachines cycle.
+		Default definition uses 'use_power', 'active_power_usage', 'idle_power_usage'
 
-   powered(chan = CURRENT_CHANNEL)         'game/machinery/machinery_power.dm'
-      Checks to see if area that contains the object has power available for power
-      channel given in 'chan'.
+	powered(chan = CURRENT_CHANNEL)         'game/machinery/machinery_power.dm'
+		Checks to see if area that contains the object has power available for power
+		channel given in 'chan'.
 
-   use_power_oneoff(amount, chan=CURRENT_CHANNEL)   'game/machinery/machinery_power.dm'
-      Deducts 'amount' from the power channel 'chan' of the area that contains the object.
+	use_power_oneoff(amount, chan=CURRENT_CHANNEL)   'game/machinery/machinery_power.dm'
+		Deducts 'amount' from the power channel 'chan' of the area that contains the object.
 
-   power_change()               'game/machinery/machinery_power.dm'
-      Called by the area that contains the object when ever that area under goes a
-      power state change (area runs out of power, or area channel is turned off).
+	power_change()               'game/machinery/machinery_power.dm'
+		Called by the area that contains the object when ever that area under goes a
+		power state change (area runs out of power, or area channel is turned off).
 
-   RefreshParts()               'game/machinery/machine.dm'
-      Called to refresh the variables in the machine that are contributed to by parts
-      contained in the component_parts list. (example: glass and material amounts for
-      the autolathe)
+	RefreshParts()               'game/machinery/machine.dm'
+		Called to refresh the variables in the machine that are contributed to by parts
+		contained in the component_parts list. (example: glass and material amounts for
+		the autolathe)
 
-      Default definition does nothing.
+		Default definition does nothing.
 
-   assign_uid()               'game/machinery/machine.dm'
-      Called by machine to assign a value to the uid variable.
+	assign_uid()               'game/machinery/machine.dm'
+		Called by machine to assign a value to the uid variable.
 
-   process()                  'game/machinery/machine.dm'
-      Called by the 'master_controller' once per game tick for each machine that is listed in the 'machines' list.
+	process()                  'game/machinery/machine.dm'
+		Called by the 'master_controller' once per game tick for each machine that is listed in the 'machines' list.
 
 
 	Compiled by Aygar
@@ -121,15 +121,10 @@ Class Procs:
 
 	blocks_emissive = EMISSIVE_BLOCK_GENERIC
 
-/obj/machinery/New(l, d=0)
-	..()
+/obj/machinery/Initialize(mapload, d=0)
+	. = ..()
 	if(isnum(d))
 		set_dir(d)
-	if(ispath(circuit))
-		circuit = new circuit(src)
-
-/obj/machinery/Initialize(mapload)
-	. = ..()
 	SSmachines.all_machines += src
 	if(ispath(circuit))
 		circuit = new circuit(src)
@@ -151,16 +146,15 @@ Class Procs:
 			if(A.loc == src) // If the components are inside the machine, delete them.
 				qdel(A)
 			else // Otherwise we assume they were dropped to the ground during deconstruction, and were not removed from the component_parts list by deconstruction code.
-				warning("[A] was still in [src]'s component_parts when it was Destroy()'d")
+				WARNING("[A] was still in [src]'s component_parts when it was Destroy()'d")
 		component_parts.Cut()
 		component_parts = null
 	if(contents) // The same for contents.
 		for(var/atom/A in contents)
 			if(ishuman(A))
 				var/mob/living/carbon/human/H = A
-				H.client.eye = H.client.mob
-				H.client.perspective = MOB_PERSPECTIVE
-				H.loc = src.loc
+				H.forceMove(loc)
+				H.reset_perspective()
 			else
 				qdel(A)
 	return ..()
@@ -168,7 +162,7 @@ Class Procs:
 /obj/machinery/process() // Steady power usage is handled separately. If you dont use process why are you here?
 	return PROCESS_KILL
 
-/obj/machinery/emp_act(severity)
+/obj/machinery/emp_act(severity, recursive)
 	if(use_power && stat == 0)
 		use_power(7500/severity)
 
@@ -177,10 +171,8 @@ Class Procs:
 		pulse2.icon_state = "empdisable"
 		pulse2.name = "emp sparks"
 		pulse2.anchored = TRUE
-		pulse2.set_dir(pick(cardinal))
-
-		spawn(10)
-			qdel(pulse2)
+		pulse2.set_dir(pick(GLOB.cardinal))
+		QDEL_IN(pulse2, 1 SECOND)
 	..()
 
 /obj/machinery/ex_act(severity)
@@ -231,20 +223,13 @@ Class Procs:
 		return STATUS_CLOSE
 	return ..()
 
-/obj/machinery/CouldUseTopic(var/mob/user)
-	..()
-	user.set_machine(src)
-
-/obj/machinery/CouldNotUseTopic(var/mob/user)
-	user.unset_machine()
-
 ////////////////////////////////////////////////////////////////////////////////////////////
 
 /obj/machinery/attack_ai(mob/user as mob)
 	if(isrobot(user))
 		// For some reason attack_robot doesn't work
 		// This is to stop robots from using cameras to remotely control machines.
-		if(user.client && user.client.eye == user)
+		if(user.client && !user.is_remote_viewing())
 			return attack_hand(user)
 	else
 		return attack_hand(user)
@@ -362,6 +347,11 @@ Class Procs:
 				R.play_rped_sound()
 	return 1
 
+// This is it's own proc so it can be more easily found when looking for machines that can upgrade themselves from mapped parts
+// Should be called from LateInitialize()
+/obj/machinery/proc/apply_mapped_upgrades()
+	return
+
 // Default behavior for wrenching down machines.  Supports both delay and instant modes.
 /obj/machinery/proc/default_unfasten_wrench(var/mob/user, var/obj/item/W, var/time = 0)
 	if(!W.has_tool_quality(TOOL_WRENCH))
@@ -406,7 +396,7 @@ Class Procs:
 		return 0
 	to_chat(user, span_notice("You start disconnecting the monitor."))
 	playsound(src, S.usesound, 50, 1)
-	if(do_after(user, 20 * S.toolspeed))
+	if(do_after(user, 2 SECONDS * S.toolspeed, target = src))
 		if(stat & BROKEN)
 			to_chat(user, span_notice("The broken glass falls out."))
 			new /obj/item/material/shard(src.loc)
@@ -434,6 +424,7 @@ Class Procs:
 	. = dismantle()
 
 /obj/machinery/proc/dismantle()
+	SEND_SIGNAL(src, COMSIG_OBJ_DECONSTRUCT)
 	playsound(src, 'sound/items/Crowbar.ogg', 50, 1)
 	for(var/obj/I in contents)
 		if(istype(I,/obj/item/card/id))
@@ -555,16 +546,9 @@ Class Procs:
 		A.forceMove(droploc)
 		if(scatter && isturf(droploc))
 			var/turf/T = droploc
-			A.Move(get_step(T, pick(alldirs)))
+			A.Move(get_step(T, pick(GLOB.alldirs)))
 
 	playsound(src, 'sound/machines/machine_die_short.ogg')
 	spark_system.start()
 	qdel(spark_system)
 	qdel(src)
-
-/datum/proc/apply_visual(mob/M)
-	M.sight = 0 //Just reset their mesons and stuff so they can't use them, by default.
-	return
-
-/datum/proc/remove_visual(mob/M)
-	return

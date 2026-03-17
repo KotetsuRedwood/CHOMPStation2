@@ -97,14 +97,11 @@
 		node3.update_underlays()
 
 /obj/machinery/atmospherics/pipe/manifold/update_icon(var/safety = 0)
-	if(!check_icon_cache())
-		return
-
 	alpha = 255
 
 	cut_overlays()
-	add_overlay(icon_manager.get_atmos_icon("manifold", , pipe_color, "core" + icon_connect_type))
-	add_overlay(icon_manager.get_atmos_icon("manifold", , , "clamps" + icon_connect_type))
+	add_overlay(GLOB.icon_manager.get_atmos_icon("manifold", , pipe_color, "core" + icon_connect_type))
+	add_overlay(GLOB.icon_manager.get_atmos_icon("manifold", , , "clamps" + icon_connect_type))
 	underlays.Cut()
 
 	var/turf/T = get_turf(src)
@@ -137,7 +134,7 @@
 /obj/machinery/atmospherics/pipe/manifold/atmos_init()
 	var/connect_directions = (NORTH|SOUTH|EAST|WEST)&(~dir)
 
-	for(var/direction in cardinal)
+	for(var/direction in GLOB.cardinal)
 		if(direction&connect_directions)
 			for(var/obj/machinery/atmospherics/target in get_step(src,direction))
 				if (can_be_node(target, 1))
@@ -148,7 +145,7 @@
 				break
 
 
-	for(var/direction in cardinal)
+	for(var/direction in GLOB.cardinal)
 		if(direction&connect_directions)
 			for(var/obj/machinery/atmospherics/target in get_step(src,direction))
 				if (can_be_node(target, 2))
@@ -159,7 +156,7 @@
 				break
 
 
-	for(var/direction in cardinal)
+	for(var/direction in GLOB.cardinal)
 		if(direction&connect_directions)
 			for(var/obj/machinery/atmospherics/target in get_step(src,direction))
 				if (can_be_node(target, 3))

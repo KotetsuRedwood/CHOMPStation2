@@ -1,13 +1,13 @@
 /*
 
 Overview:
-	The connection_manager class stores connections in each cardinal direction on a turf.
+	The connection_manager class stores connections in each GLOB.cardinal direction on a turf.
 	It isn't always present if a turf has no connections, check if(connections) before using.
 	Contains procs for mass manipulation of connection data.
 
 Class Vars:
 
-	NSEWUD - Connections to this turf in each cardinal direction.
+	NSEWUD - Connections to this turf in each GLOB.cardinal direction.
 
 Class Procs:
 
@@ -34,19 +34,19 @@ Macros:
 // macro-ized to cut down on proc calls
 #define check(c) (c && c.valid())
 
-/turf/var/tmp/connection_manager/connections
+/turf/var/tmp/datum/connection_manager/connections
 
-/connection_manager/var/connection/N
-/connection_manager/var/connection/S
-/connection_manager/var/connection/E
-/connection_manager/var/connection/W
+/datum/connection_manager/var/datum/connection/N
+/datum/connection_manager/var/datum/connection/S
+/datum/connection_manager/var/datum/connection/E
+/datum/connection_manager/var/datum/connection/W
 
 #ifdef MULTIZAS
-/connection_manager/var/connection/U
-/connection_manager/var/connection/D
+/datum/connection_manager/var/datum/connection/U
+/datum/connection_manager/var/datum/connection/D
 #endif
 
-/connection_manager/proc/get(d)
+/datum/connection_manager/proc/get(d)
 	switch(d)
 		if(NORTH)
 			if(check(N)) return N
@@ -70,7 +70,7 @@ Macros:
 			else return null
 		#endif
 
-/connection_manager/proc/place(connection/c, d)
+/datum/connection_manager/proc/place(datum/connection/c, d)
 	switch(d)
 		if(NORTH) N = c
 		if(SOUTH) S = c
@@ -82,7 +82,7 @@ Macros:
 		if(DOWN) D = c
 		#endif
 
-/connection_manager/proc/update_all()
+/datum/connection_manager/proc/update_all()
 	if(check(N)) N.update()
 	if(check(S)) S.update()
 	if(check(E)) E.update()
@@ -92,7 +92,7 @@ Macros:
 	if(check(D)) D.update()
 	#endif
 
-/connection_manager/proc/erase_all()
+/datum/connection_manager/proc/erase_all()
 	if(check(N)) N.erase()
 	if(check(S)) S.erase()
 	if(check(E)) E.erase()

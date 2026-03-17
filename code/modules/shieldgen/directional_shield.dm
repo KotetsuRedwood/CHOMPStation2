@@ -16,7 +16,8 @@
 	var/x_offset = 0 // Offset from the 'center' of where the projector is, so that if it moves, the shield can recalc its position.
 	var/y_offset = 0 // Ditto.
 
-/obj/effect/directional_shield/New(var/newloc, var/new_projector)
+/obj/effect/directional_shield/Initialize(mapload, var/new_projector)
+	. = ..()
 	if(new_projector)
 		projector = new_projector
 		var/turf/us = get_turf(src)
@@ -26,7 +27,6 @@
 			y_offset = us.y - them.y
 	else
 		update_color()
-	..(newloc)
 
 /obj/effect/directional_shield/proc/relocate()
 	if(!projector)
@@ -98,10 +98,13 @@
 	var/high_color = "#0099FF"			// Color the shield will be when at max health.  A light blue.
 	var/low_color = "#FF0000"			// Color the shield will drift towards as health is lowered.  Deep red.
 
+	///Var for attack_self chain
+	var/special_handling = FALSE
+
 /obj/item/shield_projector/Initialize(mapload)
 	START_PROCESSING(SSobj, src)
 	AddComponent(/datum/component/recursive_move)
-	RegisterSignal(src, COMSIG_OBSERVER_MOVED, PROC_REF(moved_event))
+	RegisterSignal(src, COMSIG_MOVABLE_ATTEMPTED_MOVE, PROC_REF(moved_event))
 	if(always_on)
 		spawn(0)
 			if(!QDELETED(src))
@@ -111,10 +114,11 @@
 /obj/item/shield_projector/Destroy()
 	destroy_shields()
 	STOP_PROCESSING(SSobj, src)
-	UnregisterSignal(src, COMSIG_OBSERVER_MOVED)
+	UnregisterSignal(src, COMSIG_MOVABLE_ATTEMPTED_MOVE)
 	return ..()
 
 /obj/item/shield_projector/proc/moved_event()
+	SIGNAL_HANDLER
 	update_shield_positions()
 
 /obj/item/shield_projector/proc/create_shield(var/newloc, var/new_dir)
@@ -138,6 +142,7 @@
 	active = FALSE
 
 /obj/item/shield_projector/proc/update_shield_positions()
+	SIGNAL_HANDLER
 	for(var/obj/effect/directional_shield/S in active_shields)
 		S.relocate()
 
@@ -184,7 +189,12 @@
 	for(var/obj/effect/directional_shield/S in active_shields)
 		S.update_color(new_color)
 
-/obj/item/shield_projector/attack_self(var/mob/living/user)
+/obj/item/shield_projector/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
+	if(special_handling)
+		return FALSE
 	if(active)
 		if(always_on)
 			to_chat(user, span_warning("You can't seem to deactivate \the [src]."))
@@ -216,7 +226,7 @@
 	if(Adjacent(user))
 		. += "Its shield matrix is at [round( (shield_health / max_shield_health) * 100, 0.01)]% strength."
 
-/obj/item/shield_projector/emp_act(var/severity)
+/obj/item/shield_projector/emp_act(severity, recursive)
 	adjust_health(-max_shield_health / severity) // A strong EMP will kill the shield instantly, but weaker ones won't on the first hit.
 
 // Subtypes
@@ -360,6 +370,7 @@
 
 	var/obj/mecha/my_mecha = null
 	var/obj/item/mecha_parts/mecha_equipment/combat_shield/my_tool = null
+	special_handling = TRUE
 
 /obj/item/shield_projector/line/exosuit/process()
 	..()
@@ -376,7 +387,10 @@
 	else
 		my_tool.set_ready_state(TRUE)
 
-/obj/item/shield_projector/line/exosuit/attack_self(var/mob/living/user)
+/obj/item/shield_projector/line/exosuit/attack_self(mob/living/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	if(active)
 		if(always_on)
 			to_chat(user, span_warning("You can't seem to deactivate \the [src]."))

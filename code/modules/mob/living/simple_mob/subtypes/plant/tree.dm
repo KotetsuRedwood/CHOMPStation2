@@ -25,15 +25,15 @@
 	attacktext = list("bitten")
 	attack_sound = 'sound/weapons/bite.ogg'
 
-	organ_names = /decl/mob_organ_names/tree
+	organ_names = /datum/decl/mob_organ_names/tree
 
 	meat_type = /obj/item/reagent_containers/food/snacks/xenomeat
 	meat_amount = 2
 
 	pixel_x = -16
 
-	can_be_drop_prey = FALSE //CHOMP Add
-	can_pain_emote = FALSE // CHOMPEdit: Can't feel pain and shouldn't take damage anyways, but, sanity
+	can_be_drop_prey = FALSE
+	can_pain_emote = FALSE // Can't feel pain and shouldn't take damage anyways, but, sanity
 
 /mob/living/simple_mob/animal/space/tree/apply_melee_effects(var/atom/A)
 	if(isliving(A))
@@ -48,5 +48,5 @@
 	new /obj/item/stack/material/wood(loc)
 	qdel(src)
 
-/decl/mob_organ_names/tree
+/datum/decl/mob_organ_names/tree
 	hit_zones = list("trunk", "branches", "twigs")

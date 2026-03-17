@@ -1,4 +1,4 @@
-import { BooleanLike } from 'tgui-core/react';
+import type { BooleanLike } from 'tgui-core/react';
 
 export type Data = {
   sensors: sensor[];
@@ -24,6 +24,7 @@ export type sensor = {
     nitrogen: number;
     carbon_dioxide: number;
     phoron: number;
+    methane: number;
     other: number;
   };
 };

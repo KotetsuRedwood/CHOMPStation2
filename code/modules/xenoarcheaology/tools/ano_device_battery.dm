@@ -17,7 +17,7 @@
 		. += "It currently has a charge of [stored_charge] out of [capacity]"
 /obj/item/anobattery/Destroy()
 	battery_effect = null
-	..()
+	. = ..()
 
 /obj/item/anobattery/moderate
 	name = "moderate anomaly battery"
@@ -71,7 +71,7 @@
 	inserted_battery = null
 	archived_loc = null
 	last_user_touched = null
-	..()
+	. = ..()
 
 /obj/item/anodevice/equipped(var/mob/user, var/slot)
 	last_user_touched = user
@@ -88,7 +88,10 @@
 	else
 		return ..()
 
-/obj/item/anodevice/attack_self(var/mob/user as mob)
+/obj/item/anodevice/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	return tgui_interact(user)
 
 /obj/item/anodevice/tgui_state(mob/user)
@@ -236,7 +239,7 @@
 
 /obj/item/anodevice/Destroy()
 	STOP_PROCESSING(SSobj, src)
-	..()
+	. = ..()
 
 /obj/item/anodevice/attack(mob/living/M as mob, mob/living/user as mob, def_zone)
 	if (!istype(M))

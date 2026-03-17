@@ -16,37 +16,34 @@
 // -- Objs -- //
 
 
-/obj/effect/step_trigger/teleporter/debrisfield_loop/north/New()
-	..()
+/obj/effect/step_trigger/teleporter/debrisfield_loop/north/Initialize(mapload)
+	. = ..()
 	teleport_x = x
 	teleport_y = 2
 	teleport_z = z
 
-/obj/effect/step_trigger/teleporter/debrisfield_loop/south/New()
-	..()
+/obj/effect/step_trigger/teleporter/debrisfield_loop/south/Initialize(mapload)
+	. = ..()
 	teleport_x = x
 	teleport_y = world.maxy - 1
 	teleport_z = z
 
-/obj/effect/step_trigger/teleporter/debrisfield_loop/west/New()
-	..()
+/obj/effect/step_trigger/teleporter/debrisfield_loop/west/Initialize(mapload)
+	. = ..()
 	teleport_x = world.maxx - 1
 	teleport_y = y
 	teleport_z = z
 
-/obj/effect/step_trigger/teleporter/debrisfield_loop/east/New()
-	..()
+/obj/effect/step_trigger/teleporter/debrisfield_loop/east/Initialize(mapload)
+	. = ..()
 	teleport_x = 2
 	teleport_y = y
 	teleport_z = z
 
 //This does nothing right now, but is framework if we do POIs for this place
+
 /obj/away_mission_init/debrisfield
 	name = "away mission initializer - debrisfield"
-
-/obj/away_mission_init/debrisfield/Initialize(mapload)
-	flags |= ATOM_INITIALIZED
-	return INITIALIZE_HINT_QDEL
 
 /area/tether_away/debrisfield
 	name = "Away Mission - Debris Field"
@@ -105,7 +102,7 @@
 
 /area/submap/debrisfield/phoron_tanker/Initialize(mapload)
 	. = ..()
-	var/datum/lore/organization/O = loremaster.organizations[/datum/lore/organization/tsc/nanotrasen]
+	var/datum/lore/organization/O = GLOB.loremaster.organizations[/datum/lore/organization/tsc/nanotrasen]
 	ic_name = pick(O.ship_names)
 	name = "NTV [ic_name]"
 	if(!tag)
@@ -168,7 +165,7 @@
 
 /obj/effect/overmap/visitable/ship/landable/luxury_boat/Initialize(mapload)
 	. = ..()
-	var/datum/lore/organization/O = loremaster.organizations[/datum/lore/organization/gov/elysia]
+	var/datum/lore/organization/O = GLOB.loremaster.organizations[/datum/lore/organization/gov/elysia]
 	var/newname = "ECS-T [pick(O.ship_names)]"
 	name = newname
 	scanner_desc = {"\[i\]Registration\[/i\]: [newname]
@@ -178,7 +175,7 @@
 	rename_areas(newname)
 
 /obj/effect/overmap/visitable/ship/landable/luxury_boat/proc/rename_areas(newname)
-	if(!SSshuttles.subsystem_initialized)
+	if(!SSshuttles.initialized)
 		spawn(300)
 			rename_areas(newname)
 		return
@@ -259,7 +256,7 @@
 
 /obj/effect/overmap/visitable/ship/landable/tinycarrier/Initialize(mapload)
 	. = ..()
-	var/datum/lore/organization/O = loremaster.organizations[/datum/lore/organization/other/sysdef]
+	var/datum/lore/organization/O = GLOB.loremaster.organizations[/datum/lore/organization/other/sysdef]
 	var/newname = "SDV [pick(O.ship_names)]"
 	name = newname
 	scanner_desc = {"\[i\]Registration\[/i\]: [newname]
@@ -269,7 +266,7 @@
 	rename_areas(newname)
 
 /obj/effect/overmap/visitable/ship/landable/tinycarrier/proc/rename_areas(newname)
-	if(!SSshuttles.subsystem_initialized)
+	if(!SSshuttles.initialized)
 		spawn(300)
 			rename_areas(newname)
 		return

@@ -104,3 +104,26 @@
 **Creator / Copyright:** Toriate<br>
 **License Holders:** Matica, Cameron The Raven, Spotteh<br>
 **License:** [CC BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/)<br>
+<br>
+**Folder:** `icons/mob/robot/gooborgs`<br>
+**Title:** Gooborgs<br>
+**Creator / Copyright:** Toriate<br>
+**License Holders:** Matica<br>
+**License:** [CC BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/)<br>
+<br>
+**File:** `icons/obj/borkmedigun.dmi`<br>
+**Creator:** Commissioned by Cross_Exonar from Toriate<br>
+**Link:** https://github.com/TS-Rogue-Star/Rogue-Star/pull/1010<br>
+**License:** [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/)<br>
+<br>
+**File:** `icons/mob/items/lefthand_medigun.dmi`<br>
+**Icon-States:**medblaster-wielded, medblaster, medblaster_cmo<br>
+**Creator:** Commissioned by Cross_Exonar from Toriate<br>
+**Link:** https://github.com/TS-Rogue-Star/Rogue-Star/pull/1010<br>
+**License:** [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/)<br>
+<br>
+**File:** `icons/mob/items/righthand_medigun.dmi`<br>
+**Icon-States:**medblaster-wielded, medblaster, medblaster_cmo<br>
+**Creator:** Commissioned by Cross_Exonar from Toriate<br>
+**Link:** https://github.com/TS-Rogue-Star/Rogue-Star/pull/1010<br>
+**License:** [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/)<br>

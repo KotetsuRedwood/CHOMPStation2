@@ -8,11 +8,11 @@
 	random_color = FALSE
 
 /obj/item/tool/wirecutters/clippers/trimmers
-    name = "hedgetrimmers"
-    desc = "An old pair of trimmers with a pretty dull blade. You would probably have a hard time cutting anything but plants with it."
-    icon_state = "hedget"
-    item_state = "hedget"
-    force = 7 //One point extra than standard wire cutters.
+	name = "hedgetrimmers"
+	desc = "An old pair of trimmers with a pretty dull blade. You would probably have a hard time cutting anything but plants with it."
+	icon_state = "hedget"
+	item_state = "hedget"
+	force = 7 //One point extra than standard wire cutters.
 
 /obj/item/tool/wirecutters/clippers/trimmers/afterattack(atom/A as mob|obj|turf|area, mob/user as mob, proximity)
 	if(!proximity) return
@@ -30,12 +30,16 @@
 	var/list/last_reagents
 	pickup_sound = 'sound/items/pickup/device.ogg'
 	drop_sound = 'sound/items/drop/device.ogg'
+	special_handling = TRUE
 
 /obj/item/analyzer/plant_analyzer/Destroy()
 	. = ..()
 	QDEL_NULL(last_seed)
 
 /obj/item/analyzer/plant_analyzer/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	tgui_interact(user)
 
 /obj/item/analyzer/plant_analyzer/tgui_interact(mob/user, datum/tgui/ui)
@@ -179,7 +183,7 @@
 	data["name"] = seed_name
 	data["uid"] = uid
 	data["endurance"] = get_trait(TRAIT_ENDURANCE)
-	data["yield"] = get_trait(TRAIT_YIELD)
+	data["crop_yield"] = get_trait(TRAIT_YIELD)
 	data["maturation_time"] = get_trait(TRAIT_MATURATION)
 	data["production_time"] = get_trait(TRAIT_PRODUCTION)
 	data["potency"] = get_trait(TRAIT_POTENCY)
@@ -297,7 +301,7 @@
 				amount = "large amounts of "
 			else if (exude_gasses[gas] < 5)
 				amount = "small amounts of "
-			data["trait_info"] += "It will release [amount][gas_data.name[gas]] into the environment."
+			data["trait_info"] += "It will release [amount][GLOB.gas_data.name[gas]] into the environment."
 
 	if(consume_gasses && consume_gasses.len)
 		for(var/gas in consume_gasses)
@@ -306,6 +310,6 @@
 				amount = "large amounts of "
 			else if (consume_gasses[gas] < 5)
 				amount = "small amounts of "
-			data["trait_info"] += "It will consume [amount][gas_data.name[gas]] from the environment."
+			data["trait_info"] += "It will consume [amount][GLOB.gas_data.name[gas]] from the environment."
 
 	return data

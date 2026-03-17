@@ -16,7 +16,7 @@
 	harm_intent_damage = 3
 	friendly = "hugs"
 
-	organ_names = /decl/mob_organ_names/golem
+	organ_names = /datum/decl/mob_organ_names/golem
 
 	melee_damage_lower = 30 // It has a built in esword.
 	melee_damage_upper = 30
@@ -115,7 +115,7 @@
 	return ..()
 
 /mob/living/simple_mob/mechanical/technomancer_golem/melee_pre_animation(atom/A)
-	if(active_spell && active_spell.cast_methods & CAST_MELEE|CAST_RANGED) // If they're trying to melee-cast a spell, use the special animation instead.
+	if(active_spell && active_spell.cast_methods & (CAST_MELEE|CAST_RANGED)) // If they're trying to melee-cast a spell, use the special animation instead.
 		special_pre_animation(A)
 		return
 
@@ -154,5 +154,5 @@
 	casting = FALSE
 	ranged_post_animation(A)
 
-/decl/mob_organ_names/golem
+/datum/decl/mob_organ_names/golem
 	hit_zones = list("helmet", "cuirass", "left tasset", "right tasset", "left gauntlet", "right gauntlet", "weapon")

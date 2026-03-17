@@ -8,14 +8,14 @@
 	drop_sound = 'sound/items/drop/paper.ogg'
 	pickup_sound = 'sound/items/pickup/paper.ogg'
 	mouse_drag_pointer = MOUSE_ACTIVE_POINTER
-	// Destination tagging for the mail sorter.
+	/// Destination tagging for the mail sorter.
 	var/sortTag = 0
-	// Who this mail is for and who can open it.
-	var/datum/weakref/recipient
-	// How many goodies this mail contains.
+	/// Who this mail is for and who can open it.
+	var/datum/weakref/recipient_ref
+	/// How many goodies this mail contains.
 	var/goodie_count = 1
 	// Goodies which can be given to anyone.
-	// Weight sum will be 1000
+	/// Weight sum will be 1000
 	var/list/generic_goodies = list(
 		/obj/item/spacecash/c50 = 75,
 		/obj/item/reagent_containers/food/drinks/cans/cola = 75,
@@ -30,28 +30,34 @@
 		/obj/item/reagent_containers/food/drinks/bluespace_coffee = 5
 	)
 	// Overlays (pure fluff)
-	// Does the letter have the postmark overlay?
+	/// Does the letter have the postmark overlay?
 	var/postmarked = TRUE
-	// Does the letter have a stamp overlay?
+	/// Does the letter have a stamp overlay?
 	var/stamped = TRUE
-	// List of all stamp overlays on the letter.
+	/// List of all stamp overlays on the letter.
 	var/list/stamps = list()
-	// Maximum number of stamps on the letter.
+	/// Maximum number of stamps on the letter.
 	var/stamp_max = 1
-	// Physical offset of stamps on the object. X direction.
+	/// Physical offset of stamps on the object. X direction.
 	var/stamp_offset_x = 0
-	// Physical offset of stamps on the object. Y direction.
+	/// Physical offset of stamps on the object. Y direction.
 	var/stamp_offset_y = 2
-	// If the mail is actively being opened right now
+	/// If the mail is actively being opened right now
 	var/opening = FALSE
-	// If the mail has been scanned with a mail scanner
+	/// If the mail has been scanned with a mail scanner
 	var/scanned
-	// Does it have a colored envelope?
+	/// Does it have a colored envelope?
 	var/colored_envelope
+
+	///Var for attack_self chainn
+	var/special_handling = FALSE
 
 /obj/item/mail/container_resist(mob/living/M)
 	if(istype(M, /mob/living/voice)) return
-	M.forceMove(get_turf(src))
+	if(isdisposalpacket(loc))
+		M.forceMove(loc)
+	else
+		M.forceMove(get_turf(src))
 	to_chat(M, span_warning("You climb out of \the [src]."))
 
 /obj/item/mail/envelope
@@ -81,6 +87,7 @@
 	var/set_content = FALSE
 	var/sealed = FALSE
 	var/list/mail_recipients
+	special_handling = TRUE
 
 /obj/item/mail/blank/attackby(obj/item/W, mob/user)
 	..()
@@ -95,7 +102,7 @@
 			set_content = FALSE
 		user.drop_item()
 		W.forceMove(src)
-		to_chat(user, "Placed the [W] into the [src]")
+		balloon_alert(user, "placed \the [W] into \the [src]")
 		set_content = TRUE
 		description_info = "Click with an empty hand to seal it, or Alt-Click to retrieve the object out."
 		return
@@ -103,17 +110,18 @@
 
 /obj/item/mail/proc/setRecipient(mob/user)
 	var/list/recipients = list()
-	for(var/mob/living/player in player_list)
+	var/mob/living/recipient_mob
+	for(var/mob/living/player in GLOB.player_list)
 		if(!player_is_antag(player.mind) && player.mind.show_in_directory)
 			recipients += player
 
-	recipients = tgui_input_list(usr, "Choose recipient", "Recipients", recipients, recipients)
+	recipient_mob = tgui_input_list(usr, "Choose recipient", "Recipients", recipients, recipients)
 
-	if(recipients)
-		initialize_for_recipient(recipients, preset_goodies = TRUE)
+	if(recipient_mob)
+		initialize_for_recipient(recipient_mob.mind, preset_goodies = TRUE)
 		return TRUE
 
-/obj/item/mail/blank/AltClick(mob/user)
+/obj/item/mail/blank/click_alt(mob/user)
 	if(sealed)
 		return
 
@@ -133,13 +141,18 @@
 			desc = "A signed envelope, from [sender]."
 
 /obj/item/mail/blank/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	if(!sealed)
 		if(!do_after(user, 1.5 SECONDS, target = user))
 			sealed = FALSE
 		sealed = TRUE
 		description_info = "Shift Click to add the sender's name to the envelope, or attack with a pen to set a receiver."
 		return
-	. = ..()
+	if(!unwrap(user))
+		return FALSE
+	return after_unwrap(user)
 
 /obj/item/mail/update_icon()
 	. = ..()
@@ -176,28 +189,35 @@
 		var/obj/item/destTagger/O = W
 		if(O.currTag)
 			if(src.sortTag != O.currTag)
-				to_chat(user, span_notice("You have labeled the destination as [O.currTag]."))
+				balloon_alert(user, "labeled for [O.currTag].")
 				src.sortTag = O.currTag
 				playsound(src, 'sound/machines/twobeep.ogg', 50, 1)
 				W.description_info = " It is labeled for [O.currTag]"
 			else
-				to_chat(user, span_notice("The mail is already labeled for [O.currTag]."))
+				balloon_alert(user, "already labeled for [O.currTag].")
 		else
-			to_chat(user, span_danger("You need to set a destination first!"))
+			balloon_alert(user, "destination not set!")
 		return
 
 /obj/item/mail/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	if(!unwrap(user))
+		return FALSE
+	if(special_handling)
 		return FALSE
 	return after_unwrap(user)
 
 /obj/item/mail/proc/unwrap(mob/user)
-	if(recipient && user != recipient)
-		to_chat(user, span_danger("You can't open somebody's mail! That's <em>illegal</em>"))
-		return FALSE
+	if(recipient_ref)
+		var/datum/mind/recipient = recipient_ref.resolve()
+		if(recipient && recipient.current?.dna.unique_enzymes != user.dna.unique_enzymes)
+			balloon_alert(user, "you can't open somebody's mail! That's <em>illegal</em>")
+			return FALSE
 
 	if(opening)
-		to_chat(user, span_danger("You are already opening that!"))
+		balloon_alert(user, "already opening that!")
 		return FALSE
 
 	opening = TRUE
@@ -213,23 +233,30 @@
 			user.put_in_hands(stuff)
 		else
 			stuff.forceMove(drop_location())
+	//Now here's the kicker
+	if(HAS_TRAIT(user, TRAIT_UNLUCKY) && prob(5)) //1 in 20 chance for your mail to be rigged with a glitter bomb
+		to_chat(user, span_bolddanger("You open the mail and - OH SHIT IS THAT A BOMB!"))
+		var/obj/item/grenade/confetti/confetti_nade = new /obj/item/grenade/confetti()
+		confetti_nade.name = "Pipebomb"
+		confetti_nade.desc = span_bolddanger("What the hell are you looking at it for?! RUN!!")
+		confetti_nade.activate()
 	playsound(loc, 'sound/items/poster_ripped.ogg', 100, TRUE)
 	qdel(src)
 
-/obj/item/mail/proc/initialize_for_recipient(mob/new_recipient, var/preset_goodies = FALSE)
-	recipient = new_recipient
-	var/current_title = new_recipient.mind.role_alt_title ? new_recipient.mind.role_alt_title : new_recipient.mind.assigned_role
-	name = "[initial(name)] for [new_recipient.real_name] ([current_title])"
+/obj/item/mail/proc/initialize_for_recipient(var/datum/mind/recipient, var/preset_goodies = FALSE)
+	var/current_title = recipient.role_alt_title ? recipient.role_alt_title : recipient.assigned_role
+	name = "[initial(name)] for [recipient.name] ([current_title])"
+	recipient_ref = WEAKREF(recipient)
 
-	var/datum/job/this_job = SSjob.name_occupations[new_recipient.job]
+	var/datum/job/this_job = SSjob.name_occupations[recipient.assigned_role]
 
 	var/list/goodies = generic_goodies
 	if(this_job)
 		colored_envelope = this_job.get_mail_color()
 		if(!preset_goodies)
-			var/list/job_goodies = this_job.get_mail_goodies(new_recipient, current_title)
+			var/list/job_goodies = this_job.get_mail_goodies(recipient.current, current_title)
 			if(LAZYLEN(job_goodies))
-				if(this_job.get_mail_goodies())
+				if(this_job.get_mail_goodies(recipient.current, current_title))
 					goodies = job_goodies
 				else
 					goodies += job_goodies
@@ -238,7 +265,7 @@
 		for(var/iterator in 1 to goodie_count)
 			var/target_good = pickweight(goodies)
 			var/atom/movable/target_atom = new target_good(src)
-			log_game("[key_name(new_recipient)] received [target_atom.name] in the mail ([target_good])")
+			log_game("[key_name(recipient)] received [target_atom.name] in the mail ([target_good])")
 
 	update_icon()
 	return TRUE
@@ -259,6 +286,7 @@
 	var/list/types = typesof(/atom)
 	var/list/matches = new()
 	var/list/recipients = list()
+	var/datum/mind/recipient_mind
 
 	for(var/path in types)
 		if(findtext("[path]", object))
@@ -274,12 +302,14 @@
 		if(!chosen)
 			return
 
-	for(var/mob/living/player in player_list)
+	for(var/mob/living/player in GLOB.player_list)
 		recipients += player
 
-	recipients = tgui_input_list(usr, "Choose recipient", "Recipients", recipients, recipients)
+	var/mob/living/chosen_player = tgui_input_list(usr, "Choose recipient", "Recipients", recipients, recipients)
 
-	if(!recipients)
+	recipient_mind = chosen_player.mind
+
+	if(!recipient_mind)
 		return
 
 	var/shuttle_spawn = tgui_alert(usr, "Spawn mail at location or in the shuttle?", "Spawn mail", list("Location", "Shuttle"))
@@ -287,13 +317,13 @@
 		return
 	if(shuttle_spawn == "Shuttle")
 		var/obj/item/mail/new_mail = new
-		new_mail.initialize_for_recipient(recipients, TRUE)
+		new_mail.initialize_for_recipient(recipient_mind, TRUE)
 		new chosen(new_mail)
 		SSmail.admin_mail += new_mail
 		log_and_message_admins("spawned [chosen] inside an envelope at the shuttle")
 	else
 		var/obj/item/mail/ground_mail = new /obj/item/mail(usr.loc)
-		ground_mail.initialize_for_recipient(recipients, TRUE)
+		ground_mail.initialize_for_recipient(recipient_mind, TRUE)
 		new chosen(ground_mail)
 		log_and_message_admins("spawned [chosen] inside an envelope at ([usr.x],[usr.y],[usr.z])")
 
@@ -304,12 +334,12 @@
 	name = "mail crate"
 	desc = "An official mail crate from CentCom"
 	points_per_crate = 0
-	closet_appearance = /decl/closet_appearance/crate/nanotrasen
+	closet_appearance = /datum/decl/closet_appearance/crate/nanotrasen
 
 /obj/structure/closet/crate/mail/full/Initialize(mapload)
 	. = ..()
 	var/list/mail_recipients = list()
-	for(var/mob/living/carbon/human/alive in player_list)
+	for(var/mob/living/carbon/human/alive in GLOB.player_list)
 		if(alive.stat != DEAD && alive.client && alive.client.inactivity <= 10 MINUTES)
 			mail_recipients += alive
 	for(var/iterator in 1 to storage_capacity)
@@ -320,7 +350,7 @@
 			new_mail = new /obj/item/mail/envelope(src)
 		var/mob/living/carbon/human/mail_to
 		if(mail_to)
-			new_mail.initialize_for_recipient(mail_to)
+			new_mail.initialize_for_recipient(mail_to.mind)
 			mail_recipients -= mail_to
 		else
 			new_mail.junk_mail()
@@ -348,6 +378,15 @@
 		/obj/item/pen
 	)
 
+/obj/item/storage/bag/mail/borg
+	name = "letter compartment"
+	desc = "A compartment specifically made for small postage."
+
+/obj/item/storage/bag/mail/borg/proc/upgrade()
+	name += " of holding"
+	storage_slots = 45
+	max_storage_space = 75
+
 // Mail Scanner
 /obj/item/mail_scanner
 	name = "mail scanner"
@@ -372,32 +411,35 @@
 	if(istype(A, /obj/item/mail))
 		var/obj/item/mail/saved_mail = A
 		if(saved_mail.scanned)
-			to_chat(user, span_danger("This letter has already been scanned!"))
+			balloon_alert(user, "already scanned!")
 			playsound(loc, 'sound/items/mail/maildenied.ogg', 50, TRUE)
 			return
-		to_chat(user, span_notice("Mail added to database"))
+		balloon_alert(user, "added to database")
 		playsound(loc, 'sound/items/mail/mailscanned.ogg', 50, TRUE)
 		saved = A
 		return
 	if(isliving(A))
-		var/mob/living/M = A
-
 		if(!saved)
-			to_chat(user, span_danger("No logged mail!"))
+			balloon_alert(user, "no logged mail!")
 			playsound(loc, 'sound/items/mail/maildenied.ogg', 50, TRUE)
 			return
 
-		var/mob/living/recipient = saved.recipient
+		var/datum/mind/recipient
+		if(saved.recipient_ref)
+			recipient = saved.recipient_ref.resolve()
 
-		if(M.stat == DEAD)
+		if(isnull(recipient) || isnull(recipient.current))
+			return
+
+		if(recipient.current.stat == DEAD)
 			to_chat(user, span_warning("Consent Verification failed: You can't deliver mail to a corpse!"))
 			playsound(loc, 'sound/items/mail/maildenied.ogg', 50, TRUE)
 			return
-		if(M.real_name != recipient.real_name)
+		if(recipient.current.dna.unique_enzymes != recipient.current.dna.unique_enzymes)
 			to_chat(user, span_warning("Identity Verification failed: Target is not authorized recipient of this envelope!"))
 			playsound(loc, 'sound/items/mail/maildenied.ogg', 50, TRUE)
 			return
-		if(!M.client)
+		if(!recipient.current.client)
 			to_chat(user, span_warning("Consent Verification failed: The scanner does not accept orders from SSD crewmemmbers!"))
 			playsound(loc, 'sound/items/mail/maildenied.ogg', 50, TRUE)
 			return

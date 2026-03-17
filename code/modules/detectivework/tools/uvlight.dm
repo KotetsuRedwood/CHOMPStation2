@@ -20,7 +20,10 @@
 	pickup_sound = 'sound/items/pickup/device.ogg'
 	drop_sound = 'sound/items/drop/device.ogg'
 
-/obj/item/uv_light/attack_self(var/mob/user)
+/obj/item/uv_light/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	on = !on
 	if(on)
 		set_light(range, 2, "#007fff")
@@ -63,7 +66,7 @@
 					A.fluorescent = 2 //To prevent light crosstalk.
 					if(A.invisibility)
 						scanned[A] = A.invisibility
-						A.invisibility = 0
+						A.invisibility = INVISIBILITY_NONE
 						stored_alpha[A] = A.alpha
 						A.alpha = use_alpha
 					if(istype(A, /obj/item))

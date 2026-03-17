@@ -9,13 +9,13 @@
 	blood_level = 1
 
 /datum/surgery_step/open_encased/can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-	if (!hasorgans(target))
+	if(!ishuman(target))
 		return 0
 
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
 	if(coverage_check(user, target, affected, tool))
 		return 0
-	return affected && !(affected.robotic >= ORGAN_ROBOT) && affected.encased && affected.open >= 2
+	return affected && !(affected.robotic >= ORGAN_ROBOT) && affected.encased && affected.open >= FLESH_RETRACTED
 
 ///////////////////////////////////////////////////////////////
 // Rib Sawing Surgery
@@ -28,44 +28,47 @@
 		/obj/item/material/knife/machete/hatchet = 75
 	)
 
-	min_duration = 50 //CHOMPedit
-	max_duration = 50 //CHOMPedit
+	allowed_procs = list(IS_CROWBAR = 50)
+
+	min_duration = 50
+	max_duration = 50 //CHOMPEdit
 
 /datum/surgery_step/open_encased/saw/can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-	if (!hasorgans(target))
+	if(!ishuman(target))
 		return
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
-	return ..() && affected && affected.open == 2
+	return ..() && affected && affected.open == FLESH_RETRACTED
 
 /datum/surgery_step/open_encased/saw/begin_step(mob/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-	if (!hasorgans(target))
+	if(!ishuman(target))
 		return
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
 
 	user.visible_message(span_filter_notice("[user] begins to cut through [target]'s [affected.encased] with \the [tool]."), \
 	span_filter_notice("You begin to cut through [target]'s [affected.encased] with \the [tool]."))
-	user.balloon_alert_visible("Begins to cut", "Cutting through the [affected.encased]'s ") // CHOMPEdit
+	user.balloon_alert_visible("begins to cut", "cutting through the [affected.encased]'s ")
 	target.custom_pain("Something hurts horribly in your [affected.name]!", 60)
 	..()
 
 /datum/surgery_step/open_encased/saw/end_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-	if (!hasorgans(target))
+	if(!ishuman(target))
 		return
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
 
 	user.visible_message(span_notice("[user] has cut [target]'s [affected.encased] open with \the [tool]."), \
 	span_notice("You have cut [target]'s [affected.encased] open with \the [tool]."))
-	user.balloon_alert_visible("Cuts [target]'s [affected.encased] open.", "[affected.encased] cut open.") // CHOMPEdit
-	affected.open = 2.5
+	user.balloon_alert_visible("cuts [target]'s [affected.encased] open.", "[affected.encased] cut open.")
+	affected.open = BONE_CUT
+	affected.status |= ORGAN_BROKEN
 
 /datum/surgery_step/open_encased/saw/fail_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-	if (!hasorgans(target))
+	if(!ishuman(target))
 		return
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
 
 	user.visible_message(span_danger("[user]'s hand slips, cracking [target]'s [affected.encased] with \the [tool]!") , \
 	span_danger("Your hand slips, cracking [target]'s [affected.encased] with \the [tool]!") )
-	user.balloon_alert_visible("Slips, crackng [target]'s [affected.encased]","Your hand slips.") // CHOMPEdit
+	user.balloon_alert_visible("slips, crackng [target]'s [affected.encased]","your hand slips.")
 
 	affected.createwound(CUT, 20)
 	affected.fracture()
@@ -86,43 +89,43 @@
 	max_duration = 30 //CHOMPedit
 
 /datum/surgery_step/open_encased/retract/can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-	if (!hasorgans(target))
+	if(!ishuman(target))
 		return
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
-	return ..() && affected && affected.open == 2.5
+	return ..() && affected && affected.open == BONE_CUT
 
 /datum/surgery_step/open_encased/retract/begin_step(mob/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-	if (!hasorgans(target))
+	if(!ishuman(target))
 		return
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
 
 	var/msg = span_filter_notice("[user] starts to force open the [affected.encased] in [target]'s [affected.name] with \the [tool].")
 	var/self_msg = span_filter_notice("You start to force open the [affected.encased] in [target]'s [affected.name] with \the [tool].")
 	user.visible_message(msg, self_msg)
-	user.balloon_alert_visible("Starts to force open [target]'s [affected.encased]", "Forcing open \the [affected.encased]") // CHOMPEdit
+	user.balloon_alert_visible("starts to force open [target]'s [affected.encased]", "forcing open \the [affected.encased]")
 	target.custom_pain("Something hurts horribly in your [affected.name]!", 40)
 	..()
 
 /datum/surgery_step/open_encased/retract/end_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-	if (!hasorgans(target))
+	if(!ishuman(target))
 		return
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
 	var/msg = span_notice("[user] forces open [target]'s [affected.encased] with \the [tool].")
 	var/self_msg = span_notice("You force open [target]'s [affected.encased] with \the [tool].")
 	user.visible_message(msg, self_msg)
-	user.balloon_alert_visible("Forces open the [affected.encased]", "Forced open the [affected.encased]") // CHOMPEdit
+	user.balloon_alert_visible("forces open the [affected.encased]", "forced open the [affected.encased]")
 
-	affected.open = 3
+	affected.open = BONE_RETRACTED
 
 /datum/surgery_step/open_encased/retract/fail_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-	if (!hasorgans(target))
+	if(!ishuman(target))
 		return
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
 
 	var/msg = span_danger("[user]'s hand slips, cracking [target]'s [affected.encased]!")
 	var/self_msg = span_danger("Your hand slips, cracking [target]'s  [affected.encased]!")
 	user.visible_message(msg, self_msg)
-	user.balloon_alert_visible("Slips, cracking [affected.encased]", "You hand slips, cracking [affected.encased]") // CHOMPEdit
+	user.balloon_alert_visible("slips, cracking [affected.encased]", "you hand slips, cracking [affected.encased]")
 
 	affected.createwound(BRUISE, 20)
 	affected.fracture()
@@ -143,44 +146,44 @@
 	max_duration = 30 //CHOMPedit
 
 /datum/surgery_step/open_encased/close/can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-	if (!hasorgans(target))
+	if(!ishuman(target))
 		return
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
-	return (..() && affected && affected.open == 3)
+	return (..() && affected && affected.open == BONE_RETRACTED)
 
 /datum/surgery_step/open_encased/close/begin_step(mob/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-	if (!hasorgans(target))
+	if(!ishuman(target))
 		return
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
 
 	var/msg = span_filter_notice("[user] starts bending [target]'s [affected.encased] back into place with \the [tool].")
 	var/self_msg = span_filter_notice("You start bending [target]'s [affected.encased] back into place with \the [tool].")
 	user.visible_message(msg, self_msg)
-	user.balloon_alert_visible("Starts bending [affected.encased] into place.", "Bending [affected.encased] into place") // CHOMPEdit
+	user.balloon_alert_visible("starts bending [affected.encased] into place.", "bending [affected.encased] into place")
 	target.custom_pain("Something hurts horribly in your [affected.name]!", 100)
 	..()
 
 /datum/surgery_step/open_encased/close/end_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-	if (!hasorgans(target))
+	if(!ishuman(target))
 		return
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
 
 	var/msg = span_notice("[user] bends [target]'s [affected.encased] back into place with \the [tool].")
 	var/self_msg = span_notice("You bend [target]'s [affected.encased] back into place with \the [tool].")
 	user.visible_message(msg, self_msg)
-	user.balloon_alert_visible("Bends [affected.encased] into place", "[affected.encased] bend into place.") // CHOMPEdit
+	user.balloon_alert_visible("bends [affected.encased] into place", "[affected.encased] bend into place.")
 
-	affected.open = 2.5
+	affected.open = BONE_CUT
 
 /datum/surgery_step/open_encased/close/fail_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-	if (!hasorgans(target))
+	if(!ishuman(target))
 		return
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
 
 	var/msg = span_danger("[user]'s hand slips, bending [target]'s [affected.encased] the wrong way!")
 	var/self_msg = span_danger("Your hand slips, bending [target]'s [affected.encased] the wrong way!")
 	user.visible_message(msg, self_msg)
-	user.balloon_alert_visible("Slips, bending [affected.encased] the wrong way.", "Your hand slips, bending [affected.encased] the wrong way.") // CHOMPEdit
+	user.balloon_alert_visible("slips, bending [affected.encased] the wrong way.", "your hand slips, bending [affected.encased] the wrong way.")
 
 	affected.createwound(BRUISE, 20)
 	affected.fracture()
@@ -205,34 +208,35 @@
 	max_duration = 20 //CHOMPedit
 
 /datum/surgery_step/open_encased/mend/can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-	if (!hasorgans(target))
+	if(!ishuman(target))
 		return
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
-	return ..() && affected && affected.open == 2.5
+	return ..() && affected && affected.open == BONE_CUT
 
 /datum/surgery_step/open_encased/mend/begin_step(mob/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-	if (!hasorgans(target))
+	if(!ishuman(target))
 		return
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
 
 	var/msg = span_filter_notice("[user] starts applying \the [tool] to [target]'s [affected.encased].")
 	var/self_msg = span_filter_notice("You start applying \the [tool] to [target]'s [affected.encased].")
 	user.visible_message(msg, self_msg)
-	user.balloon_alert_visible("Starts applying [tool] to \the [affected.encased]", "Applying [tool] to \the [affected.encased]") // CHOMPEdit
+	user.balloon_alert_visible("starts applying [tool] to \the [affected.encased]", "applying [tool] to \the [affected.encased]")
 	target.custom_pain("Something hurts horribly in your [affected.name]!", 100)
 	..()
 
 /datum/surgery_step/open_encased/mend/end_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-	if (!hasorgans(target))
+	if(!ishuman(target))
 		return
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
 
 	var/msg = span_notice("[user] applied \the [tool] to [target]'s [affected.encased].")
 	var/self_msg = span_notice("You applied \the [tool] to [target]'s [affected.encased].")
 	user.visible_message(msg, self_msg)
-	user.balloon_alert_visible("Applies \the [tool] to [affected.encased]", "Applied \the [tool] to [affected.encased]") // CHOMPEdit
+	user.balloon_alert_visible("applies \the [tool] to [affected.encased]", "applied \the [tool] to [affected.encased]")
 
-	affected.open = 2
+	affected.status &= ~ORGAN_BROKEN
+	affected.open = FLESH_RETRACTED
 
 ///////////////////////////////////////////////////////////////
 // Saw/Retractor/Gel Combi-open and close.
@@ -250,40 +254,41 @@
 	excludes_steps = list(/datum/surgery_step/open_encased/saw)
 
 /datum/surgery_step/open_encased/advancedsaw_open/can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-	if (!hasorgans(target))
+	if(!ishuman(target))
 		return
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
-	return ..() && affected && affected.open >= 2 && affected.open < 3
+	return ..() && affected && affected.open >= FLESH_RETRACTED && affected.open < BONE_RETRACTED
 
 /datum/surgery_step/open_encased/advancedsaw_open/begin_step(mob/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-	if (!hasorgans(target))
+	if(!ishuman(target))
 		return
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
 
 	user.visible_message(span_filter_notice("[user] begins to open [target]'s [affected.encased] with \the [tool]."), \
 	span_filter_notice("You begin to open [target]'s [affected.encased] with \the [tool]."))
-	user.balloon_alert_visible("Begins to open \the [affected.encased]", "Opening \the [affected.encased]") // CHOMPEdit
+	user.balloon_alert_visible("begins to open \the [affected.encased]", "opening \the [affected.encased]")
 	target.custom_pain("Something hurts horribly in your [affected.name]!", 60)
 	..()
 
 /datum/surgery_step/open_encased/advancedsaw_open/end_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-	if (!hasorgans(target))
+	if(!ishuman(target))
 		return
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
 
 	user.visible_message(span_notice("[user] has cut [target]'s [affected.encased] wide open with \the [tool]."), \
 	span_notice("You have cut [target]'s [affected.encased] wide open with \the [tool]."))
-	user.balloon_alert_visible("Cuts \the [affected.encased] wide open.", "Cut \the [affected.encased] wide open.") // CHOMPEdit
-	affected.open = 3
+	user.balloon_alert_visible("cuts \the [affected.encased] wide open.", "cut \the [affected.encased] wide open.")
+	affected.open = BONE_RETRACTED
+	affected.status |= ORGAN_BROKEN
 
 /datum/surgery_step/open_encased/advancedsaw_open/fail_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-	if (!hasorgans(target))
+	if(!ishuman(target))
 		return
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
 
 	user.visible_message(span_danger("[user]'s hand slips, searing [target]'s [affected.encased] with \the [tool]!") , \
 	span_danger("Your hand slips, searing [target]'s [affected.encased] with \the [tool]!") )
-	user.balloon_alert_visible("Slips, searing \the [affected.encased]", "Your hand slips, searing [affected.encased]") // CHOMPEdit
+	user.balloon_alert_visible("slips, searing \the [affected.encased]", "your hand slips, searing [affected.encased]")
 
 	affected.createwound(CUT, 20)
 	affected.createwound(BURN, 15)
@@ -303,31 +308,32 @@
 	max_duration = 30 //CHOMPedit
 
 /datum/surgery_step/open_encased/advancedsaw_mend/can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-	if (!hasorgans(target))
+	if(!ishuman(target))
 		return
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
-	return (..() && affected && affected.open == 3)
+	return (..() && affected && affected.open == BONE_RETRACTED)
 
 /datum/surgery_step/open_encased/advancedsaw_mend/begin_step(mob/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-	if (!hasorgans(target))
+	if(!ishuman(target))
 		return
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
 
 	var/msg = span_filter_notice("[user] starts sealing \the [target]'s [affected.encased] with \the [tool].")
 	var/self_msg = span_filter_notice("You start sealing \the [target]'s [affected.encased] with \the [tool].")
 	user.visible_message(msg, self_msg)
-	user.balloon_alert_visible("Starts sealing \the [affected.encased]", "Sealing \the [affected.encased]") // CHOMPEdit
+	user.balloon_alert_visible("starts sealing \the [affected.encased]", "sealing \the [affected.encased]")
 	target.custom_pain("Something hurts horribly in your [affected.name]!", 100)
 	..()
 
 /datum/surgery_step/open_encased/advancedsaw_mend/end_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-	if (!hasorgans(target))
+	if(!ishuman(target))
 		return
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
 
 	var/msg = span_notice("[user] sealed \the [target]'s [affected.encased] with \the [tool].")
 	var/self_msg = span_notice("You sealed \the [target]'s [affected.encased] with \the [tool].")
 	user.visible_message(msg, self_msg)
-	user.balloon_alert_visible("Seals \the [affected.encased]", "Sealed \the [affected.encased]") // CHOMPEdit
+	user.balloon_alert_visible("seals \the [affected.encased]", "sealed \the [affected.encased]")
 
-	affected.open = 2
+	affected.status &= ~ORGAN_BROKEN
+	affected.open = FLESH_RETRACTED

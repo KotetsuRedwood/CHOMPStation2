@@ -19,7 +19,7 @@
 	max_equip = 4
 
 //Chompedit start
-	max_hull_equip = 2  
+	max_hull_equip = 2
 	max_weapon_equip = 2
 	max_utility_equip = 3
 	max_universal_equip = 2
@@ -149,12 +149,12 @@
 		return
 	switch(new_damtype)
 		if("Force")
-			damtype = "brute"
+			damage_type = BRUTE
 		if("Energy")
-			damtype = "fire"
+			damage_type = BURN
 		if("Stun")
-			damtype = "halloss"
-	src.occupant_message("Melee damage type switched to [new_damtype]")
+			damage_type = HALLOSS
+	occupant_message("Melee damage type switched to [new_damtype]")
 	return
 
 //Meant for random spawns.

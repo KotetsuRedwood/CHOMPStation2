@@ -15,7 +15,8 @@
 	drop_sound = 'sound/items/drop/ring.ogg'
 	pickup_sound = 'sound/items/pickup/ring.ogg'
 
-/obj/item/aliencoin/New()
+/obj/item/aliencoin/Initialize(mapload)
+	. = ..()
 	randpixel_xy()
 
 /obj/item/aliencoin/basic
@@ -39,7 +40,10 @@
 	value = 20
 
 
-/obj/item/aliencoin/attack_self(mob/user as mob)
+/obj/item/aliencoin/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	var/result = rand(1, sides)
 	var/comment = ""
 	if(result == 1)

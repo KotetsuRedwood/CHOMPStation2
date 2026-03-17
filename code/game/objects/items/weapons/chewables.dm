@@ -13,6 +13,9 @@
 	var/wrapped = FALSE
 
 /obj/item/clothing/mask/chewable/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	if(wrapped)
 		wrapped = FALSE
 		to_chat(user, span_notice("You unwrap \the [name]."))
@@ -172,11 +175,11 @@
 	var/closed_state
 
 /obj/item/storage/box/fancy/chewables/tobacco/nico/Initialize(mapload)
-	. = ..()
 	if(!open_state)
 		open_state = "[initial(icon_state)]0"
 	if(!closed_state)
 		closed_state = "[initial(icon_state)]"
+	. = ..()
 
 /obj/item/storage/box/fancy/chewables/tobacco/nico/update_icon()
 	cut_overlays()

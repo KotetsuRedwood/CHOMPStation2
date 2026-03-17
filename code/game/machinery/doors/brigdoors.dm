@@ -22,9 +22,10 @@
 	icon_state = "frame"
 	layer = ABOVE_WINDOW_LAYER
 	desc = "A remote control for a door."
-	req_access = list(access_brig)
+	req_access = list(ACCESS_BRIG)
 	anchored = TRUE    		// can't pick it up
 	density = FALSE       		// can walk through it.
+	flags = WALL_ITEM
 	var/id = null     		// id of door it controls.
 	var/activation_time = 0
 	var/timer_duration = 0
@@ -41,13 +42,11 @@
 	return INITIALIZE_HINT_LATELOAD
 
 /obj/machinery/door_timer/LateInitialize()
-	. = ..()
-
-	for(var/obj/machinery/door/window/brigdoor/M in machines)
+	for(var/obj/machinery/door/window/brigdoor/M in GLOB.machines)
 		if(M.id == id)
 			LAZYADD(targets,M)
 
-	for(var/obj/machinery/flasher/F in machines)
+	for(var/obj/machinery/flasher/F in GLOB.machines)
 		if(F.id == id)
 			LAZYADD(targets,F)
 

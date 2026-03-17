@@ -1,8 +1,6 @@
 #define MESSAGE_SERVER_SPAM_REJECT 1
 #define MESSAGE_SERVER_DEFAULT_SPAM_LIMIT 10
 
-var/global/list/obj/machinery/message_server/message_servers = list()
-
 /datum/data_pda_msg
 	var/recipient = "Unspecified" //name of the person
 	var/sender = "Unspecified" //name of the sender
@@ -73,11 +71,7 @@ var/global/list/obj/machinery/message_server/message_servers = list()
 	var/datum/looping_sound/tcomms/soundloop // CHOMPStation Add: Hummy noises
 	var/noisy = FALSE  // CHOMPStation Add: Hummy noises
 
-/obj/machinery/message_server/New()
-	message_servers += src
-	decryptkey = GenerateKey()
-	send_pda_message("System Administrator", "system", "This is an automated message. The messaging system is functioning correctly.")
-
+/obj/machinery/message_server/Initialize(mapload)
 	// CHOMPAdd: PDA Messaging Server humming
 	soundloop = new(list(src), FALSE)
 	if(prob(60)) // 60% chance to change the midloop
@@ -91,14 +85,15 @@ var/global/list/obj/machinery/message_server/message_servers = list()
 			soundloop.mid_sounds = list('sound/machines/tcomms/tcomms_04.ogg' = 1)
 			soundloop.mid_length = 30
 	// CHOMPAdd End
-	..()
-	return
+	. = ..()
+	GLOB.message_servers += src
+	decryptkey = GenerateKey()
+	send_pda_message("System Administrator", "system", "This is an automated message. The messaging system is functioning correctly.")
 
 /obj/machinery/message_server/Destroy()
-	message_servers -= src
+	GLOB.message_servers -= src
 	QDEL_NULL(soundloop) // CHOMPStation Add: Hummy noises
-	..()
-	return
+	return ..()
 
 /obj/machinery/message_server/examine(mob/user, distance, infix, suffix)
 	. = ..()
@@ -142,14 +137,14 @@ var/global/list/obj/machinery/message_server/message_servers = list()
 		authmsg += "([id_auth])\n"
 	if (stamp)
 		authmsg += "([stamp])\n"
-	for (var/obj/machinery/requests_console/Console in allConsoles)
+	for (var/obj/machinery/requests_console/Console in GLOB.allConsoles)
 		if (ckey(Console.department) == ckey(recipient))
 			if(Console.inoperable())
 				Console.message_log += list(list("Message lost due to console failure.","Please contact [station_name()] system adminsitrator or AI for technical assistance."))
 				continue
 			if(Console.newmessagepriority < priority)
 				Console.newmessagepriority = priority
-				Console.icon_state = "req_comp[priority]"
+				Console.update_icon()
 			switch(priority)
 				if(2)
 					if(!Console.silent)
@@ -254,7 +249,7 @@ var/global/list/obj/machinery/message_server/message_servers = list()
 /datum/feedback_variable/proc/get_parsed()
 	return list(variable,value,details)
 
-var/obj/machinery/blackbox_recorder/blackbox
+GLOBAL_DATUM(blackbox, /obj/machinery/blackbox_recorder)
 
 /obj/machinery/blackbox_recorder
 	icon = 'icons/obj/stationobjs.dmi'
@@ -286,16 +281,16 @@ var/obj/machinery/blackbox_recorder/blackbox
 	var/list/datum/feedback_variable/feedback = new()
 
 	//Only one can exist in the world!
-/obj/machinery/blackbox_recorder/New()
-	if(blackbox)
-		if(istype(blackbox,/obj/machinery/blackbox_recorder))
-			qdel(src)
-	blackbox = src
+/obj/machinery/blackbox_recorder/Initialize(mapload)
+	. = ..()
+	if(istype(GLOB.blackbox, /obj/machinery/blackbox_recorder))
+		return INITIALIZE_HINT_QDEL
+	GLOB.blackbox = src
 
 /obj/machinery/blackbox_recorder/Destroy()
 	var/turf/T = locate(1,1,2)
 	if(T)
-		blackbox = null
+		GLOB.blackbox = null
 		var/obj/machinery/blackbox_recorder/BR = new/obj/machinery/blackbox_recorder(T)
 		BR.msg_common = msg_common
 		BR.msg_science = msg_science
@@ -310,9 +305,7 @@ var/obj/machinery/blackbox_recorder/blackbox
 		BR.feedback = feedback
 		BR.messages = messages
 		BR.messages_admin = messages_admin
-		if(blackbox != BR)
-			blackbox = BR
-	..()
+	. = ..()
 
 /obj/machinery/blackbox_recorder/proc/find_feedback_datum(var/variable)
 	for(var/datum/feedback_variable/FV in feedback)
@@ -330,7 +323,7 @@ var/obj/machinery/blackbox_recorder/blackbox
 	var/pda_msg_amt = 0
 	var/rc_msg_amt = 0
 
-	for(var/obj/machinery/message_server/MS in machines)
+	for(var/obj/machinery/message_server/MS in GLOB.machines)
 		if(MS.pda_msgs.len > pda_msg_amt)
 			pda_msg_amt = MS.pda_msgs.len
 		if(MS.rc_msgs.len > rc_msg_amt)
@@ -397,57 +390,57 @@ var/obj/machinery/blackbox_recorder/blackbox
 	return text
 
 /proc/feedback_set(var/variable,var/value)
-	if(!blackbox) return
+	if(!GLOB.blackbox) return
 
 	variable = sql_sanitize_text(variable)
 
-	var/datum/feedback_variable/FV = blackbox.find_feedback_datum(variable)
+	var/datum/feedback_variable/FV = GLOB.blackbox.find_feedback_datum(variable)
 
 	if(!FV) return
 
 	FV.set_value(value)
 
 /proc/feedback_inc(var/variable,var/value)
-	if(!blackbox) return
+	if(!GLOB.blackbox) return
 
 	variable = sql_sanitize_text(variable)
 
-	var/datum/feedback_variable/FV = blackbox.find_feedback_datum(variable)
+	var/datum/feedback_variable/FV = GLOB.blackbox.find_feedback_datum(variable)
 
 	if(!FV) return
 
 	FV.inc(value)
 
 /proc/feedback_dec(var/variable,var/value)
-	if(!blackbox) return
+	if(!GLOB.blackbox) return
 
 	variable = sql_sanitize_text(variable)
 
-	var/datum/feedback_variable/FV = blackbox.find_feedback_datum(variable)
+	var/datum/feedback_variable/FV = GLOB.blackbox.find_feedback_datum(variable)
 
 	if(!FV) return
 
 	FV.dec(value)
 
 /proc/feedback_set_details(var/variable,var/details)
-	if(!blackbox) return
+	if(!GLOB.blackbox) return
 
 	variable = sql_sanitize_text(variable)
 	details = sql_sanitize_text(details)
 
-	var/datum/feedback_variable/FV = blackbox.find_feedback_datum(variable)
+	var/datum/feedback_variable/FV = GLOB.blackbox.find_feedback_datum(variable)
 
 	if(!FV) return
 
 	FV.set_details(details)
 
 /proc/feedback_add_details(var/variable,var/details)
-	if(!blackbox) return
+	if(!GLOB.blackbox) return
 
 	variable = sql_sanitize_text(variable)
 	details = sql_sanitize_text(details)
 
-	var/datum/feedback_variable/FV = blackbox.find_feedback_datum(variable)
+	var/datum/feedback_variable/FV = GLOB.blackbox.find_feedback_datum(variable)
 
 	if(!FV) return
 

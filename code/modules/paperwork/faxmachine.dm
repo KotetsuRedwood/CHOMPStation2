@@ -1,9 +1,9 @@
-var/list/obj/machinery/photocopier/faxmachine/allfaxes = list()
-var/list/admin_departments = list("[using_map.boss_name]", "Solar Central Government", "Central Command Job Boards", "Supply") // YW EDIT
-var/list/alldepartments = list()
-var/global/last_fax_role_request
+GLOBAL_LIST_EMPTY_TYPED(allfaxes, /obj/machinery/photocopier/faxmachine)
+GLOBAL_LIST_INIT(admin_departments, list("[using_map.boss_name]", "Solar Central Government", "Central Command Job Boards", "Supply")) //CHOMPEdit
+GLOBAL_LIST_EMPTY(alldepartments)
+GLOBAL_VAR(last_fax_role_request)
 
-var/list/adminfaxes = list()	//cache for faxes that have been sent to admins
+GLOBAL_LIST_EMPTY(adminfaxes)	//cache for faxes that have been sent to admins
 
 /obj/machinery/photocopier/faxmachine
 	name = "fax machine"
@@ -30,19 +30,17 @@ var/list/adminfaxes = list()	//cache for faxes that have been sent to admins
 
 /obj/machinery/photocopier/faxmachine/Initialize(mapload)
 	. = ..()
-	allfaxes += src
+	GLOB.allfaxes += src
 	if(!destination) destination = "[using_map.boss_name]"
-	if( !(("[department]" in alldepartments) || ("[department]" in admin_departments)) )
-		alldepartments |= department
+	if( !(("[department]" in GLOB.alldepartments) || ("[department]" in GLOB.admin_departments)) )
+		GLOB.alldepartments |= department
 
-/obj/machinery/photocopier/faxmachine/attack_hand(mob/user as mob) // CH edit begins here; this allows borgs to use fax machines, meant for the Unity and Clerical modules.
-	user.set_machine(src)
-
-	if(issilicon(user))
+/obj/machinery/photocopier/faxmachine/attack_hand(mob/user as mob)
+	if(issilicon(user)) //CHOMPEdit Start this allows borgs to use fax machines, meant for the Unity and Clerical modules.
 		authenticated = user.name
 		tgui_interact(user)
 	else
-		tgui_interact(user)
+		tgui_interact(user) //CHOMPEdit End
 
 /obj/machinery/photocopier/faxmachine/verb/remove_card()
 	set name = "Remove ID card"
@@ -80,7 +78,7 @@ var/list/adminfaxes = list()	//cache for faxes that have been sent to admins
 		return
 	if(L.stat || L.restrained())
 		return
-	if(last_fax_role_request && (world.time - last_fax_role_request < 5 MINUTES))
+	if(GLOB.last_fax_role_request && (world.time - GLOB.last_fax_role_request < 5 MINUTES))
 		to_chat(L, span_warning("The global automated relays are still recalibrating. Try again later or relay your request in written form for processing."))
 		return
 
@@ -150,7 +148,7 @@ var/list/adminfaxes = list()	//cache for faxes that have been sent to admins
 	message_color = ping_dept.color
 
 	message_chat_rolerequest(message_color, ping_name, reason, role)
-	last_fax_role_request = world.time
+	GLOB.last_fax_role_request = world.time
 	to_chat(L, span_notice("Your request was transmitted."))
 
 /obj/machinery/photocopier/faxmachine/tgui_interact(mob/user, datum/tgui/ui)
@@ -166,7 +164,7 @@ var/list/adminfaxes = list()	//cache for faxes that have been sent to admins
 	data["rank"] = rank
 	data["isAI"] = isAI(user)
 	data["isRobot"] = isrobot(user)
-	data["adminDepartments"] = admin_departments
+	data["adminDepartments"] = GLOB.admin_departments
 
 	data["bossName"] = using_map.boss_name
 	data["copyItem"] = copyitem
@@ -240,7 +238,7 @@ var/list/adminfaxes = list()	//cache for faxes that have been sent to admins
 				copyitem.name = new_name
 		if("send")
 			if(copyitem)
-				if (destination in admin_departments)
+				if (destination in GLOB.admin_departments)
 					if(check_if_default_title_and_rename(ui.user))
 						return
 					send_admin_fax(ui.user, destination)
@@ -253,7 +251,7 @@ var/list/adminfaxes = list()	//cache for faxes that have been sent to admins
 
 		if("dept")
 			var/lastdestination = destination
-			destination = tgui_input_list(ui.user, "Which department?", "Choose a department", (alldepartments + admin_departments))
+			destination = tgui_input_list(ui.user, "Which department?", "Choose a department", (GLOB.alldepartments + GLOB.admin_departments))
 			if(!destination)
 				destination = lastdestination
 
@@ -299,13 +297,13 @@ Extracted to its own procedure for easier logic handling with paper bundles.
 		O.forceMove(src)
 		scan = O
 	else if(O.has_tool_quality(TOOL_MULTITOOL) && panel_open)
-		var/input = sanitize(tgui_input_text(user, "What Department ID would you like to give this fax machine?", "Multitool-Fax Machine Interface", department))
+		var/input = tgui_input_text(user, "What Department ID would you like to give this fax machine?", "Multitool-Fax Machine Interface", department, MAX_MESSAGE_LEN)
 		if(!input)
 			to_chat(user, "No input found. Please hang up and try your call again.")
 			return
 		department = input
-		if( !(("[department]" in alldepartments) || ("[department]" in admin_departments)) && !(department == "Unknown"))
-			alldepartments |= department
+		if( !(("[department]" in GLOB.alldepartments) || ("[department]" in GLOB.admin_departments)) && !(department == "Unknown"))
+			GLOB.alldepartments |= department
 	else if(istype(O, /obj/item/toner))
 		if(toner <= 10) //allow replacing when low toner is affecting the print darkness
 			user.drop_item()
@@ -328,7 +326,7 @@ Extracted to its own procedure for easier logic handling with paper bundles.
 	use_power(200)
 
 	var/success = 0
-	for(var/obj/machinery/photocopier/faxmachine/F in allfaxes)
+	for(var/obj/machinery/photocopier/faxmachine/F in GLOB.allfaxes)
 		if( F.department == destination )
 			success = F.receivefax(copyitem)
 
@@ -383,7 +381,7 @@ Extracted to its own procedure for easier logic handling with paper bundles.
 		return
 
 	rcvdcopy.loc = null //hopefully this shouldn't cause trouble
-	adminfaxes += rcvdcopy
+	GLOB.adminfaxes += rcvdcopy
 
 	//message badmins that a fax has arrived
 
@@ -394,6 +392,8 @@ Extracted to its own procedure for easier logic handling with paper bundles.
 		message_admins(sender, "Solar Central Government FAX", rcvdcopy, "CentComFaxReply", "#1F66A0") // Vorestation Edit //CHOMPedit
 	else if(destination == "Supply")
 		message_admins(sender, "[uppertext(using_map.boss_short)] SUPPLY FAX", rcvdcopy, "CentComFaxReply", "#5F4519")
+	else if(destination == "Talon Headquarters")
+		message_admins(sender, "TALON HEADQUARTERS FAX", rcvdcopy, "CentComFaxReply", "#e96046")
 	else
 		message_admins(sender, "[uppertext(destination)] FAX", rcvdcopy, "UNKNOWN")
 
@@ -425,7 +425,7 @@ Extracted to its own procedure for easier logic handling with paper bundles.
 	msg = span_notice(msg)
 
 	for(var/client/C in GLOB.admins)
-		if(check_rights((R_ADMIN|R_MOD|R_EVENT),0,C))
+		if(check_rights_for(C, (R_ADMIN|R_MOD|R_EVENT)))
 			to_chat(C,msg)
 			C << 'sound/machines/printer.ogg'
 	sender.client << 'sound/machines/printer.ogg' //CHOMPEdit - The pain must be felt
@@ -444,14 +444,6 @@ Extracted to its own procedure for easier logic handling with paper bundles.
 	if(length(summary) > webhook_length_limit)
 		summary = copytext(summary, 1, webhook_length_limit + 1)
 		summary += "\n\[Truncated\]"
-
-	SSwebhooks.send(
-		WEBHOOK_FAX_SENT,
-		list(
-			"name" = "[faxname] '[sent.name]' sent from [key_name(sender)]",
-			"body" = summary
-		)
-	)
 
 /*
 								#####						####

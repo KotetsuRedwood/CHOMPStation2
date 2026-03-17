@@ -62,11 +62,11 @@
 	starts_with = list(/obj/item/reagent_containers/food/snacks/egg = 12)
 
 /obj/item/storage/fancy/egg_box/Initialize(mapload)
-	. = ..()
 	if(!open_state)
 		open_state = "[initial(icon_state)]0"
 	if(!closed_state)
 		closed_state = "[initial(icon_state)]"
+	. = ..()
 
 /obj/item/storage/fancy/egg_box/update_icon()
 	cut_overlays()
@@ -264,11 +264,11 @@
 			C.desc += " This one is \a [brand]."
 
 /obj/item/storage/fancy/cigarettes/Initialize(mapload)
-	. = ..()
 	if(!open_state)
 		open_state = "[initial(icon_state)]_open"
 	if(!closed_state)
 		closed_state = "[initial(icon_state)]"
+	. = ..()
 
 /obj/item/storage/fancy/cigarettes/update_icon()
 	cut_overlays()
@@ -411,11 +411,11 @@
 	return ..()
 
 /obj/item/storage/fancy/cigar/Initialize(mapload)
-	. = ..()
 	if(!open_state)
 		open_state = "[initial(icon_state)]0"
 	if(!closed_state)
 		closed_state = "[initial(icon_state)]"
+	. = ..()
 
 /obj/item/storage/fancy/cigar/update_icon()
 	cut_overlays()
@@ -439,7 +439,7 @@
 	..()
 
 /obj/item/storage/fancy/cigar/choiba
-	name = "/improper Choiba cigar case"
+	name = "\improper Choiba cigar case"
 	desc = "A fancy case for holding your cigars when you are not smoking them."
 	description_fluff = "The exquisite wooden case bears the markings of the \
 	Choiba cigar company based out of Cuba. The perfectly humidized case keeps \
@@ -505,7 +505,7 @@
 	can_hold = list(/obj/item/reagent_containers/glass/beaker/vial)
 	max_storage_space = ITEMSIZE_COST_SMALL * 6 //The sum of the w_classes of all the items in this storage item.
 	storage_slots = 6
-	req_access = list(access_virology)
+	req_access = list(ACCESS_VIROLOGY)
 
 /obj/item/storage/lockbox/vials/Initialize(mapload)
 	. = ..()

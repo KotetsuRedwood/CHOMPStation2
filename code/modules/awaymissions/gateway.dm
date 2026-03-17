@@ -38,7 +38,7 @@ GLOBAL_DATUM(gateway_station, /obj/machinery/gateway/centerstation)
 
 /obj/machinery/gateway/centerstation/Initialize(mapload)
 	if(GLOB.gateway_station)
-		warning("[src] at [x],[y],[z] appears to be an additional station-gateway")
+		WARNING("[src] at [x],[y],[z] appears to be an additional station-gateway")
 	else
 		GLOB.gateway_station = src
 
@@ -66,7 +66,8 @@ GLOBAL_DATUM(gateway_station, /obj/machinery/gateway/centerstation)
 		return
 	icon_state = "offcenter"
 /* VOREStation Removal - Doesn't do anything
-/obj/machinery/gateway/centerstation/New()
+/obj/machinery/gateway/centerstation/Initialize(mapload)
+	. = ..()
 	density = TRUE
 */ //VOREStation Removal End
 
@@ -83,7 +84,7 @@ GLOBAL_DATUM(gateway_station, /obj/machinery/gateway/centerstation)
 	linked = list()	//clear the list
 	var/turf/T = loc
 
-	for(var/i in alldirs)
+	for(var/i in GLOB.alldirs)
 		T = get_step(loc, i)
 		var/obj/machinery/gateway/G = locate(/obj/machinery/gateway) in T
 		if(G)
@@ -109,7 +110,7 @@ GLOBAL_DATUM(gateway_station, /obj/machinery/gateway/centerstation)
 	if(world.time < wait)
 		to_chat(user, span_notice("Error: Warpspace triangulation in progress. Estimated time to completion: [round(((wait - world.time) / 10) / 60)] minutes."))
 		return
-	if(!awaygate.calibrated && !LAZYLEN(awaydestinations)) //VOREStation Edit
+	if(!awaygate.calibrated && !LAZYLEN(GLOB.awaydestinations)) //VOREStation Edit
 		to_chat(user, span_notice("Error: Destination gate uncalibrated. Gateway unsafe to use without far-end calibration update."))
 		return
 
@@ -163,7 +164,7 @@ GLOBAL_DATUM(gateway_station, /obj/machinery/gateway/centerstation)
 				for(var/rider in L.buckled_mobs)
 					R.force_dismount(rider)
 		//VOREStation Addition End: Prevent abuse
-		var/obj/effect/landmark/dest = pick(awaydestinations)
+		var/obj/effect/landmark/dest = pick(GLOB.awaydestinations)
 		if(dest)
 			M.forceMove(dest.loc)
 			M.set_dir(SOUTH)
@@ -204,20 +205,22 @@ GLOBAL_DATUM(gateway_station, /obj/machinery/gateway/centerstation)
 								if(istype(II,/obj/item/implant) || istype(II,/obj/item/nif))
 									continue
 								MI.drop_from_inventory(II, dest.loc)
-						var/obj/effect/landmark/finaldest = pick(awayabductors)
+						var/obj/effect/landmark/finaldest = pick(GLOB.awayabductors)
 						MI.forceMove(finaldest.loc)
 						sleep(1)
 						MI.Paralyse(10)
+						MI.Sleeping(10)
 						MI << 'sound/effects/bamf.ogg'
 						to_chat(MI,span_warning("You're starting to come to. You feel like you've been out for a few minutes, at least..."))
 					for(var/obj/item/I in L)
 						if(istype(I,/obj/item/implant) || istype(I,/obj/item/nif))
 							continue
 						L.drop_from_inventory(I, dest.loc)
-				var/obj/effect/landmark/finaldest = pick(awayabductors)
+				var/obj/effect/landmark/finaldest = pick(GLOB.awayabductors)
 				L.forceMove(finaldest.loc)
 				sleep(1)
 				L.Paralyse(10)
+				L.Sleeping(10)
 				L << 'sound/effects/bamf.ogg'
 				to_chat(L,span_warning("You're starting to come to. You feel like you've been out for a few minutes, at least..."))
 			//VOREStation Addition End
@@ -249,12 +252,13 @@ GLOBAL_DATUM(gateway_away, /obj/machinery/gateway/centeraway)
 	var/ready = 0
 	var/obj/machinery/gateway/centerstation/stationgate = null
 
-/obj/machinery/gateway/centeraway/New()
+/obj/machinery/gateway/centeraway/Initialize(mapload)
+	. = ..()
 	density = TRUE
 
 /obj/machinery/gateway/centeraway/Initialize(mapload)
 	if(GLOB.gateway_away)
-		warning("[src] at [x],[y],[z] appears to be an additional away-gateway")
+		WARNING("[src] at [x],[y],[z] appears to be an additional away-gateway")
 	else
 		GLOB.gateway_away = src
 
@@ -284,7 +288,7 @@ GLOBAL_DATUM(gateway_away, /obj/machinery/gateway/centeraway)
 	linked = list()	//clear the list
 	var/turf/T = loc
 
-	for(var/i in alldirs)
+	for(var/i in GLOB.alldirs)
 		T = get_step(loc, i)
 		var/obj/machinery/gateway/G = locate(/obj/machinery/gateway) in T
 		if(G)

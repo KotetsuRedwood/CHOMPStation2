@@ -4,80 +4,84 @@
  * @license MIT
  */
 
-import { exec } from 'child_process';
-import { promisify } from 'util';
+import { exec } from 'node:child_process';
+import { promisify } from 'node:util';
 
-import { createLogger } from './logging.js';
-import { require } from './require.js';
+import axios, { type AxiosInstance, type AxiosResponse } from 'axios';
 
-const axios = require('axios');
+import { createLogger } from './logging';
+
+type Entry = {
+  addr: string;
+  pid: number;
+};
+
 const logger = createLogger('dreamseeker');
 
 const instanceByPid = new Map();
 
 export class DreamSeeker {
-  pid: number;
-  addr: string;
-  client: any;
-  static getInstancesByPids: (pids: any) => Promise<any[]>;
-  constructor(pid, addr) {
+  public pid: number;
+  public addr: string;
+  public client: AxiosInstance;
+
+  constructor(pid: number, addr: string) {
     this.pid = pid;
     this.addr = addr;
     this.client = axios.create({
-      baseURL: `http://${addr}/`,
+      baseURL: `http://${addr}`,
     });
   }
 
-  topic(params = {}) {
-    // prettier-ignore
+  topic(params: Record<string, any> = {}): Promise<AxiosResponse> {
     const query = Object.keys(params)
-      .map(key => encodeURIComponent(key)
-        + '=' + encodeURIComponent(params[key]))
+      .map(
+        (key) =>
+          `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`,
+      )
       .join('&');
     logger.log(
-      `topic call at ${this.client.defaults.baseURL + '/dummy?' + query}`,
+      `topic call at ${this.client.defaults.baseURL}/dummy.htm?${query}`,
     );
-    return this.client.get('/dummy?' + query);
+    return this.client.get(`/dummy.htm?${query}`);
   }
-}
 
-type Entry = { pid: number; addr: string };
+  static async getInstancesByPids(pids: number[]): Promise<DreamSeeker[]> {
+    const instances: DreamSeeker[] = [];
+    const pidsToResolve: number[] = [];
 
-/**
- * @param {number[]} pids
- * @returns {DreamSeeker[]}
- */
-DreamSeeker.getInstancesByPids = async (pids) => {
-  if (process.platform !== 'win32') {
-    return [];
-  }
-  const instances: any[] = [];
-  const pidsToResolve: number[] = [];
-  for (let pid of pids) {
-    const instance = instanceByPid.get(pid);
-    if (instance) {
-      instances.push(instance);
-    } else {
-      pidsToResolve.push(pid);
+    for (const pid of pids) {
+      const instance = instanceByPid.get(pid);
+      if (instance) {
+        instances.push(instance);
+      } else {
+        pidsToResolve.push(pid);
+      }
     }
-  }
-  if (pidsToResolve.length > 0) {
+
+    if (pidsToResolve.length === 0) {
+      return instances;
+    }
+
+    const command = 'netstat -ano | findstr TCP | findstr 0.0.0.0:0';
+
     try {
-      const command = 'netstat -ano | findstr TCP | findstr 0.0.0.0:0';
       const { stdout } = await promisify(exec)(command, {
         // Max buffer of 1MB (default is 200KB)
         maxBuffer: 1024 * 1024,
       });
+
       // Line format:
       // proto addr mask mode pid
       const entries: Entry[] = [];
       const lines = stdout.split('\r\n');
-      for (let line of lines) {
+
+      for (const line of lines) {
         const words = line.match(/\S+/g);
         if (!words || words.length === 0) {
           continue;
         }
-        const entry = {
+        const entry: Entry = {
           addr: words[1],
           pid: parseInt(words[4], 10),
         };
@@ -85,9 +89,10 @@ DreamSeeker.getInstancesByPids = async (pids) => {
           entries.push(entry);
         }
       }
+
       const len = entries.length;
       logger.log('found', len, plural('instance', len));
-      for (let entry of entries) {
+      for (const entry of entries) {
         const { pid, addr } = entry;
         const instance = new DreamSeeker(pid, addr);
         instances.push(instance);
@@ -101,8 +106,10 @@ DreamSeeker.getInstancesByPids = async (pids) => {
       }
       return [];
     }
+    return instances;
   }
-  return instances;
-};
+}
 
-const plural = (word, n) => (n !== 1 ? word + 's' : word);
+function plural(word: string, n: number): string {
+  return n !== 1 ? `${word}s` : word;
+}

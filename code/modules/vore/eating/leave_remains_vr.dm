@@ -24,7 +24,6 @@
 	skull_type = /obj/item/digestion_remains/skull/teshari
 /datum/species/vox
 	skull_type = /obj/item/digestion_remains/skull/vox
-//CHOMPadd start
 /datum/species/monkey
 	skull_type = /obj/item/digestion_remains/skull
 /datum/species/monkey/tajaran
@@ -41,10 +40,9 @@
 	skull_type = /obj/item/digestion_remains/skull/vulpkanin
 /datum/species/monkey/sergal
 	skull_type = /obj/item/digestion_remains/skull/sergal
-//CHOMPadd end.
 
 /obj/belly/proc/handle_remains_leaving(var/mob/living/M)
-	if(!ishuman(M) && !isrobot(M))	//Are we even humanoid or a borg?
+	if(!isliving(M))	//Are we even a living thing? (Sorry ghosts)
 		return
 	//Moving some vars here for both borgs and carbons to use
 	var/bones_amount = rand(2,4) //some random variety in amount of bones left
@@ -62,9 +60,24 @@
 			new new_bone(src,owner)
 		return //Dont need to do carbon stuff after this
 
+	if(ismouse(M)) //Mice dont have massive bones to leave behind
+		return
+	if(isanimal(M)) //If they are a simplemob
+		var/list/organic_bones = list( //Generic bone variation system
+			/obj/item/digestion_remains,
+			/obj/item/digestion_remains/variant1,
+			/obj/item/digestion_remains/variant2,
+			/obj/item/digestion_remains/variant3
+		)
+		for(var/i = 1, i <= bones_amount, i++)
+			var/new_bone = pick(organic_bones)
+			new new_bone(src,owner)
+		return
+
+
 	var/mob/living/carbon/human/H = M
 
-	if((H.species.name in remainless_species))	//Don't leave anything if there is nothing to leave
+	if((H.species.name in GLOB.remainless_species))	//Don't leave anything if there is nothing to leave
 		return
 
 	if(prob(20) && !H.isSynthetic())	//ribcage surviving whole is some luck //Edit: no robor
@@ -91,18 +104,18 @@
 		return			// TODO: add synth skulls and remove this.
 	var/skull_amount = 1
 	if(H.species.skull_type)
-		new H.species.skull_type(src, owner, H) //CHOMPEdit
+		new H.species.skull_type(src, owner, H)
 		skull_amount--
 
 	if(skull_amount && H.species.selects_bodytype)
 		// We still haven't found correct skull...
 		if(H.species.base_species == SPECIES_HUMAN)
-			new /obj/item/digestion_remains/skull/unknown(src, owner, H) //CHOMPEdit
+			new /obj/item/digestion_remains/skull/unknown(src, owner, H)
 		else
-			new /obj/item/digestion_remains/skull/unknown/anthro(src, owner, H) //CHOMPEdit
+			new /obj/item/digestion_remains/skull/unknown/anthro(src, owner, H)
 	else if(skull_amount)
 		// Something entirely different...
-		new /obj/item/digestion_remains/skull/unknown(src, owner, H) //CHOMPEdit
+		new /obj/item/digestion_remains/skull/unknown(src, owner, H)
 
 
 /obj/item/digestion_remains
@@ -126,17 +139,20 @@
 	drop_sound = 'sound/items/drop/device.ogg'   //not organic bones, so they get different sounds
 	pickup_sound = 'sound/items/pickup/device.ogg'
 
-/obj/item/digestion_remains/Initialize(mapload, var/mob/living/pred, var/mob/living/prey) //CHOMPEdit
+/obj/item/digestion_remains/Initialize(mapload, var/mob/living/pred, var/mob/living/prey)
 	. = ..()
 	if(!mapload)
 		pred_ckey = pred?.ckey
 		pred_name = pred?.name
-		if(prey && isliving(prey) && prey.size_multiplier != 1) //CHOMPAdd
+		if(prey && isliving(prey) && prey.size_multiplier != 1)
 			icon_scale_x = prey.size_multiplier
 			icon_scale_y = prey.size_multiplier
 			update_transform()
 
-/obj/item/digestion_remains/attack_self(var/mob/user)
+/obj/item/digestion_remains/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	if(user.a_intent == I_HURT)
 		to_chat(user,span_warning("As you squeeze the [name], it crumbles into dust and falls apart into nothing!"))
 		qdel(src)

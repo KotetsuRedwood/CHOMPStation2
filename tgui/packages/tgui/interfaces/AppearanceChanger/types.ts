@@ -1,25 +1,26 @@
-import { BooleanLike } from 'tgui-core/react';
+import type { BooleanLike } from 'tgui-core/react';
 
 export type Data = {
   name: string;
   specimen: string;
-  species: species[];
+  Species: Species[];
   gender: string;
   gender_id: string;
   hair_style: string;
   hair_grad: string;
   facial_hair_style: string;
   ear_style: string;
-  ear_styles: styles[];
+  ear_styles: Styles[];
   wing_style: string;
-  wing_styles: styles[];
+  wing_styles: Styles[];
   tail_style: string;
-  tail_styles: styles[];
+  tail_styles: Styles[];
   markings: { marking_name: string; marking_color: string }[];
   change_race: BooleanLike;
+  change_misc: BooleanLike;
   change_gender: BooleanLike;
-  genders: genders;
-  id_genders: genders;
+  Genders: Genders;
+  id_genders: Genders;
   change_eye_color: BooleanLike;
   change_skin_tone: BooleanLike;
   change_skin_color: BooleanLike;
@@ -35,21 +36,25 @@ export type Data = {
   facial_hair_color: string;
   ears_color: string;
   ears2_color: string;
+  ears_alpha: number;
+  secondary_ears_alpha: number;
   tail_color: string;
   tail2_color: string;
   tail3_color: string;
+  tail_alpha: number;
   wing_color: string;
   wing2_color: string;
   wing3_color: string;
-  facial_hair_styles: bodyStyle[];
-  hair_styles: bodyStyle[];
+  wing_alpha: number;
+  facial_hair_styles: BodyStyle[];
+  hair_styles: BodyStyle[];
   hair_grads: string[];
-  marking_styles: bodyStyle[];
+  marking_styles: BodyStyle[];
   ear_secondary_style: string;
   ear_secondary_colors: string[];
   is_design_console: BooleanLike; // If we have disk access
   selected_a_record: BooleanLike; // If we're past record selection
-  character_records: bodyrecord[];
+  character_records: Bodyrecord[];
   stock_records: string[];
   disk: BooleanLike;
   stock_bodyrecords: string[];
@@ -69,12 +74,12 @@ export type Data = {
   // species_sounds_gendered: BooleanLike;
   // species_sounds_female: string;
   // species_sounds_male: string;
-  flavor_text: flavors;
+  flavor_text: Flavors;
 };
 
-type genders = { gender_name: string; gender_key: string }[];
+type Genders = { gender_name: string; gender_key: string }[];
 
-export type styles = {
+export type Styles = {
   name: string;
   instance: string;
   color: boolean;
@@ -83,17 +88,17 @@ export type styles = {
   icon_state: string;
 };
 
-export type bodyStyle = {
+export type BodyStyle = {
   name: string;
   icon: string;
   icon_state: string;
 };
 
-export type species = { specimen: string };
+export type Species = { specimen: string };
 
-export type bodyrecord = { name: string; recref: string };
+export type Bodyrecord = { name: string; recref: string };
 
-export type flavors = {
+export type Flavors = {
   general: string;
   head: string;
   face: string;

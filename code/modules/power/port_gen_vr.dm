@@ -95,10 +95,48 @@
 
 /obj/machinery/power/rtg/Initialize(mapload)
 	. = ..()
-	if(ispath(circuit))
-		circuit = new circuit(src)
 	default_apply_parts()
 	connect_to_network()
+	if(mapload)
+		return INITIALIZE_HINT_LATELOAD
+
+/obj/machinery/power/rtg/LateInitialize()
+	apply_mapped_upgrades()
+
+/obj/machinery/power/rtg/apply_mapped_upgrades()
+	// Detect new parts placed by mappers
+	var/list/parts_found = list()
+	for(var/i = 1, i <= loc.contents.len, i++)
+		var/obj/item/W = loc.contents[i]
+		if(istype(W, /obj/item/stock_parts/capacitor))
+			parts_found.Add(W)
+		if(istype(W, /obj/item/stock_parts/micro_laser))
+			parts_found.Add(W)
+
+	// Wipe old parts for new ones!
+	if(parts_found.len == 0)
+		return
+	if(locate(/obj/item/stock_parts/capacitor) in parts_found)
+		while(TRUE)
+			var/obj/item/stock_parts/capacitor/C = locate(/obj/item/stock_parts/capacitor) in component_parts
+			if(isnull(C))
+				break
+			component_parts.Remove(C)
+			qdel(C)
+	if(locate(/obj/item/stock_parts/micro_laser) in parts_found)
+		while(TRUE)
+			var/obj/item/stock_parts/micro_laser/M = locate(/obj/item/stock_parts/micro_laser) in component_parts
+			if(isnull(M))
+				break
+			component_parts.Remove(M)
+			qdel(M)
+
+	// Rebuild from mapper's parts
+	for(var/i = 1, i <= parts_found.len, i++)
+		var/obj/item/W = parts_found[i]
+		component_parts.Add(W)
+		W.forceMove(src)
+	RefreshParts()
 
 /obj/machinery/power/rtg/process()
 	..()
@@ -152,6 +190,13 @@
 	return
 /obj/machinery/power/rtg/fake_gen/update_icon()
 	return
+
+/obj/machinery/power/rtg/fake_gen/grid
+	desc = "An array of conventional power storage units, for when the added charge longivity and cost of a SMES unit is unneded or impractical."
+	icon = 'icons/obj/power.dmi'
+	icon_state = "gridchecker_off"
+	name = "capacitor bank"
+	power_gen = 12000
 
 // Void Core, power source for Abductor ships and bases.
 // Provides a lot of power, but tends to explode when mistreated.
@@ -413,7 +458,7 @@
 	power_gen = cool_rotations
 	runner.nutrition -= nutrition_drain
 
-/obj/machinery/power/rtg/reg/emp_act(severity)
+/obj/machinery/power/rtg/reg/emp_act(severity, recursive)
 	return
 
 /obj/item/circuitboard/machine/reg_d
@@ -525,3 +570,47 @@
 		add_overlay("alteviangen-fuel-66")
 	else if(sheets > 0)
 		add_overlay("alteviangen-fuel-33")
+
+/obj/machinery/power/rtg/antimatter_core
+	name = "\improper Antique Anti-Matter Reactor"
+	desc = "Reacts hydrogen and anti-hydrogen with a phoron moderator to produce near limitless power! The magnetic fields are prone to easily rupturing, so the reactor design never took off."
+	icon = 'icons/am_engine.dmi'
+	icon_state = "core_on"
+	power_gen = 1000000 // 1MW
+	irradiate = FALSE // Green energy!
+	can_buckle = FALSE
+	plane = ABOVE_MOB_PLANE
+	layer = ABOVE_MOB_LAYER
+
+/obj/machinery/power/rtg/antimatter_core/Initialize(mapload)
+	. = ..()
+	set_light(3, 6, "#66FFFF")
+
+/obj/machinery/power/rtg/antimatter_core/proc/asplod()
+	visible_message(span_danger("\The [src] ruptures!"), span_danger("You hear a loud reverberating bang!"))
+	var/turf/T = get_turf(src)
+	qdel(src)
+	if(T)
+		empulse(T, 12, 14, 16, 18)
+		explosion(T, 7, 12, 18, 20)
+		SSradiation.radiate(T, 200)
+		new /obj/effect/bhole(T)
+
+/obj/machinery/power/rtg/antimatter_core/blob_act(obj/structure/blob/B)
+	return
+
+/obj/machinery/power/rtg/antimatter_core/ex_act()
+	asplod()
+
+/obj/machinery/power/rtg/antimatter_core/fire_act(exposed_temperature, exposed_volume)
+	return
+
+/obj/machinery/power/rtg/antimatter_core/tesla_act()
+	..() //extend the zap
+	asplod()
+
+/obj/machinery/power/rtg/antimatter_core/bullet_act(obj/item/projectile/Proj)
+	. = ..()
+	if(istype(Proj) && !Proj.nodamage && ((Proj.damage_type == BURN) || (Proj.damage_type == BRUTE)) && Proj.damage >= 20)
+		log_and_message_admins("[ADMIN_LOOKUPFLW(Proj.firer)] triggered an antimatter core explosion at [x],[y],[z] via projectile.", Proj.firer)
+		asplod()

@@ -253,9 +253,9 @@
 	siemens_coefficient = 0.6
 
 /obj/item/clothing/shoes/boots/singer
-    name = "blue performer's boots"
-    desc = "These boots were made for dancing."
-    icon_state = "bsing"
+	name = "blue performer's boots"
+	desc = "These boots were made for dancing."
+	icon_state = "bsing"
 
 /obj/item/clothing/shoes/boots/singer/yellow
 	name = "yellow performer's boots"
@@ -263,6 +263,11 @@
 	icon_state = "ysing"
 
 /obj/item/clothing/shoes/boots/half_moon
-    name = "half moon boots"
-    desc = "Flexible and tight, these boots ensure the wearer will be leaving a solid impression without sacrificing mobility."
-    icon_state = "half_moon"
+	name = "half moon boots"
+	desc = "Flexible and tight, these boots ensure the wearer will be leaving a solid impression without sacrificing mobility."
+	icon_state = "half_moon"
+
+/obj/item/clothing/shoes/boots/hoof
+	name = "hoofboots"
+	desc = "A pair of high-heeled boots with hooves on the front of the soles, for use with a hobby horse or to disguise your footprints."
+	icon_state = "hoofboots"

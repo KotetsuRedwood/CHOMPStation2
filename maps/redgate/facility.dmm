@@ -1,4 +1,8 @@
 //MAP CONVERTED BY dmm2tgm.py THIS HEADER COMMENT PREVENTS RECONVERSION, DO NOT REMOVE
+"aaa" = (
+/obj/structure/ghost_pod/ghost_activated/maint_lurker/redgate,
+/turf/simulated/floor/tiled,
+/area/redgate/facility/nw)
 "aau" = (
 /obj/structure/closet/secure_closet/medical2,
 /turf/simulated/floor/tiled/white,
@@ -2182,7 +2186,7 @@
 /turf/simulated/floor/tiled/white,
 /area/redgate/facility/medbay)
 "dki" = (
-/obj/machinery/mecha_part_fabricator{
+/obj/machinery/mecha_part_fabricator_tg{
 	dir = 8
 	},
 /turf/simulated/floor/tiled/techfloor,
@@ -2954,7 +2958,7 @@
 /turf/simulated/floor/tiled/white,
 /area/redgate/facility/office8)
 "eku" = (
-/obj/machinery/telecomms/allinone,
+/obj/structure/prop/machine/core/allinone,
 /turf/simulated/floor/tiled/techfloor/grid,
 /area/redgate/facility/lab3)
 "ekR" = (
@@ -4008,7 +4012,7 @@
 /turf/simulated/floor/tiled/white,
 /area/redgate/facility/tram)
 "fHW" = (
-/obj/machinery/mecha_part_fabricator/pros{
+/obj/machinery/mecha_part_fabricator_tg/prosthetics{
 	dir = 1
 	},
 /turf/simulated/floor/tiled/steel_grid,
@@ -10306,7 +10310,7 @@
 /turf/simulated/floor/carpet/blue2,
 /area/redgate/facility/ne)
 "oyh" = (
-/obj/machinery/r_n_d/circuit_imprinter{
+/obj/machinery/rnd/production/circuit_imprinter{
 	dir = 8
 	},
 /turf/simulated/floor/tiled/techfloor,
@@ -10700,12 +10704,6 @@
 /area/redgate/facility/sw)
 "piE" = (
 /obj/structure/table/steel_reinforced,
-/turf/simulated/floor/tiled/techfloor,
-/area/redgate/facility/cell14)
-"pjb" = (
-/obj/machinery/computer/rdconsole/robotics{
-	dir = 8
-	},
 /turf/simulated/floor/tiled/techfloor,
 /area/redgate/facility/cell14)
 "pjC" = (
@@ -13602,7 +13600,7 @@
 	icon_state = "1-2"
 	},
 /obj/structure/cable{
-	icon_state = "1-4"
+	icon_state = "2-4"
 	},
 /obj/structure/cable{
 	icon_state = "2-8"
@@ -13873,7 +13871,7 @@
 	icon_state = "1-2"
 	},
 /obj/structure/cable{
-	icon_state = "1-4"
+	icon_state = "2-4"
 	},
 /turf/unsimulated/floor/techfloor_grid{
 	name = "singularity flooring"
@@ -14351,10 +14349,10 @@
 /turf/simulated/floor/tiled/white,
 /area/redgate/facility/entrance)
 "ulm" = (
-/obj/machinery/telecomms/bus,
 /obj/machinery/light{
 	dir = 1
 	},
+/obj/structure/prop/machine/core/bus,
 /turf/simulated/floor/tiled/techfloor/grid,
 /area/redgate/facility/lab3)
 "ulv" = (
@@ -14743,7 +14741,7 @@
 /turf/simulated/floor/tiled/techfloor,
 /area/redgate/facility/cell9)
 "uMg" = (
-/obj/machinery/telecomms/server,
+/obj/structure/prop/machine/core/comm_server,
 /turf/simulated/floor/tiled/techfloor/grid,
 /area/redgate/facility/lab3)
 "uMq" = (
@@ -15248,7 +15246,7 @@
 	icon_state = "1-4"
 	},
 /obj/structure/cable{
-	icon_state = "1-4"
+	icon_state = "2-4"
 	},
 /turf/unsimulated/floor/techfloor_grid{
 	name = "singularity flooring"
@@ -15276,7 +15274,7 @@
 	icon_state = "4-8"
 	},
 /obj/structure/cable{
-	icon_state = "1-4"
+	icon_state = "2-4"
 	},
 /turf/unsimulated/floor/techfloor_grid{
 	name = "singularity flooring"
@@ -16575,7 +16573,7 @@
 /area/redgate/facility/ne)
 "xtG" = (
 /obj/structure/cable{
-	icon_state = "1-4"
+	icon_state = "2-4"
 	},
 /turf/simulated/floor/tiled/eris/dark/orangecorner,
 /area/redgate/facility/cell29)
@@ -18579,7 +18577,7 @@ wCZ
 mnq
 tTv
 xEz
-rzR
+aaa
 xqm
 gCf
 gCf
@@ -31249,7 +31247,7 @@ bXk
 alk
 tvs
 oXQ
-pjb
+tvs
 bXk
 tvs
 bXk

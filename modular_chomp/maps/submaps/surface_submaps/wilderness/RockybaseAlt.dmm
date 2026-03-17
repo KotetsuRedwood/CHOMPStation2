@@ -1,4 +1,7 @@
 //MAP CONVERTED BY dmm2tgm.py THIS HEADER COMMENT PREVENTS RECONVERSION, DO NOT REMOVE
+"aa" = (
+/turf/simulated/floor/plating/turfpack/sif,
+/area/submap/Rockybase)
 "af" = (
 /obj/effect/floor_decal/borderfloor{
 	dir = 1
@@ -14,7 +17,7 @@
 /area/submap/Rockybase)
 "aO" = (
 /obj/machinery/porta_turret/poi,
-/turf/simulated/floor,
+/turf/simulated/floor/plating/turfpack/sif,
 /area/submap/Rockybase)
 "bm" = (
 /turf/simulated/floor/tiled/hydro,
@@ -49,7 +52,7 @@
 /turf/simulated/floor/tiled,
 /area/submap/Rockybase)
 "ch" = (
-/obj/machinery/mecha_part_fabricator/pros,
+/obj/machinery/mecha_part_fabricator_tg/prosthetics,
 /turf/simulated/floor/tiled,
 /area/submap/Rockybase)
 "ck" = (
@@ -154,7 +157,7 @@
 /area/submap/Rockybase)
 "hc" = (
 /obj/effect/decal/remains/posi,
-/turf/simulated/floor,
+/turf/simulated/floor/plating/turfpack/sif,
 /area/submap/Rockybase)
 "ih" = (
 /obj/effect/decal/remains,
@@ -192,7 +195,6 @@
 /area/template_noop)
 "kX" = (
 /obj/item/stack/rods,
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /turf/simulated/floor/tiled,
 /area/submap/Rockybase)
@@ -365,12 +367,6 @@
 /obj/machinery/light,
 /turf/simulated/floor/holofloor/lino,
 /area/submap/Rockybase)
-"tQ" = (
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor,
-/area/submap/Rockybase)
 "uj" = (
 /obj/effect/floor_decal/corner/red/border,
 /turf/simulated/floor/tiled,
@@ -460,7 +456,6 @@
 /area/submap/Rockybase)
 "xM" = (
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /obj/item/material/shard,
 /turf/simulated/floor,
 /area/submap/Rockybase)
@@ -472,7 +467,7 @@
 /turf/template_noop,
 /area/template_noop)
 "yc" = (
-/obj/machinery/mecha_part_fabricator,
+/obj/machinery/mecha_part_fabricator_tg,
 /turf/simulated/floor/tiled,
 /area/submap/Rockybase)
 "yf" = (
@@ -690,12 +685,7 @@
 /area/submap/Rockybase)
 "Hz" = (
 /obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /mob/living/simple_mob/mechanical/mining_drone,
-/turf/simulated/floor/tiled,
-/area/submap/Rockybase)
-"Jh" = (
-/obj/effect/map_helper/no_phaseshift/area,
 /turf/simulated/floor/tiled,
 /area/submap/Rockybase)
 "Jm" = (
@@ -706,7 +696,7 @@
 /area/submap/Rockybase)
 "Jz" = (
 /obj/effect/floor_decal/industrial/danger,
-/turf/simulated/floor,
+/turf/simulated/floor/plating/turfpack/sif,
 /area/submap/Rockybase)
 "JD" = (
 /turf/simulated/wall,
@@ -790,14 +780,14 @@
 "MJ" = (
 /obj/effect/decal/cleanable/blood,
 /obj/effect/floor_decal/industrial/danger,
-/turf/simulated/floor,
+/turf/simulated/floor/plating/turfpack/sif,
 /area/submap/Rockybase)
 "MW" = (
 /turf/simulated/floor/tiled,
 /area/submap/Rockybase)
 "Nz" = (
 /obj/effect/decal/cleanable/blood,
-/turf/simulated/floor,
+/turf/simulated/floor/plating/turfpack/sif,
 /area/submap/Rockybase)
 "NN" = (
 /obj/structure/table/woodentable,
@@ -907,11 +897,6 @@
 /obj/item/storage/bag/trash,
 /turf/simulated/floor/tiled,
 /area/submap/Rockybase)
-"RY" = (
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor,
-/area/submap/Rockybase)
 "Sj" = (
 /obj/machinery/door/airlock/engineering,
 /turf/simulated/floor/tiled,
@@ -950,8 +935,6 @@
 /turf/simulated/floor/tiled/hydro,
 /area/submap/Rockybase)
 "TH" = (
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/blood,
 /turf/simulated/floor,
@@ -1006,6 +989,7 @@
 /obj/item/cell/device/weapon,
 /obj/item/ammo_magazine/ammo_box/b12g/pellet,
 /obj/item/ammo_magazine/ammo_box/b12g/pellet,
+/obj/item/prop/deconstructable/gigacell,
 /turf/simulated/floor/tiled/techfloor,
 /area/submap/Rockybase)
 "Wp" = (
@@ -1047,12 +1031,7 @@
 "Yo" = (
 /obj/machinery/light,
 /obj/effect/floor_decal/industrial/danger,
-/turf/simulated/floor,
-/area/submap/Rockybase)
-"YG" = (
-/obj/effect/decal/cleanable/dirt,
-/obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/tiled,
+/turf/simulated/floor/plating/turfpack/sif,
 /area/submap/Rockybase)
 "Zd" = (
 /obj/effect/floor_decal/industrial/hatch/yellow,
@@ -1633,7 +1612,7 @@ eO
 eO
 Vz
 Vf
-Jh
+MW
 Hf
 pk
 gZ
@@ -2157,7 +2136,7 @@ yb
 yb
 yb
 yb
-yq
+aa
 Yo
 pk
 KE
@@ -2194,8 +2173,8 @@ yb
 yb
 yb
 yb
-yq
-yq
+aa
+aa
 Jz
 pk
 Lz
@@ -2232,7 +2211,7 @@ yb
 yb
 yb
 yb
-yq
+aa
 Nz
 Jz
 Dh
@@ -2271,7 +2250,7 @@ yb
 yb
 yb
 hc
-yq
+aa
 Jz
 VR
 MW
@@ -2308,8 +2287,8 @@ yb
 yb
 yb
 yb
-yq
-yq
+aa
+aa
 Jz
 VR
 MW
@@ -2346,8 +2325,8 @@ yb
 yb
 yb
 yb
-yq
-yq
+aa
+aa
 Jz
 Dh
 pk
@@ -2384,8 +2363,8 @@ yb
 yb
 yb
 yb
-yq
-yq
+aa
+aa
 MJ
 pk
 wS
@@ -2423,7 +2402,7 @@ yb
 yb
 yb
 yb
-yq
+aa
 Yo
 pk
 wo
@@ -2436,7 +2415,7 @@ Hf
 pk
 JO
 dF
-YG
+dF
 TH
 Hz
 MW
@@ -2474,9 +2453,9 @@ Hf
 pk
 Ly
 kX
-RY
-tQ
-RY
+kb
+kb
+kb
 MW
 pk
 fp
@@ -2513,7 +2492,7 @@ pk
 Op
 NY
 xM
-tQ
+kb
 kb
 bQ
 pk
@@ -2550,8 +2529,8 @@ Hf
 pk
 dF
 kb
-tQ
-RY
+kb
+kb
 kb
 un
 pk
@@ -2588,7 +2567,7 @@ Hf
 pk
 MW
 TD
-RY
+kb
 TD
 kb
 bQ

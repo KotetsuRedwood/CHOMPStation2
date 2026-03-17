@@ -40,16 +40,14 @@
 	show_verb_panel = FALSE
 	///Contains admin info. Null if client is not an admin.
 	var/datum/admins/holder = null
-	var/datum/admins/deadmin_holder = null
 	var/buildmode		= 0
 
 	///Contains the last message sent by this client - used to protect against copy-paste spamming.
 	var/last_message	= ""
 	///contins a number of how many times a message identical to last_message was sent.
 	var/last_message_count = 0
-	var/ircreplyamount = 0
 	var/entity_narrate_holder //Holds /datum/entity_narrate when using the relevant admin verbs.
-	var/fakeConversations //Holds fake PDA conversations for event set-up
+	var/datum/eventkit/fake_pdaconvos/fakeConversations //Holds fake PDA conversations for event set-up
 
 		/////////
 		//OTHER//
@@ -64,8 +62,6 @@
 	var/datum/volume_panel/volume_panel = null // Initialized by /client/verb/volume_panel()
 	var/seen_news = 0
 
-	var/adminhelped = 0
-
 		///////////////
 		//SOUND STUFF//
 		///////////////
@@ -76,16 +72,15 @@
 		////////////
 	// comment out the line below when debugging locally to enable the options & messages menu
 	//control_freak = 1
-
-	var/received_irc_pm = -99999
-	var/irc_admin			//IRC admin that spoke with them last.
-	var/mute_irc = 0
 	var/ip_reputation = 0 //Do we think they're using a proxy/vpn? Only if IP Reputation checking is enabled in config.
 
 	///Used for limiting the rate of topic sends by the client to avoid abuse
 	var/list/topiclimiter
 	///Used for limiting the rate of clicks sends by the client to avoid abuse
 	var/list/clicklimiter
+
+	///these persist between logins/logouts during the same round.
+	var/datum/persistent_client/persistent_client
 
 		////////////////////////////////////
 		//things that require the database//
@@ -100,7 +95,7 @@
 
 	preload_rsc = PRELOAD_RSC
 
-	var/global/obj/screen/click_catcher/void
+	var/global/atom/movable/screen/click_catcher/void
 
 	control_freak = 0 //CHOMPedit KSC 1/30/20 - This enables all clientside options for Players.
 	// List of all asset filenames sent to this client by the asset cache, along with their assoicated md5s
@@ -116,11 +111,11 @@
 	///Average ping of the client
 	var/avgping = 0
 
- 	///world.time they connected
+	///world.time they connected
 	var/connection_time
- 	///world.realtime they connected
+	///world.realtime they connected
 	var/connection_realtime
- 	///world.timeofday they connected
+	///world.timeofday they connected
 	var/connection_timeofday
 
 	// Runechat messages
@@ -167,12 +162,12 @@
 
 	/// Bitfield of movement dirs that were released *this* cycle (even if currently held).
 	/// Note that only dirs that were already held at the start of this cycle are included, if it pressed then released it won't be in here.
- 	/// On next move, subtract this dir from the move that would otherwise be done
+	/// On next move, subtract this dir from the move that would otherwise be done
 	var/next_move_dir_sub
 
 	#ifdef CARDINAL_INPUT_ONLY
 
-	/// Movement dir of the most recently pressed movement key.  Used in cardinal-only movement mode.
+	/// Movement dir of the most recently pressed movement key.  Used in GLOB.cardinal-only movement mode.
 	var/last_move_dir_pressed = NONE
 
 	#endif
@@ -182,3 +177,9 @@
 
 	/// Token used for the external chatlog api. Only valid for the current round.
 	var/chatlog_token
+
+	/// The DPI scale of the client. 1 is equivalent to 100% window scaling, 2 will be 200% window scaling
+	var/window_scaling
+
+	/// Loot panel for the client
+	var/datum/lootpanel/loot_panel

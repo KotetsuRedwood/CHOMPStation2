@@ -112,17 +112,14 @@
 		node2.update_underlays()
 
 /obj/machinery/atmospherics/pipe/simple/update_icon(var/safety = 0)
-	if(!check_icon_cache())
-		return
-
 	alpha = 255
 
 	cut_overlays()
 
 	if(node1 && node2)
-		add_overlay(icon_manager.get_atmos_icon("pipe", , pipe_color, "[pipe_icon]intact[icon_connect_type]"))
+		add_overlay(GLOB.icon_manager.get_atmos_icon("pipe", , pipe_color, "[pipe_icon]intact[icon_connect_type]"))
 	else
-		add_overlay(icon_manager.get_atmos_icon("pipe", , pipe_color, "[pipe_icon]exposed[node1?1:0][node2?1:0][icon_connect_type]"))
+		add_overlay(GLOB.icon_manager.get_atmos_icon("pipe", , pipe_color, "[pipe_icon]exposed[node1?1:0][node2?1:0][icon_connect_type]"))
 
 /obj/machinery/atmospherics/pipe/simple/update_underlays()
 	return
@@ -132,7 +129,7 @@
 	var/node1_dir
 	var/node2_dir
 
-	for(var/direction in cardinal)
+	for(var/direction in GLOB.cardinal)
 		if(direction&initialize_directions)
 			if (!node1_dir)
 				node1_dir = direction

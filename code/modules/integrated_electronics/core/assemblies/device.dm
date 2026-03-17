@@ -6,10 +6,12 @@
 
 	var/obj/item/electronic_assembly/device/EA
 
-/obj/item/assembly/electronic_assembly/New()
+	special_handling = TRUE
+
+/obj/item/assembly/electronic_assembly/Initialize(mapload)
+	. = ..()
 	EA = new(src)
 	EA.holder = src
-	..()
 
 /obj/item/assembly/electronic_assembly/attackby(obj/item/I as obj, mob/user as mob)
 	if (I.has_tool_quality(TOOL_CROWBAR))
@@ -35,7 +37,10 @@
 	if(opened)
 		icon_state = icon_state + "-open"
 
-/obj/item/assembly/electronic_assembly/attack_self(mob/user as mob)
+/obj/item/assembly/electronic_assembly/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	if(EA)
 		EA.attack_self(user)
 
@@ -70,8 +75,8 @@
 	max_complexity = IC_COMPLEXITY_BASE * 3/4
 
 
-/obj/item/electronic_assembly/device/New()
-	..()
+/obj/item/electronic_assembly/device/Initialize(mapload)
+	. = ..()
 	var/obj/item/integrated_circuit/built_in/device_input/input = new(src)
 	var/obj/item/integrated_circuit/built_in/device_output/output = new(src)
 	input.assembly = src

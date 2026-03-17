@@ -7,7 +7,7 @@
 	icon_dead = "stalker-dead"
 	icon_living = "stalker"
 	icon_state = "stalker"
-	icon_rest = "stalker-rest"
+	icon_rest = "stalker_rest"
 	faction = FACTION_STALKER
 	old_x = -16
 	old_y = 0
@@ -43,15 +43,13 @@
 	vore_pounce_maxhealth = 1000
 	vore_bump_emote = "pounces on"
 
-/mob/living/simple_mob/vore/stalker/init_vore()
-	if(!voremob_loaded)
-		return
+/mob/living/simple_mob/vore/stalker/load_default_bellies()
 	. = ..()
 	var/obj/belly/B = vore_selected
 	B.name = "stomach"
 	B.desc = "The lithe creature spends only minimal time with you pinned beneath it, before it's jaws stretch wide ahead of your face. The slightly blue hued interior squelches tightly over your head as the stalker's teeth prod against you, threatening to become much more of a danger if you put up too much of a fight. However, the process is quick, your body is efficiently squeezed through that tight gullet, contractions dragging you effortlessly towards the creature's gut. The stomach swells and hangs beneath the animal, swaying like a hammock under the newfound weight. The walls wrap incredibly tightly around you, compressing you tightly into a small ball as it grinds caustic juices over you."
 	B.mode_flags = DM_FLAG_THICKBELLY
-	B.belly_fullscreen = "yet_another_tumby"
+	B.belly_fullscreen = "VBO_fleshs"
 	B.digest_brute = 2
 	B.digest_burn = 2
 	B.digest_oxy = 1
@@ -189,7 +187,7 @@
 //				return FALSE
 		//VOREStation add start
 		else if(forgive_resting && !isbelly(holder.loc))	//Doing it this way so we only think about the other conditions if the var is actually set
-			if((holder.health == holder.maxHealth) && !hostile && (L.resting || L.weakened || L.stunned))	//If our health is full, no one is fighting us, we can forgive
+			if((holder.health == holder.getMaxHealth()) && !hostile && (L.resting || L.weakened || L.stunned))	//If our health is full, no one is fighting us, we can forgive
 				var/mob/living/simple_mob/vore/eater = holder
 				if(!eater.will_eat(L))		//We forgive people we can eat by eating them
 					set_stance(STANCE_IDLE)
@@ -262,7 +260,7 @@
 		on_engagement(target)
 		if(firing_lanes && !test_projectile_safety(target))
 			// Nudge them a bit, maybe they can shoot next time.
-			var/turf/T = get_step(holder, pick(cardinal))
+			var/turf/T = get_step(holder, pick(GLOB.cardinal))
 			if(T)
 				holder.IMove(T) // IMove() will respect movement cooldown.
 				holder.face_atom(target)

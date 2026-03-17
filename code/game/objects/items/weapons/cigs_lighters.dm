@@ -38,7 +38,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 /obj/item/flame/match/process()
 	if(isliving(loc))
 		var/mob/living/M = loc
-		M.IgniteMob()
+		M.ignite_mob()
 	var/turf/location = get_turf(src)
 	smoketime--
 	if(smoketime < 1)
@@ -71,7 +71,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 /obj/item/flame/match/proc/burn_out()
 	lit = 0
 	burnt = 1
-	damtype = "brute"
+	damtype = BRUTE
 	icon_state = "match_burnt"
 	item_state = "cigoff"
 	name = "burnt match"
@@ -116,7 +116,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		if(ishuman(loc))
 			var/mob/living/carbon/human/C = loc
 			if (src == C.wear_mask && C.check_has_mouth()) // if it's in the human/monkey mouth, transfer reagents to the mob
-				reagents.trans_to_mob(C, amount, CHEM_INGEST, 1.5) // I don't predict significant balance issues by letting blunts actually WORK.
+				reagents.trans_to_mob(C, amount, CHEM_INGEST, 1.5, can_dialysis = FALSE) // I don't predict significant balance issues by letting blunts actually WORK.
 		else // else just remove some of the reagents
 			reagents.remove_any(REM)
 
@@ -168,7 +168,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	if(!src.lit)
 		src.lit = 1
 		playsound(src, 'sound/items/cigs_lighters/cig_light.ogg', 75, 1, -1)
-		damtype = "fire"
+		damtype = BURN
 		if(reagents.get_reagent_amount(REAGENT_ID_PHORON)) // the phoron explodes when exposed to fire
 			var/datum/effect/effect/system/reagents_explosion/e = new()
 			e.set_up(round(reagents.get_reagent_amount(REAGENT_ID_PHORON) / 2.5, 1), get_turf(src), 0, 0)
@@ -294,6 +294,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	zippomes = span_rose("With a flick of their wrist, USER lights their NAME with their FLAME.")
 	weldermes = span_notice("USER casually lights the NAME with FLAME.")
 	ignitermes = span_notice("USER fiddles with FLAME, and manages to light their NAME.")
+	special_handling = TRUE
 
 /obj/item/clothing/mask/smokable/cigarette/Initialize(mapload)
 	. = ..()
@@ -324,7 +325,10 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 			else
 				to_chat(user, span_notice("[src] is full."))
 
-/obj/item/clothing/mask/smokable/cigarette/attack_self(mob/user as mob)
+/obj/item/clothing/mask/smokable/cigarette/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	if(lit == 1)
 		if(user.a_intent == I_HURT)
 			user.visible_message(span_notice("[user] drops and treads on the lit [src], putting it out instantly."))
@@ -333,7 +337,6 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		else
 			user.visible_message(span_notice("[user] puts out \the [src]."))
 			quench()
-	return ..()
 
 ////////////
 // CIGARS //
@@ -434,7 +437,10 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	. = ..()
 	name = "empty [initial(name)]"
 
-/obj/item/clothing/mask/smokable/pipe/attack_self(mob/user as mob)
+/obj/item/clothing/mask/smokable/pipe/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	if(lit == 1)
 		if(user.a_intent == I_HURT)
 			user.visible_message(span_notice("[user] empties the lit [src] on the floor!."))
@@ -561,14 +567,17 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		qdel(G)
 
 /obj/item/reagent_containers/rollingpaper/attack_self(mob/living/user)
-	if(!src.reagents)                                                                                        //don't roll an empty joint
+	. = ..(user)
+	if(.)
+		return TRUE
+	if(!reagents)                                                                                        //don't roll an empty joint
 		to_chat(user, span_warning("There is nothing in [src]. Add something to it first."))
 		return
 	var/obj/item/clothing/mask/smokable/cigarette/J = new crafted_type()
 	to_chat(user,span_notice("You roll the [src] into a blunt!"))
 	J.add_fingerprint(user)
-	if(src.reagents)
-		src.reagents.trans_to_obj(J, src.reagents.total_volume)
+	if(reagents)
+		reagents.trans_to_obj(J, reagents.total_volume)
 	user.drop_from_inventory(src)
 	user.put_in_hands(J)
 	qdel(src)
@@ -613,6 +622,10 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 								COLOR_ASSEMBLY_BLUE,
 								COLOR_ASSEMBLY_PURPLE,
 								COLOR_ASSEMBLY_HOT_PINK)
+	/// If we are a special variant (see: override attack_self)
+	var/special_variant = FALSE
+	/// Var used for detonator zippos
+	var/detonator_mode = 0
 
 // TODO: Remove this path from POIs and loose maps (it's no longer needed)
 /obj/item/flame/lighter/random
@@ -625,8 +638,15 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	add_overlay(I)
 
 /obj/item/flame/lighter/attack_self(mob/living/user)
+	. = ..(user)
+	if(.)
+		return TRUE
+	if(special_variant)
+		return FALSE
+	if(detonator_mode)
+		return FALSE
 	if(!lit)
-		lit = 1
+		lit = TRUE
 		icon_state = "lighteron"
 		playsound(src, activation_sound, 75, 1)
 		user.visible_message(span_notice("After a few attempts, [user] manages to light the [src]."))
@@ -635,7 +655,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		START_PROCESSING(SSobj, src)
 		update_icon()
 	else
-		lit = 0
+		lit = FALSE
 		icon_state = "lighter"
 		playsound(src, deactivation_sound, 75, 1)
 		user.visible_message(span_notice("[user] quietly shuts off the [src]."))
@@ -650,7 +670,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		return
 
 	if(lit == 1)
-		M.IgniteMob()
+		M.ignite_mob()
 		add_attack_logs(user,M,"Lit on fire with [src]")
 
 	if(istype(M.wear_mask, /obj/item/clothing/mask/smokable/cigarette) && user.zone_sel.selecting == O_MOUTH && lit)
@@ -682,16 +702,22 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	item_state = "zippo"
 	activation_sound = 'sound/items/zippo_on.ogg'
 	deactivation_sound = 'sound/items/zippo_off.ogg'
+	special_variant = TRUE
 
 /obj/item/flame/lighter/zippo/Initialize(mapload)
 	. = ..()
 	cut_overlays() //Prevents the Cheap Lighter overlay from appearing on this
 
 /obj/item/flame/lighter/zippo/attack_self(mob/living/user)
+	. = ..(user)
+	if(.)
+		return TRUE
+	if(detonator_mode)
+		return FALSE
 	if(!base_state)
 		base_state = icon_state
 	if(!lit)
-		lit = 1
+		lit = TRUE
 		icon_state = "[base_state]on"
 		item_state = "[base_state]on"
 		playsound(src, activation_sound, 75, 1)
@@ -700,7 +726,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		set_light(2, 0.5, "#FF9933")
 		START_PROCESSING(SSobj, src)
 	else
-		lit = 0
+		lit = FALSE
 		icon_state = "[base_state]"
 		item_state = "[base_state]"
 		playsound(src, deactivation_sound, 75, 1)
@@ -774,22 +800,26 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	icon_state = "skullzippo"
 
 /obj/item/flame/lighter/supermatter
-    name = "Hardlight Supermatter Zippo"	// Base SM Lighter
-    desc = "State of the Art Supermatter Lighter."
-    description_fluff = "A zippo style lighter with a tiny supermatter sliver held by a hardlight shield. When lighting a cigar, make sure to hover the tip near the sliver, not against it!"
-    icon_state = "SMzippo"
-    item_state = "SMzippo"
-    activation_sound = 'sound/items/zippo_on_alt.ogg'
-    deactivation_sound = 'sound/items/zippo_off.ogg'
+	name = "Hardlight Supermatter Zippo"	// Base SM Lighter
+	desc = "State of the Art Supermatter Lighter."
+	description_fluff = "A zippo style lighter with a tiny supermatter sliver held by a hardlight shield. When lighting a cigar, make sure to hover the tip near the sliver, not against it!"
+	icon_state = "SMzippo"
+	item_state = "SMzippo"
+	activation_sound = 'sound/items/zippo_on_alt.ogg'
+	deactivation_sound = 'sound/items/zippo_off.ogg'
+	special_variant = TRUE
+	///Special supermatter var used for attack_self chain logic.
+	var/special_supermatter = FALSE
 
 /obj/item/flame/lighter/supermatter/syndismzippo
-    name = "Phoron Supermatter Zippo"		// Syndicate SM Lighter
-    desc = "State of the Art Supermatter Lighter."
-    description_fluff = "A red zippo style lighter with a tiny supermatter sliver held by a phoron field."
-    icon_state = "SyndiSMzippo"
-    item_state = "SyndiSMzippo"
-    activation_sound = 'sound/items/zippo_on_alt.ogg'
-    deactivation_sound = 'sound/items/zippo_off.ogg'
+	name = "Phoron Supermatter Zippo"		// Syndicate SM Lighter
+	desc = "State of the Art Supermatter Lighter."
+	description_fluff = "A red zippo style lighter with a tiny supermatter sliver held by a phoron field."
+	icon_state = "SyndiSMzippo"
+	item_state = "SyndiSMzippo"
+	activation_sound = 'sound/items/zippo_on_alt.ogg'
+	deactivation_sound = 'sound/items/zippo_off.ogg'
+	special_supermatter = TRUE
 
 /obj/item/flame/lighter/supermatter/expsmzippo
 	name = "Experimental SM Lighter"		// Dangerous WIP (admin/event only ATM)
@@ -799,9 +829,15 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	item_state = "ExpSMzippo"
 	activation_sound = 'sound/items/button-open.ogg'
 	deactivation_sound = 'sound/items/button-close.ogg'
+	special_supermatter = TRUE
 
 // safe smzippo
 /obj/item/flame/lighter/supermatter/attack_self(mob/living/user)
+	. = ..(user)
+	if(.)
+		return TRUE
+	if(special_supermatter)
+		return FALSE
 	if(!base_state)
 		base_state = icon_state
 	if(!lit)
@@ -817,15 +853,15 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 			else			// Just like the cheap lighter, this time you can shock/burn yourself a little on the hardlight shield
 				to_chat(user, span_warning("You hurt yourself on the shielding!"))
 				if (user.get_left_hand() == src)
-					user.apply_damage(1,SEARING,"l_hand")
-					user.apply_damage(2,ELECTROCUTE,"l_hand")
-					user.apply_damage(3,CLONE,"l_hand")
-					user.apply_damage(4,ELECTROMAG,"l_hand")
+					user.apply_damage(1,SEARING,BP_L_HAND)
+					user.apply_damage(2,ELECTROCUTE,BP_L_HAND)
+					user.apply_damage(3,CLONE,BP_L_HAND)
+					user.apply_damage(4,ELECTROMAG,BP_L_HAND)
 				else
-					user.apply_damage(1,SEARING,"r_hand")
-					user.apply_damage(2,ELECTROCUTE,"r_hand")
-					user.apply_damage(3,CLONE,"r_hand")
-					user.apply_damage(4,ELECTROMAG,"r_hand")
+					user.apply_damage(1,SEARING,BP_R_HAND)
+					user.apply_damage(2,ELECTROCUTE,BP_R_HAND)
+					user.apply_damage(3,CLONE,BP_R_HAND)
+					user.apply_damage(4,ELECTROMAG,BP_R_HAND)
 				user.visible_message(span_notice("After a few attempts, [user] manages to activate the [src], they however sting themselves on the shielding!"))
 
 		set_light(2)
@@ -850,7 +886,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		return
 
 	if(lit == 1)
-		M.IgniteMob()
+		M.ignite_mob()
 		add_attack_logs(user,M,"Lit on fire with [src]")
 
 	if(istype(M.wear_mask, /obj/item/clothing/mask/smokable/cigarette) && user.zone_sel.selecting == O_MOUTH && lit)
@@ -873,6 +909,9 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 
 // syndicate smzippo
 /obj/item/flame/lighter/supermatter/syndismzippo/attack_self(mob/living/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	if(!base_state)
 		base_state = icon_state
 	if(!lit)
@@ -888,15 +927,15 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 			else			// Just like with the cheap lighter, but this time you can hurt yourself on the heated phoron field
 				to_chat(user, span_warning("You singe yourself on the phoron shielding the excited supermatter!"))
 				if (user.get_left_hand() == src)
-					user.apply_damage(30,HALLOSS,"l_hand")
+					user.apply_damage(30,HALLOSS,BP_L_HAND)
 					user.apply_effect(20,IRRADIATE)
-					user.apply_damage(5,BURN,"l_hand")
-					user.apply_damage(5,ELECTROCUTE,"l_hand")
+					user.apply_damage(5,BURN,BP_L_HAND)
+					user.apply_damage(5,ELECTROCUTE,BP_L_HAND)
 				else
-					user.apply_damage(30,HALLOSS,"r_hand")
+					user.apply_damage(30,HALLOSS,BP_R_HAND)
 					user.apply_effect(20,IRRADIATE)
-					user.apply_damage(5,BURN,"r_hand")
-					user.apply_damage(5,ELECTROCUTE,"r_hand")
+					user.apply_damage(5,BURN,BP_R_HAND)
+					user.apply_damage(5,ELECTROCUTE,BP_R_HAND)
 				user.visible_message(span_notice("After a few attempts, [user] manages to activate the [src], they however burn themselves with the heated phoron field!"))
 
 		set_light(2)
@@ -921,7 +960,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		return
 
 	if(lit == 1)
-		M.IgniteMob()
+		M.ignite_mob()
 		add_attack_logs(user,M,"Lit on fire with [src]")
 
 	if(istype(M.wear_mask, /obj/item/clothing/mask/smokable/cigarette) && user.zone_sel.selecting == O_MOUTH && lit)
@@ -944,6 +983,9 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 
 // Experimental smzippo
 /obj/item/flame/lighter/supermatter/expsmzippo/attack_self(mob/living/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	if (!base_state)
 		base_state = icon_state
 	if (!lit)
@@ -957,73 +999,73 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 				to_chat(user, span_rose("[user] safely reveals the supermatter shard within the [src]!"))
 				user.visible_message(span_rose("You safely revealed the supermatter shard within the [src]!"))
 				if (user.get_left_hand() == src)
-					user.apply_damage(1, IRRADIATE, "l_hand")
+					user.apply_damage(1, IRRADIATE, BP_L_HAND)
 				else			// Even using this safely will irradiate you a tiny tiny bit.
-					user.apply_damage(1, IRRADIATE, "r_hand")
+					user.apply_damage(1, IRRADIATE, BP_R_HAND)
 			if(23 to 33)
 				to_chat(user, span_warning("[user]'s hand slipped and they brush against the supermatter within [src]!"))
 				user.visible_message(span_notice("You accidentally grazed your hand across the supermatter!"))
 				if (user.get_left_hand() == src)
-					user.apply_damage(10, IRRADIATE, "l_hand")
-					user.apply_damage(20, BURN, "l_hand")
-					user.apply_damage(20, ELECTROCUTE, "l_hand")
-					user.apply_damage(50, AGONY, "l_hand")
+					user.apply_damage(10, IRRADIATE, BP_L_HAND)
+					user.apply_damage(20, BURN, BP_L_HAND)
+					user.apply_damage(20, ELECTROCUTE, BP_L_HAND)
+					user.apply_damage(50, AGONY, BP_L_HAND)
 				else			// One of the outcomes will burn and shock you, the pain is the worst part of this one though.
-					user.apply_damage(10, IRRADIATE, "r_hand")
-					user.apply_damage(20, BURN, "r_hand")
-					user.apply_damage(20, ELECTROCUTE, "r_hand")
-					user.apply_damage(50, AGONY, "r_hand")
+					user.apply_damage(10, IRRADIATE, BP_R_HAND)
+					user.apply_damage(20, BURN, BP_R_HAND)
+					user.apply_damage(20, ELECTROCUTE, BP_R_HAND)
+					user.apply_damage(50, AGONY, BP_R_HAND)
 			if(34 to 44)
 				to_chat(user, span_warning("[user] burned themselves on the [src]!"))
 				user.visible_message(span_notice("You accidentally burn yourself on the [src]!"))
 				if (user.get_left_hand() == src)
-					user.apply_damage(30, IRRADIATE, "l_hand")
-					user.apply_damage(20, SEARING, "l_hand")
-					user.apply_damage(15, BURN, "l_hand")
+					user.apply_damage(30, IRRADIATE, BP_L_HAND)
+					user.apply_damage(20, SEARING, BP_L_HAND)
+					user.apply_damage(15, BURN, BP_L_HAND)
 				else			// One of the outcomes is pure burn and radiation.
-					user.apply_damage(30, IRRADIATE, "r_hand")
-					user.apply_damage(20, SEARING, "r_hand")
-					user.apply_damage(15, BURN, "r_hand")
+					user.apply_damage(30, IRRADIATE, BP_R_HAND)
+					user.apply_damage(20, SEARING, BP_R_HAND)
+					user.apply_damage(15, BURN, BP_R_HAND)
 			if(45 to 55)
 				to_chat(user, span_warning("[user] fumbled the [src] and the supermatter let out sparks!"))
 				user.visible_message(span_notice("You fumble the [src], letting the supermatter spark as the case opens!"))
 				if (user.get_left_hand() == src)
-					user.apply_damage(1, ELECTROCUTE, "l_hand")
-					user.apply_damage(100, ELECTROMAG, "l_hand")
+					user.apply_damage(1, ELECTROCUTE, BP_L_HAND)
+					user.apply_damage(100, ELECTROMAG, BP_L_HAND)
 				else			// This one is mostly dangerous to synthetics and it will EMP you. But otherwise it's safe.
-					user.apply_damage(1, ELECTROCUTE, "r_hand")
-					user.apply_damage(100, ELECTROMAG, "r_hand")
+					user.apply_damage(1, ELECTROCUTE, BP_R_HAND)
+					user.apply_damage(100, ELECTROMAG, BP_R_HAND)
 			if(56 to 66)
 				to_chat(user, span_warning("[user] struggles to open their [src], but when they do they get burned by the extreme heat within!"))
 				user.visible_message(span_notice("You struggle to get the case to open, and when it does the heat that pours out of the [src] burns!"))
 				if (user.get_left_hand() == src)
-					user.apply_damage(1, IRRADIATE, "l_hand")
-					user.apply_damage(1, BRUISE, "l_hand")
-					user.apply_damage(200, BURN, "l_hand")
+					user.apply_damage(1, IRRADIATE, BP_L_HAND)
+					user.apply_damage(1, BRUISE, BP_L_HAND)
+					user.apply_damage(200, BURN, BP_L_HAND)
 					user.drop_l_hand()
 				else			// This will INSTA-DUST your hand that you're holding the item in, and then make you drop the lighter.
-					user.apply_damage(1, IRRADIATE, "r_hand")
-					user.apply_damage(1, BRUISE, "r_hand")
-					user.apply_damage(200, BURN, "r_hand")
+					user.apply_damage(1, IRRADIATE, BP_R_HAND)
+					user.apply_damage(1, BRUISE, BP_R_HAND)
+					user.apply_damage(200, BURN, BP_R_HAND)
 					user.drop_r_hand()
 			if(67 to 77)
 				to_chat(user, span_warning("Ouch! While pushing on the release to open the [src], [user]'s finger slipped right as the case opened, pressing their finger firm against the supermatter!"))
 				user.visible_message(span_notice("You accidentally pushed your finger against the supermatter!"))
 				if (user.get_left_hand() == src)
-					user.apply_damage(50, HALLOSS, "l_hand")
-					user.apply_damage(40, IRRADIATE, "l_hand")
-					user.apply_damage(30, BURN, "l_hand")
-					user.apply_damage(20, TOX, "l_hand")
-					user.apply_damage(10, ELECTROCUTE, "l_hand")
+					user.apply_damage(50, HALLOSS, BP_L_HAND)
+					user.apply_damage(40, IRRADIATE, BP_L_HAND)
+					user.apply_damage(30, BURN, BP_L_HAND)
+					user.apply_damage(20, TOX, BP_L_HAND)
+					user.apply_damage(10, ELECTROCUTE, BP_L_HAND)
 					user.apply_effect(25, STUTTER)
 					user.apply_effect(15, SLUR)
 					user.apply_effect(5, STUN)
 				else			// This one is VERY punishing, you get a ton of damage, a lot of pain, and a minor stun. Once the stun goes away you'll be stuttering for awhile as if in crit.
-					user.apply_damage(50, HALLOSS, "r_hand")
-					user.apply_damage(40, IRRADIATE, "r_hand")
-					user.apply_damage(30, BURN, "r_hand")
-					user.apply_damage(20, TOX, "r_hand")
-					user.apply_damage(10, ELECTROCUTE, "r_hand")
+					user.apply_damage(50, HALLOSS, BP_R_HAND)
+					user.apply_damage(40, IRRADIATE, BP_R_HAND)
+					user.apply_damage(30, BURN, BP_R_HAND)
+					user.apply_damage(20, TOX, BP_R_HAND)
+					user.apply_damage(10, ELECTROCUTE, BP_R_HAND)
 					user.apply_effect(25, STUTTER)
 					user.apply_effect(15, SLUR)
 					user.apply_effect(5, STUN)
@@ -1031,26 +1073,26 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 				to_chat(user, span_notice("[user] managed to pinch themselves on the case of their [src]... it could have been worse."))
 				user.visible_message(span_notice("You manage to pinch yourself on the case!"))
 				if (user.get_left_hand() == src)
-					user.apply_damage(1, CLONE, "l_hand")
-					user.apply_damage(1, HALLOSS, "l_hand")
+					user.apply_damage(1, CLONE, BP_L_HAND)
+					user.apply_damage(1, HALLOSS, BP_L_HAND)
 				else			// Aside from the base, this one isn't punishing outside of giving you genetic damage.
-					user.apply_damage(1, CLONE, "r_hand")
-					user.apply_damage(1, HALLOSS, "r_hand")
+					user.apply_damage(1, CLONE, BP_R_HAND)
+					user.apply_damage(1, HALLOSS, BP_R_HAND)
 			if(89 to 99)
 				to_chat(user, span_notice("[user] opened the [src] but forgot that you aren't supposed to look at supermatter!"))
 				user.visible_message(span_notice("You find yourself looking at the supermatter for longer than you should..."))
 				if (user.get_left_hand() == src)
-					user.apply_damage(15, HALLOSS, "l_hand")
+					user.apply_damage(15, HALLOSS, BP_L_HAND)
 					user.apply_effect(5, WEAKEN)
-					user.apply_damage(15, IRRADIATE, "l_hand")
+					user.apply_damage(15, IRRADIATE, BP_L_HAND)
 					user.apply_effect(100, EYE_BLUR)
 					user.apply_effect(50, AGONY)
 					user.apply_damage(5, OXY)
 					user.eye_blurry = 10
 				else			// This one just blinds and blurs your screen, but otherwise doesn't actually risk harming you. Even the oxy damage heals on its own.
-					user.apply_damage(15, HALLOSS, "r_hand")
+					user.apply_damage(15, HALLOSS, BP_R_HAND)
 					user.apply_effect(5, WEAKEN)
-					user.apply_damage(15, IRRADIATE, "l_hand")
+					user.apply_damage(15, IRRADIATE, BP_L_HAND)
 					user.apply_effect(100, EYE_BLUR)
 					user.apply_effect(50, AGONY)
 					user.apply_damage(15, OXY)
@@ -1087,7 +1129,7 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 		return
 
 	if (lit == 1)
-		M.IgniteMob()
+		M.ignite_mob()
 		add_attack_logs(user, M, "Lit on fire with [src]")
 
 	if (istype(M.wear_mask, /obj/item/clothing/mask/smokable/cigarette) && user.zone_sel.selecting == O_MOUTH && lit)

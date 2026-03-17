@@ -8,6 +8,7 @@
 	idle_power_usage = 10
 	active_power_usage = 200
 	anchored = TRUE
+	flags = WALL_ITEM
 	var/id_tag = null
 	var/chime_sound = 'sound/machines/doorbell.ogg'
 
@@ -89,9 +90,10 @@
 	icon = 'icons/obj/machines/doorbell_vr.dmi'
 	icon_state = "doorbell-standby"
 	use_power = USE_POWER_OFF
+	flags = WALL_ITEM
 
-/obj/machinery/button/doorbell/New(var/loc, var/dir, var/building = 0)
-	..()
+/obj/machinery/button/doorbell/Initialize(mapload, var/dir, var/building = FALSE)
+	. = ..()
 	if(building)
 		pixel_x = (dir & 3)? 0 : (dir == 4 ? -32 : 32)
 		pixel_y = (dir & 3)? (dir ==1 ? -27 : 27) : 0
@@ -120,7 +122,7 @@
 	use_power(5)
 	flick("doorbell-active", src)
 
-	for(var/obj/machinery/doorbell_chime/M in machines)
+	for(var/obj/machinery/doorbell_chime/M in GLOB.machines)
 		if(M.id_tag == id)
 			M.chime()
 
@@ -129,7 +131,7 @@
 	if(default_deconstruction_screwdriver(user, W))
 		return
 	else if(panel_open && istype(W, /obj/item/pen))
-		var/t = sanitizeSafe(tgui_input_text(user, "Enter the name for \the [src].", src.name, initial(src.name), MAX_NAME_LEN), MAX_NAME_LEN)
+		var/t = sanitizeSafe(tgui_input_text(user, "Enter the name for \the [src].", src.name, initial(src.name), MAX_NAME_LEN, encode = FALSE), MAX_NAME_LEN)
 		if(t && in_range(src, user))
 			name = t
 	else if(panel_open && istype(W, /obj/item/multitool))
@@ -139,7 +141,7 @@
 	else if(W.has_tool_quality(TOOL_WRENCH))
 		to_chat(user, span_notice("You start to unwrench \the [src]."))
 		playsound(src, 'sound/items/Ratchet.ogg', 50, 1)
-		if(do_after(user, 15) && !QDELETED(src))
+		if(do_after(user, 15, target = src) && !QDELETED(src))
 			to_chat(user, span_notice("You unwrench \the [src]."))
 			new /obj/item/frame/doorbell(src.loc)
 			qdel(src)

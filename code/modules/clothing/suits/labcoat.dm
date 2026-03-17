@@ -6,7 +6,7 @@
 	blood_overlay_type = "coat"
 	body_parts_covered = UPPER_TORSO|ARMS
 	flags_inv = HIDEHOLSTER
-	allowed = list(/obj/item/analyzer,/obj/item/stack/medical,/obj/item/dnainjector,/obj/item/reagent_containers/dropper,/obj/item/reagent_containers/syringe,/obj/item/reagent_containers/hypospray,/obj/item/healthanalyzer,/obj/item/flashlight/pen,/obj/item/reagent_containers/glass/bottle,/obj/item/reagent_containers/glass/beaker,/obj/item/reagent_containers/pill,/obj/item/storage/pill_bottle,/obj/item/paper, /obj/item/clothing/mask/gas)
+	allowed = list(POCKET_GENERIC, POCKET_EMERGENCY, POCKET_MEDICAL)
 	armor = list(melee = 0, bullet = 0, laser = 0,energy = 0, bomb = 0, bio = 50, rad = 0)
 
 /obj/item/clothing/suit/storage/toggle/labcoat/red
@@ -121,3 +121,11 @@
 	name = "golden plague doctor suit"
 	desc = "If it worked then, it works now. This classic design comes in gold."
 	icon_state = "plaguedoctor2"
+
+/obj/item/clothing/suit/storage/toggle/labcoat/talon
+	name = "Talon labcoat"
+	desc = "A large, and extremely sterile labcoat that protects the wearer from chemical spills. This one has ITV Talon colored patterns along the labcoat, the designated shapes list it as a medical officer's labcoat."
+	icon = 'icons/inventory/suit/item.dmi'
+	default_worn_icon = 'icons/inventory/suit/mob.dmi'
+	icon_state = "talon_labcoat"
+	item_state_slots = list(slot_r_hand_str = "talon_labcoat", slot_l_hand_str = "talon_labcoat")

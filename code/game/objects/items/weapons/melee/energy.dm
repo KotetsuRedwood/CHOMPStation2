@@ -23,24 +23,26 @@
 			slot_l_hand_str = 'icons/mob/items/lefthand_melee.dmi',
 			slot_r_hand_str = 'icons/mob/items/righthand_melee.dmi',
 			)
+	///Var for attack_self handling
+	var/special_handling = FALSE
 
-/obj/item/melee/energy/sword/green/New()
+/obj/item/melee/energy/sword/green
 	colorable = FALSE
 	lcolor = "#008000"
 
-/obj/item/melee/energy/sword/red/New()
+/obj/item/melee/energy/sword/red
 	colorable = FALSE
 	lcolor = "#FF0000"
 
-/obj/item/melee/energy/sword/blue/New()
+/obj/item/melee/energy/sword/blue
 	colorable = FALSE
 	lcolor = "#0000FF"
 
-/obj/item/melee/energy/sword/purple/New()
+/obj/item/melee/energy/sword/purple
 	colorable = FALSE
 	lcolor = "#800080"
 
-/obj/item/melee/energy/sword/white/New()
+/obj/item/melee/energy/sword/white
 	colorable = FALSE
 	lcolor = "#FFFFFF"
 
@@ -96,16 +98,20 @@
 		else
 			. += span_warning("The blade does not have a power source installed.")
 
-/obj/item/melee/energy/attack_self(mob/living/user as mob)
+/obj/item/melee/energy/attack_self(mob/living/user)
+	. = ..(user)
+	if(.)
+		return TRUE
+	if(special_handling)
+		return FALSE
 	if(use_cell)
 		if((!bcell || bcell.charge < hitcost) && !active)
 			to_chat(user, span_notice("\The [src] does not seem to have power."))
 			return
 
-	var/datum/gender/TU = gender_datums[user.get_visible_gender()]
 	if (active)
-		if ((CLUMSY in user.mutations) && prob(50))
-			user.visible_message(span_danger("\The [user] accidentally cuts [TU.himself] with \the [src]."),\
+		if (CLUMSY_HARM_CHANCE(user))
+			user.visible_message(span_danger("\The [user] accidentally cuts [user.p_their()] with \the [src]."),\
 			span_danger("You accidentally cut yourself with \the [src]."))
 			user.take_organ_damage(5,5)
 		deactivate(user)
@@ -178,7 +184,7 @@
 
 
 
-/obj/item/melee/energy/AltClick(mob/living/user)
+/obj/item/melee/energy/click_alt(mob/living/user)
 	if(!colorable) //checks if is not colorable
 		return
 	if(!in_range(src, user))	//Basic checks to prevent abuse
@@ -250,8 +256,8 @@
 	use_cell = TRUE
 	hitcost = 120
 
-/obj/item/melee/energy/axe/charge/loaded/New()
-	..()
+/obj/item/melee/energy/axe/charge/loaded/Initialize(mapload)
+	. = ..()
 	bcell = new/obj/item/cell/device/weapon(src)
 
 /*
@@ -410,8 +416,8 @@
 
 	hitcost = 75
 
-/obj/item/melee/energy/sword/charge/loaded/New()
-	..()
+/obj/item/melee/energy/sword/charge/loaded/Initialize(mapload)
+	. = ..()
 	bcell = new/obj/item/cell/device/weapon(src)
 
 //Energy Blade (ninja uses this)
@@ -422,6 +428,7 @@
 	desc = "A concentrated beam of energy in the shape of a blade. Very stylish... and lethal."
 	icon_state = "blade"
 	item_state = "blade"
+	item_flags = DROPDEL | NOSTRIP
 	force = 40 //Normal attacks deal very high damage - about the same as wielded fire axe
 	armor_penetration = 100
 	sharp = TRUE
@@ -437,9 +444,10 @@
 	var/datum/effect/effect/system/spark_spread/spark_system
 	projectile_parry_chance = 60
 	lcolor = "#00FF00"
+	special_handling = TRUE
 
-/obj/item/melee/energy/blade/New()
-
+/obj/item/melee/energy/blade/Initialize(mapload)
+	. = ..()
 	spark_system = new /datum/effect/effect/system/spark_spread()
 	spark_system.set_up(5, 0, src)
 	spark_system.attach(src)
@@ -449,15 +457,14 @@
 
 /obj/item/melee/energy/blade/Destroy()
 	STOP_PROCESSING(SSobj, src)
-	..()
+	. = ..()
 
-/obj/item/melee/energy/blade/attack_self(mob/user as mob)
+/obj/item/melee/energy/blade/attack_self(mob/user)
+	. = ..(user)
+	if(.)
+		return TRUE
 	user.drop_from_inventory(src)
-	spawn(1) if(src) qdel(src)
-
-/obj/item/melee/energy/blade/dropped(mob/user)
-	..()
-	spawn(1) if(src) qdel(src)
+	QDEL_IN(src, 1)
 
 /obj/item/melee/energy/blade/process()
 	if(!creator || loc != creator || !creator.item_is_in_hands(src))
@@ -472,7 +479,7 @@
 			host.pinned -= src
 			host.embedded -= src
 			host.drop_from_inventory(src)
-		spawn(1) if(src) qdel(src)
+		QDEL_IN(src, 1)
 
 /obj/item/melee/energy/blade/handle_shield(mob/user, var/damage, atom/damage_source = null, mob/attacker = null, var/def_zone = null, var/attack_text = "the attack")
 	if(default_parry_check(user, attacker, damage_source) && prob(60))
